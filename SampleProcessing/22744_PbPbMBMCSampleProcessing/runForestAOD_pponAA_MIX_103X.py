@@ -30,13 +30,13 @@ process.HiForest.HiForestVersion = cms.string(version)
 process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
     fileNames = cms.untracked.vstring(
-       "file:AOD.root"
+        '/store/himc/HINPbPbAutumn18DR/MinBias_Hydjet_Drum5F_2018_5p02TeV/AODSIM/NoPUmva98_103X_upgrade2018_realistic_HI_v11-v1/270000/7C088319-3D67-CD4C-81D9-3AD273CBDC3D.root'
         ),
     )
 
 # Number of events we want to process, -1 = all events
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(1000)
     )
 
 ###############################################################################
@@ -110,7 +110,7 @@ process.load('HeavyIonsAnalysis.EventAnalysis.runanalyzer_cfi')
 process.load('HeavyIonsAnalysis.TrackAnalysis.HiGenAnalyzer_cfi')
 # making cuts looser so that we can actually check dNdEta
 process.HiGenParticleAna.ptMin = cms.untracked.double(0) # default is 5
-process.HiGenParticleAna.etaMax = cms.untracked.double(7.) # default is 2
+process.HiGenParticleAna.etaMax = cms.untracked.double(7) # default is 2
 
 ###############################################################################
 
@@ -211,17 +211,17 @@ process.ana_step = cms.Path(
     process.hiEvtAnalyzer +
     process.HiGenParticleAna +
     process.genSignalSequence +
-    process.jetSequence +
-    process.hiPuRhoR3Analyzer +
+    # process.jetSequence +
+    # process.hiPuRhoR3Analyzer +
     process.correctedElectrons +
     process.ggHiNtuplizer +
     process.ggHiNtuplizerGED +
-    process.hiFJRhoAnalyzer +
-    process.hiFJRhoAnalyzerFinerBins +
+    # process.hiFJRhoAnalyzer +
+    # process.hiFJRhoAnalyzerFinerBins +
     process.pfcandAnalyzer +
-    process.pfcandAnalyzerCS +
-    process.trackSequencesPP +
-    process.rechitanalyzerpp
+    # process.pfcandAnalyzerCS +
+   process.trackSequencesPP #+
+    # process.rechitanalyzerpp
     )
 
 # # edm output for debugging purposes
@@ -295,3 +295,4 @@ if cleanJets == True:
 
 # Customization
 ###############################################################################
+# process.Timing = cms.Service("Timing")

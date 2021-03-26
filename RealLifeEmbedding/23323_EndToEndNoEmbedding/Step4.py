@@ -30,13 +30,13 @@ process.HiForest.HiForestVersion = cms.string(version)
 process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
     fileNames = cms.untracked.vstring(
-       "file:AOD.root"
+       "file:HIN-HINPbPbAutumn18DR-00029.root"
         ),
     )
 
 # Number of events we want to process, -1 = all events
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(-1)
     )
 
 ###############################################################################
@@ -109,8 +109,8 @@ process = overrideJEC_MC_PbPb5020_2018(process)
 process.load('HeavyIonsAnalysis.EventAnalysis.runanalyzer_cfi')
 process.load('HeavyIonsAnalysis.TrackAnalysis.HiGenAnalyzer_cfi')
 # making cuts looser so that we can actually check dNdEta
-process.HiGenParticleAna.ptMin = cms.untracked.double(0) # default is 5
-process.HiGenParticleAna.etaMax = cms.untracked.double(7.) # default is 2
+process.HiGenParticleAna.ptMin = cms.untracked.double(0.4) # default is 5
+process.HiGenParticleAna.etaMax = cms.untracked.double(5.) # default is 2
 
 ###############################################################################
 
@@ -196,11 +196,15 @@ if cleanJets:
     process.pfFilter = cms.Path(process.filteredParticleFlow + process.pfBadCandAnalyzer)
 
 
+process.dump = cms.EDAnalyzer('EventContentAnalyzer')
+
+
 #########################
 # Main analysis list
 #########################
 
 process.ana_step = cms.Path(
+    # process.dump +
     process.offlinePrimaryVerticesRecovery +
     process.HiForest +
     process.runAnalyzer +
@@ -211,15 +215,15 @@ process.ana_step = cms.Path(
     process.hiEvtAnalyzer +
     process.HiGenParticleAna +
     process.genSignalSequence +
-    process.jetSequence +
-    process.hiPuRhoR3Analyzer +
+    # process.jetSequence +
+    # process.hiPuRhoR3Analyzer +
     process.correctedElectrons +
     process.ggHiNtuplizer +
     process.ggHiNtuplizerGED +
-    process.hiFJRhoAnalyzer +
-    process.hiFJRhoAnalyzerFinerBins +
+    # process.hiFJRhoAnalyzer +
+    # process.hiFJRhoAnalyzerFinerBins +
     process.pfcandAnalyzer +
-    process.pfcandAnalyzerCS +
+    # process.pfcandAnalyzerCS +
     process.trackSequencesPP +
     process.rechitanalyzerpp
     )
