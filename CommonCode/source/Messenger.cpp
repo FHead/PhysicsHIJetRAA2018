@@ -758,6 +758,13 @@ void TriggerTreeMessenger::FillTriggerNames()
    Name.push_back("HLT_HIMinimumBias_SinglePixelTrack_NpixGated_part18_v1");
    Name.push_back("HLT_HIMinimumBias_SinglePixelTrack_NpixGated_part19_v1");
 
+   // 2018 AA trigger
+   Name.push_back("HLT_HIPuAK4CaloJet100Eta5p1_v1");
+   Name.push_back("HLT_HIPuAK4CaloJet80Eta5p1_v1");
+   Name.push_back("HLT_HIPuAK4CaloJet60Eta5p1_v1");
+   Name.push_back("HLT_HIPuAK4CaloJet60Eta5p1_v1");
+   Name.push_back("HLT_HIPuAK4CaloJet40Eta5p1_v1");
+
    // AA trigger
    Name.push_back("HLT_HIPuAK4CaloJet100_Eta5p1_v1");
    Name.push_back("HLT_HIPuAK4CaloJet80_Eta5p1_v1");
