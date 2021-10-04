@@ -6,6 +6,7 @@ default: TestRun
 
 Prepare:
 	ln -sf ../23752_CopyJetFromForest/Output Input
+	ln -sf ../GlobalSetting/GlobalSetting.dh
 
 Execute: PrepareUnfold.cpp
 	CompileRootMacro PrepareUnfold.cpp Execute
