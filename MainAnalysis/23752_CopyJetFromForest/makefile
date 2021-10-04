@@ -9,6 +9,10 @@ Prepare:
 	mkdir -p Output/
 
 TestRun: Execute
+	bash RunFile.sh SampleExample/HiForestMiniAOD_QCDFile.root TestRunMC None 0
+	bash RunFile.sh SampleExample/HiForestMiniAOD_DataHardProbes.root TestRunData HLT_HIPuAK4CaloJet100Eta5p1 0
+
+TestRunObsolete: Execute
 	./Execute --Input SampleExample/HiForestMiniAOD_QCDFile.root --Output Output/TestRunMC.root \
 		--JetR 0.4 --Jet "akCs4PFJetAnalyzer/t" --Fraction $(Fraction) \
 		--UseStoredGen true \

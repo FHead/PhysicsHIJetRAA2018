@@ -9,11 +9,14 @@ using namespace fastjet;
 #include "TFile.h"
 #include "TTree.h"
 
+#include "ProgressBar.h"
 #include "CommandLine.h"
 #include "CustomAssert.h"
 #include "Code/TauHelperFunctions3.h"
 
 #include "Messenger.h"
+#include "JetCorrector.h"
+#include "JetUncertainty.h"
 
 int main(int argc, char *argv[]);
 
@@ -21,26 +24,31 @@ int main(int argc, char *argv[])
 {
    CommandLine CL(argc, argv);
 
-   string InputFileName  = CL.Get("Input", "SampleExample/HiForestAOD.root");
-   string OutputFileName = CL.Get("Output", "Output/JetTreeAOD.root");
+   string InputFileName    = CL.Get("Input", "SampleExample/HiForestAOD.root");
+   string OutputFileName   = CL.Get("Output", "Output/JetTreeAOD.root");
 
-   double Fraction       = CL.GetDouble("Fraction", 1.00);
+   double Fraction         = CL.GetDouble("Fraction", 1.00);
 
-   string JetName        = CL.Get("Jet", "akFlowPuCs4PFJetAnalyzer/t");
-   double JetR           = CL.GetDouble("JetR", 0.4);
-   string Trigger        = CL.Get("Trigger", "NONE");
+   string JetName          = CL.Get("Jet", "akFlowPuCs4PFJetAnalyzer/t");
+   double JetR             = CL.GetDouble("JetR", 0.4);
+   vector<string> JECFile  = CL.GetStringVector("JEC", vector<string>{"None"});
+   string JEUFile          = CL.Get("JEU", "None");
+   string Trigger          = CL.Get("Trigger", "NONE");
 
-   double EtaMin         = CL.GetDouble("EtaMin", -2.0);
-   double EtaMax         = CL.GetDouble("EtaMax", +2.0);
+   double EtaMin           = CL.GetDouble("EtaMin", -2.0);
+   double EtaMax           = CL.GetDouble("EtaMax", +2.0);
 
-   bool CheckCentrality  = CL.GetBool("CheckCentrality", true);
-   double CentralityMin  = CL.GetDouble("CentralityMin", 0.00);
-   double CentralityMax  = CL.GetDouble("CentralityMax", 1.00);
+   bool CheckCentrality    = CL.GetBool("CheckCentrality", true);
+   double CentralityMin    = CL.GetDouble("CentralityMin", 0.00);
+   double CentralityMax    = CL.GetDouble("CentralityMax", 1.00);
 
-   bool UseStoredGen     = CL.GetBool("UseStoredGen", false);
-   bool UseStoredReco    = CL.GetBool("UseStoredReco", true);
+   bool UseStoredGen       = CL.GetBool("UseStoredGen", false);
+   bool UseStoredReco      = CL.GetBool("UseStoredReco", true);
 
    Assert(UseStoredReco == true, "reco reclustering not implemented yet");
+
+   JetCorrector JEC(JECFile);
+   JetUncertainty JEU(JEUFile);
 
    TFile InputFile(InputFileName.c_str());
 
@@ -96,8 +104,15 @@ int main(int argc, char *argv[])
    OutputTree.Branch("MatchedJetJEU",   &MatchedJetJEU);
 
    int EntryCount = MEvent.Tree->GetEntries() * Fraction;
+   ProgressBar Bar(cout, EntryCount);
+   Bar.SetStyle(2);
+
    for(int iE = 0; iE < EntryCount; iE++)
    {
+      Bar.Update(iE);
+      if(EntryCount < 500 || (iE % (EntryCount / 300)) == 0)
+         Bar.Print();
+
       MEvent.GetEntry(iE);
       MGen.GetEntry(iE);
       MJet.GetEntry(iE);
@@ -125,6 +140,7 @@ int main(int argc, char *argv[])
 
       vector<pair<FourVector, PseudoJet>> GenJets;
       vector<pair<FourVector, PseudoJet>> RecoJets;
+      RecoJetJEC.clear();
 
       if(UseStoredGen == true)
       {
@@ -181,10 +197,16 @@ int main(int argc, char *argv[])
          if(MJet.JetEta[iR] < EtaMin || MJet.JetEta[iR] > EtaMax)
             continue;
          
+         JEC.SetJetPT(MJet.JetRawPT[iR]);
+         JEC.SetJetEta(MJet.JetEta[iR]);
+         JEC.SetJetPhi(MJet.JetPhi[iR]);
+         MJet.JetPT[iR] = JEC.GetCorrectedPT();
+
          FourVector P;
          P.SetPtEtaPhi(MJet.JetPT[iR], MJet.JetEta[iR], MJet.JetPhi[iR]);
          PseudoJet J(P[1], P[2], P[3], P[0]);
          RecoJets.push_back(pair<FourVector, PseudoJet>(P, J));
+         RecoJetJEC.push_back(JEC.GetCorrection());
       }
 
       // Export gen jet as clustered from the gen particles
@@ -207,7 +229,6 @@ int main(int argc, char *argv[])
       RecoJetEta.resize(NRecoJets);
       RecoJetPhi.resize(NRecoJets);
       RecoJetMass.resize(NRecoJets);
-      RecoJetJEC.resize(NRecoJets);
       RecoJetJEU.resize(NRecoJets);
       for(int iR = 0; iR < NRecoJets; iR++)
       {
@@ -215,8 +236,11 @@ int main(int argc, char *argv[])
          RecoJetEta[iR]  = RecoJets[iR].first.GetEta();
          RecoJetPhi[iR]  = RecoJets[iR].first.GetPhi();
          RecoJetMass[iR] = RecoJets[iR].first.GetMass();
-         RecoJetJEC[iR]  = 1.00;   // to be implemented
-         RecoJetJEU[iR]  = 0.02;
+         
+         JEU.SetJetPT(RecoJetPT[iR]);
+         JEU.SetJetEta(RecoJetEta[iR]);
+         JEU.SetJetPhi(RecoJetPhi[iR]);
+         RecoJetJEU[iR]  = JEU.GetUncertainty().first;
       }
 
       // For each gen jet, find the best reco jet
@@ -257,6 +281,10 @@ int main(int argc, char *argv[])
 
       OutputTree.Fill();
    }
+
+   Bar.Update(EntryCount);
+   Bar.Print();
+   Bar.PrintLine();
 
    OutputFile.cd();
    OutputTree.Write();
