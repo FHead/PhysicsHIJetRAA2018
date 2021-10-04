@@ -1,0 +1,156 @@
+Universe              = vanilla
+Executable            = /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing/RunMiniAOD.sh
+should_transfer_files = NO
++JobFlavour           = "workday"
+
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/4333b17e-66ba-4354-8420-57b32b96e06c.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output0.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD0.out
+Error     = Log/MiniAOD0.err
+Log       = Log/MiniAOD0.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/e8401b3a-7538-4a2f-a503-79fdea768482.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output1.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD1.out
+Error     = Log/MiniAOD1.err
+Log       = Log/MiniAOD1.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/114772ca-7fc9-48e4-a43f-a34895c08a31.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output2.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD2.out
+Error     = Log/MiniAOD2.err
+Log       = Log/MiniAOD2.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/a38580a0-b72d-46aa-9da9-e5ac15da7e15.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output3.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD3.out
+Error     = Log/MiniAOD3.err
+Log       = Log/MiniAOD3.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/ff35a076-159f-4d13-a275-0eaf86fd86b3.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output4.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD4.out
+Error     = Log/MiniAOD4.err
+Log       = Log/MiniAOD4.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/1fccad2c-5e40-4000-b93c-a4bc5d8103e3.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output5.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD5.out
+Error     = Log/MiniAOD5.err
+Log       = Log/MiniAOD5.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/63bd3207-157e-4c2e-a2dc-865c81f56e16.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output6.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD6.out
+Error     = Log/MiniAOD6.err
+Log       = Log/MiniAOD6.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/cc9c2f3f-51f1-4a72-a2dd-beaab0149a8e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output7.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD7.out
+Error     = Log/MiniAOD7.err
+Log       = Log/MiniAOD7.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/c8c2b112-7460-47da-9f26-42991a53b188.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output8.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD8.out
+Error     = Log/MiniAOD8.err
+Log       = Log/MiniAOD8.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/ff759a58-f62b-4c44-a70c-cf90769c106d.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output9.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD9.out
+Error     = Log/MiniAOD9.err
+Log       = Log/MiniAOD9.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/0839a7ca-f9b2-4dc2-b8be-195142adb4eb.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output10.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD10.out
+Error     = Log/MiniAOD10.err
+Log       = Log/MiniAOD10.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/9c402689-adfd-4cd5-b0d2-8e5001ecc5f9.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output11.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD11.out
+Error     = Log/MiniAOD11.err
+Log       = Log/MiniAOD11.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/65bfae1d-8c7d-4de6-acb7-334208283c14.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output12.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD12.out
+Error     = Log/MiniAOD12.err
+Log       = Log/MiniAOD12.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/6dbb7376-fb01-4fd9-9b53-a1dc8fa16aa2.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output13.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD13.out
+Error     = Log/MiniAOD13.err
+Log       = Log/MiniAOD13.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/3062620b-09d3-4751-9f1f-3895ca1d0724.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output14.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD14.out
+Error     = Log/MiniAOD14.err
+Log       = Log/MiniAOD14.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/d1191004-35c6-4e9c-a99d-af16b8dae68a.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output15.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD15.out
+Error     = Log/MiniAOD15.err
+Log       = Log/MiniAOD15.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/ec7f250d-25e5-4ff6-8681-2e8f6ec15853.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output16.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD16.out
+Error     = Log/MiniAOD16.err
+Log       = Log/MiniAOD16.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/87fcb637-0ead-47c7-897d-15ea8e8519e7.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output17.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD17.out
+Error     = Log/MiniAOD17.err
+Log       = Log/MiniAOD17.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/d23e28a7-1d56-43d2-aece-cbcde7cb410a.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output18.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD18.out
+Error     = Log/MiniAOD18.err
+Log       = Log/MiniAOD18.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/68b9b193-2e65-4867-8a94-6b2db0e9059e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output19.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD19.out
+Error     = Log/MiniAOD19.err
+Log       = Log/MiniAOD19.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/dc28082f-437c-4b70-a16e-277cd30a7c8e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output20.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD20.out
+Error     = Log/MiniAOD20.err
+Log       = Log/MiniAOD20.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/b3edb51c-5663-4082-9517-aa5c34b82399.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output21.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD21.out
+Error     = Log/MiniAOD21.err
+Log       = Log/MiniAOD21.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/e0f5b835-87e6-4b76-900c-5a55c42fade8.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output22.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD22.out
+Error     = Log/MiniAOD22.err
+Log       = Log/MiniAOD22.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/e8ab415f-5de8-49b3-98bd-67449a0dfa42.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output23.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD23.out
+Error     = Log/MiniAOD23.err
+Log       = Log/MiniAOD23.log
+Queue
+
+Arguments = /store/hidata/HIRun2018A/HIHardProbes/MINIAOD/PbPb18_MiniAODv1-v1/230000/6c6681e9-9c61-4e04-9dda-f25b95e0887f.root /eos/cms/store/group/phys_heavyions/chenyi/Share/23771_ExampleMiniAODData//Output24.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23771_ExamplePbPbDataSampleProcessing
+Output    = Log/MiniAOD24.out
+Error     = Log/MiniAOD24.err
+Log       = Log/MiniAOD24.log
+Queue
+
