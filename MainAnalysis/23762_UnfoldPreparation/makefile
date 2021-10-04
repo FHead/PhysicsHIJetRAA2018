@@ -10,115 +10,22 @@ Prepare:
 Execute: PrepareUnfold.cpp
 	CompileRootMacro PrepareUnfold.cpp Execute
 
-TestRun: Execute
-	time ./Execute --MC Input/TestRunMC.root --Data Input/TestRunMC.root \
-		--Output Output/TestRunMC.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 0.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC.root --Data Input/TestRunData.root \
-		--Output Output/TestRunData.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 0.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC.root --Data Input/TestRunData.root \
-		--Output Output/TestRunDataJECUp.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 1.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC.root --Data Input/TestRunData.root \
-		--Output Output/TestRunDataJECDown.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift -1.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC0to10.root --Data Input/TestRunMC0to10.root \
-		--Output Output/TestRunMC0to10.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 0.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC0to10.root --Data Input/TestRunData0to10.root \
-		--Output Output/TestRunData0to10.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 0.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC0to10.root --Data Input/TestRunData0to10.root \
-		--Output Output/TestRunData0to10JECUp.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 1.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC0to10.root --Data Input/TestRunData0to10.root \
-		--Output Output/TestRunData0to10JECDown.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift -1.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC50to90.root --Data Input/TestRunMC50to90.root \
-		--Output Output/TestRunMC50to90.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 0.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC50to90.root --Data Input/TestRunData50to90.root \
-		--Output Output/TestRunData50to90.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 0.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC50to90.root --Data Input/TestRunData50to90.root \
-		--Output Output/TestRunData50to90JECUp.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift 1.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
-	time ./Execute --MC Input/TestRunMC50to90.root --Data Input/TestRunData50to90.root \
-		--Output Output/TestRunData50to90JECDown.root \
-		--Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1 \
-		--ObservableGenBins $(GenBins) \
-		--ObservableRecoBins $(RecoBins) \
-		--BinningGenBins 0,1 --BinningRecoBins 0,1 \
-		--ObservableUncertaintyShift -1.00 \
-		--ObservableUncertaintySmear 1.00 \
-		--Flooring false
+ExecutePreset: RunPreset.cpp
+	CompileRootMacro RunPreset.cpp ExecutePreset
+
+TestRun: Execute ExecutePreset
+	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunMC \
+		--Prefix TestRunMC --Suffix Nominal \
+		--Shift 0.0 --Smear 1.0 --Flooring false | grep ^time`
+	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
+		--Prefix TestRunData --Suffix Nominal \
+		--Shift 0.0 --Smear 1.0 --Flooring false | grep ^time`
+	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
+		--Prefix TestRunData --Suffix JECUp \
+		--Shift 1.0 --Smear 1.0 --Flooring false | grep ^time`
+	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
+		--Prefix TestRunData --Suffix JECDown \
+		--Shift -1.0 --Smear 1.0 --Flooring false | grep ^time`
 
 
 
