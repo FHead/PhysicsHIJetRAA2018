@@ -3,6 +3,7 @@ default: Prepare TestRun
 Prepare:
 	rm -f Input
 	ln -sf ../23762_ActualUnfold/Output Input
+	ln -sf ../GlobalSetting/GlobalSetting.dh
 	mkdir -p Plots
 
 Deploy:

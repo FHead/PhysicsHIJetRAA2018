@@ -8,6 +8,7 @@ default: TestRun
 
 Prepare:
 	echo $(ProjectBase)
+	ln -sf ../GlobalSetting/GlobalSetting.dh
 	# ln -sf $(ProjectBase)/Samples/Example SampleExample
 	# mkdir -p Output/
 
