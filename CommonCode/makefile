@@ -6,15 +6,15 @@ default: all
 all: library/Messenger.o library/RhoCalculator.o library/JetProducer.o
 
 library/Messenger.o: source/Messenger.cpp include/Messenger.h
-	g++ source/Messenger.cpp -I. -c -o library/Messenger.o `root-config --cflags` -std=c++17
+	g++ source/Messenger.cpp -I. -c -o library/Messenger.o `root-config --cflags` -std=c++1y
 
 library/RhoCalculator.o: source/RhoCalculator.cpp include/RhoCalculator.h
-	g++ source/RhoCalculator.cpp -I. -c -o library/RhoCalculator.o `$(FastJetConfig) --cxxflags` -std=c++17 \
+	g++ source/RhoCalculator.cpp -I. -c -o library/RhoCalculator.o `$(FastJetConfig) --cxxflags` -std=c++1y \
 		-I$(RootMacrosBase) \
-		`root-config --cflags` -std=c++17
+		`root-config --cflags` -std=c++1y
 
 library/JetProducer.o: source/JetProducer.cpp include/JetProducer.h
-	g++ source/JetProducer.cpp -I. -c -o library/JetProducer.o -std=c++17 \
+	g++ source/JetProducer.cpp -I. -c -o library/JetProducer.o -std=c++1y \
 		`$(FastJetConfig) --cxxflags` -I$(FJCONTRIB)/include \
 		-I$(RootMacrosBase) \
-		`root-config --cflags` -std=c++17
+		`root-config --cflags` -std=c++1y
