@@ -9,7 +9,8 @@ Prepare:
 	ln -sf ../GlobalSetting/GlobalSetting.dh
 
 TestRun: Execute
-	bash RunFile.sh TestRunMC Nominal
+	bash RunFile.sh TestRunMC Nominal 0
+	bash RunFile.sh TestRunPPMC Nominal 1
 
 Execute: GeneratePerfectData.cpp
 	CompileRootMacro GeneratePerfectData.cpp Execute

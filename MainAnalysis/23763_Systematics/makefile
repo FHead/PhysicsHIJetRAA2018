@@ -8,7 +8,8 @@ Prepare:
 	mkdir -p Output Plot
 
 RunTestRunData: Execute
-	bash RunFile.sh TestRunData 
+	bash RunFile.sh TestRunData 0
+	bash RunFile.sh TestRunPPData 1
 
 Execute: Harvest.cpp
 	CompileRootMacro Harvest.cpp Execute

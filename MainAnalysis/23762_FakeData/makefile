@@ -9,7 +9,8 @@ Prepare:
 	mkdir -p Output
 
 TestRun: Execute
-	bash RunFile.sh TestRunMC Nominal TestRunData Nominal 1.00
+	bash RunFile.sh TestRunMC Nominal TestRunData Nominal 1.00 0
+	bash RunFile.sh TestRunPPMC Nominal TestRunPPData Nominal 1.00 1
 
 Execute: GenerateFakeData.cpp
 	CXXFLAGS="-mmacosx-version-min=11.2" CompileRootMacro GenerateFakeData.cpp Execute 

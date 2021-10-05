@@ -1,9 +1,13 @@
 
 Prefix=$1
 Suffix=$2
+IsPP=$3
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
+if [[ "$IsPP" == "1" ]]; then
+   Centrality="Inclusive"
+fi
 
 if [[ "$Suffix" != "" ]]; then
    Suffix="_$Suffix"
@@ -15,6 +19,8 @@ do
    do
       PRC="${Prefix}_R${R}_Centrality${C}"
       PRCN="${PRC}_Nominal${Suffix}.root"
+
+      RValue=`DHQuery GlobalSetting.dh JetR $R`
 
       ./Execute \
          --Input Input/${PRCN} \
@@ -30,7 +36,7 @@ do
          --XLabel "Jet p_{T} (GeV)" --YLabel "dN / d(Jet p_{T})" --Binning None \
          --LegendX 0.45 --LegendY 0.55 --LegendSize 0.04 \
          --XAxis 505 --YAxis 505 --RAxis 505 --MarkerModifier 0.5 \
-         --Texts 0,0.65,0.9,"Anti-k_{T} jet R = 0.4",0,0.65,0.85,"|#eta_{jet}| < 2.0",0,0.65,0.8,"Centrality 0-90%" \
+         --Texts 0,0.65,0.9,"Anti-k_{T} jet R = $RValue",0,0.65,0.85,"|#eta_{jet}| < 2.0",0,0.65,0.8,"Centrality 0-90%" \
          --IgnoreGroup 0 --Row 1 --Column 1
    done
 done

@@ -13,10 +13,12 @@ Deploy:
 	cp Plots/*.pdf ../FinalResult/Unfolded/
 
 RunTestRunJetPT: Execute
-	bash RunFile.sh TestRunData
+	bash RunFile.sh TestRunData "" 0
+	bash RunFile.sh TestRunPPData "" 1
 
 RunTestRunJetPTClosure: Execute
-	bash RunFile.sh TestRunMC Toy
+	bash RunFile.sh TestRunMC Toy 0
+	bash RunFile.sh TestRunPPMC Toy 1
 
 Execute: MakePaperPlot.cpp
 	CompileRootMacro MakePaperPlot.cpp Execute

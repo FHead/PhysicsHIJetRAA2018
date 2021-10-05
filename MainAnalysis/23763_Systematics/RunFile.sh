@@ -1,9 +1,13 @@
 
 
 Prefix=$1
+IsPP=$2
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
+if [[ "$IsPP" == "1" ]]; then
+   Centrality="Inclusive"
+fi
 
 for R in $JetR
 do

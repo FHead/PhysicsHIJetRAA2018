@@ -11,6 +11,10 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+   // we get response from the MC file
+   // truth from the gen file
+   // the perfect data is then scaled to the yield file
+
    CommandLine CL(argc, argv);
 
    string MCFileName       = CL.Get("MC");

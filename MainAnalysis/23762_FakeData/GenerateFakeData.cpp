@@ -23,6 +23,8 @@ int main(int argc, char *argv[])
    string YieldFileName = CL.Get("Yield", ShapeFileName);
    double TargetFraction = CL.GetDouble("Fraction", 1.00);
    double RandomSeed = CL.GetDouble("Seed", 31426);
+   int Underflow = CL.GetInt("Underflow", 0);
+   int Overflow = CL.GetInt("Overflow", 0);
 
    srand(RandomSeed);
 
@@ -45,7 +47,8 @@ int main(int argc, char *argv[])
    MCFile.Close();
 
    TFile YieldFile(YieldFileName.c_str());
-   double TargetEventCount = ((TH1D *)YieldFile.Get("HDataReco"))->Integral() * TargetFraction;
+   TH1D *HYield = (TH1D *)YieldFile.Get("HDataReco");
+   double TargetEventCount = HYield->Integral(1 + Underflow, HYield->GetNbinsX() - Overflow) * TargetFraction;
    int ActualEvent = DrawPoisson(TargetEventCount);
    YieldFile.Close();
    
@@ -55,9 +58,11 @@ int main(int argc, char *argv[])
    ShapeFile.Get("HMCGen")->Clone()->Write();
 
    TH1D *HShape = (TH1D *)ShapeFile.Get("HDataReco");
+   cout << HShape->Integral(1 + Underflow, HShape->GetNbinsX() - Overflow) << " " << HShape->Integral() << endl;
+
    TH1D *HNewData = (TH1D *)HShape->Clone();
    HNewData->Reset();
-   for(int i = 0; i < ActualEvent; i++)
+   while(HNewData->Integral(1 + Underflow, HNewData->GetNbinsX() - Overflow) < ActualEvent)
       HNewData->Fill(GetRandom(HShape));
    HNewData->SetName("HDataReco");
    HNewData->Write();
