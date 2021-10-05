@@ -16,8 +16,8 @@ TestRun: Execute
 	# arguments = file tag trigger MC? PP? Recluster?
 	# bash RunFile.sh ExamplePbPbMC/OutputAll.root TestRunMC None 1 0 0
 	# bash RunFile.sh ExamplePbPbData/OutputAll.root TestRunData HLT_HIPuAK4CaloJet100Eta5p1 0 0 0
-	# bash RunFile.sh PPMC/HiForest_25.root TestRunPPMC None 1 1 1
-	bash RunFile.sh PPData/HiForestAOD_25.root TestRunPPData HLT_HIAK4PFJet80 0 1 1
+	bash RunFile.sh `ls PPMC/*.root | head -n10 | tr '\n' ','`   TestRunPPMC   None             1 1 1
+	bash RunFile.sh `ls PPData/*.root | head -n10 | tr '\n' ','` TestRunPPData HLT_HIAK4PFJet80 0 1 1
 
 Execute: ProcessJets.cpp
 	CompileRootMacro ProcessJets.cpp Execute \
