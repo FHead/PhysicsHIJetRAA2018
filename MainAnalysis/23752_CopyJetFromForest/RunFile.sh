@@ -1,26 +1,29 @@
 #!/bin/sh
 
+echo
+echo 'Make sure you have project base properly set!!!'
+echo
+
 InputFile=$1
 Tag=$2
 Trigger=$3
 IsMC=$4
 IsPP=$5
+Recluster=$6
 
 Fraction=1
 
-JetR="1:0.15 2:0.20 3:0.30 4:0.40 5:0.50 6:0.60 7:0.80 8:1.00 9:1.20"
-# JetR="4:0.15 4:0.20 3:0.30 4:0.40 4:0.50 4:0.60 4:0.80 4:1.00 4:1.20"
+JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 
 if [[ "$IsPP" == "1" ]]; then
-   Centrality="Inclusive:-1:-1"
+   Centrality="Inclusive"
 else
-   Centrality="0to10:0.00:0.10 10to30:0.10:0.30 30to50:0.30:0.50 50to90:0.50:0.90"
+   Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
 fi
 
-for R in $JetR
+for RTag in $JetR
 do
-   RTag=`echo $R | cut -f 1 -d ":"`
-   RValue=`echo $R | cut -f 2 -d ":"`
+   RValue=`DHQuery GlobalSetting.dh JetR $RTag`
 
    JECBase="$ProjectBase/CommonCode/jec/"
    JECTag="Autumn18_HI_RAAV2_MC"
@@ -43,11 +46,10 @@ do
 
    JEU=$JECBase/$JECTag/${JECTag}_Uncertainty_AK${RTag}PF.txt
 
-   for C in $Centrality
+   for CTag in $Centrality
    do
-      CTag=`echo $C | cut -f 1 -d ":"`
-      CMin=`echo $C | cut -f 2 -d ":"`
-      CMax=`echo $C | cut -f 3 -d ":"`
+      CMin=`DHQuery GlobalSetting.dh CentralityMin $CTag`
+      CMax=`DHQuery GlobalSetting.dh CentralityMax $CTag`
 
       CheckCentrality=true
       if [[ "$CTag" == "Inclusive" ]]; then
@@ -56,11 +58,21 @@ do
 
       echo "Running R = $RValue, Centrality = $CTag"
 
-      ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
-         --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
-         --Fraction $Fraction \
-         --UseStoredGen true --Trigger $Trigger \
-         --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax
+      if [[ "$Recluster" != "1" ]]; then
+         ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
+            --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
+            --Fraction $Fraction \
+            --UseStoredGen true --Trigger $Trigger \
+            --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
+            --PTMin 15
+      else
+         ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
+            --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
+            --Fraction $Fraction \
+            --UseStoredGen false --UseStoredReco false --DoRecoSubtraction false --Trigger $Trigger \
+            --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
+            --PTMin 15
+      fi
    done
 done
 

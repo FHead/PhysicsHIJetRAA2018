@@ -17,7 +17,9 @@ default:
 	DHSet GlobalSetting.dh "CentralityMin" "10to30" float 0.10
 	DHSet GlobalSetting.dh "CentralityMin" "30to50" float 0.30
 	DHSet GlobalSetting.dh "CentralityMin" "50to90" float 0.50
+	DHSet GlobalSetting.dh "CentralityMin" "Inclusive" float -999
 	DHSet GlobalSetting.dh "CentralityMax" "0to10" float 0.10
 	DHSet GlobalSetting.dh "CentralityMax" "10to30" float 0.30
 	DHSet GlobalSetting.dh "CentralityMax" "30to50" float 0.50
 	DHSet GlobalSetting.dh "CentralityMax" "50to90" float 0.90
+	DHSet GlobalSetting.dh "CentralityMax" "Inclusive" float 999

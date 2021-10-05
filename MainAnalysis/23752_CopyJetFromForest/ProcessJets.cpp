@@ -38,14 +38,17 @@ int main(int argc, char *argv[])
    double EtaMin           = CL.GetDouble("EtaMin", -2.0);
    double EtaMax           = CL.GetDouble("EtaMax", +2.0);
 
+   double PTMin            = CL.GetDouble("PTMin", 0);
+
    bool CheckCentrality    = CL.GetBool("CheckCentrality", true);
    double CentralityMin    = CL.GetDouble("CentralityMin", 0.00);
    double CentralityMax    = CL.GetDouble("CentralityMax", 1.00);
 
    bool UseStoredGen       = CL.GetBool("UseStoredGen", false);
    bool UseStoredReco      = CL.GetBool("UseStoredReco", true);
+   bool DoRecoSubtraction  = UseStoredReco ? CL.GetBool("DoRecoSubtraction") : false;
 
-   Assert(UseStoredReco == true, "reco reclustering not implemented yet");
+   Assert(DoRecoSubtraction == false, "reco reclustering in PbPb case not implemented yet");
 
    JetCorrector JEC(JECFile);
    JetUncertainty JEU(JEUFile);
@@ -56,6 +59,7 @@ int main(int argc, char *argv[])
    GenParticleTreeMessenger MGen(InputFile);
    JetTreeMessenger MJet(InputFile, JetName);
    TriggerTreeMessenger MTrigger(InputFile, "hltanalysis/HltTree");
+   PFTreeMessenger MPF(InputFile, "pfcandAnalyzer/pfTree");
 
    TFile OutputFile(OutputFileName.c_str(), "RECREATE");
 
@@ -117,6 +121,7 @@ int main(int argc, char *argv[])
       MGen.GetEntry(iE);
       MJet.GetEntry(iE);
       MTrigger.GetEntry(iE);
+      MPF.GetEntry(iE);
 
       EventWeight = MEvent.weight;
 
@@ -157,59 +162,105 @@ int main(int argc, char *argv[])
       }
       else
       {
-         // Cluster gen jets
-         vector<PseudoJet> VisibleParticles;
-         for(int iG = 0; iG < MGen.ID->size(); iG++)
+         if(MGen.Tree != nullptr)
          {
-            FourVector P;
-            P.SetPtEtaPhi(MGen.PT->at(iG), MGen.Eta->at(iG), MGen.Phi->at(iG));
+            // Cluster gen jets
+            vector<PseudoJet> VisibleParticles;
+            for(int iG = 0; iG < MGen.ID->size(); iG++)
+            {
+               FourVector P;
+               P.SetPtEtaPhi(MGen.PT->at(iG), MGen.Eta->at(iG), MGen.Phi->at(iG));
 
-            if(MGen.ID->at(iG) == 12 || MGen.ID->at(iG) == -12)
-               continue;
-            if(MGen.ID->at(iG) == 14 || MGen.ID->at(iG) == -14)
-               continue;
-            if(MGen.ID->at(iG) == 16 || MGen.ID->at(iG) == -16)
-               continue;
-            if(MGen.DaughterCount->at(iG) > 0)
-               continue;
+               if(MGen.ID->at(iG) == 12 || MGen.ID->at(iG) == -12)
+                  continue;
+               if(MGen.ID->at(iG) == 14 || MGen.ID->at(iG) == -14)
+                  continue;
+               if(MGen.ID->at(iG) == 16 || MGen.ID->at(iG) == -16)
+                  continue;
+               if(MGen.DaughterCount->at(iG) > 0)
+                  continue;
 
-            VisibleParticles.emplace_back(PseudoJet(P[1], P[2], P[3], P[0]));
-         }
+               VisibleParticles.emplace_back(PseudoJet(P[1], P[2], P[3], P[0]));
+            }
 
-         JetDefinition Definition(antikt_algorithm, JetR);
-         ClusterSequence Sequence(VisibleParticles, Definition);
-         vector<PseudoJet> GenFastJets = Sequence.inclusive_jets(0.5);   // anti-kt, R = 0.4
+            JetDefinition Definition(antikt_algorithm, JetR);
+            ClusterSequence Sequence(VisibleParticles, Definition);
+            vector<PseudoJet> GenFastJets = Sequence.inclusive_jets(0.5);   // anti-kt, R = 0.4
 
-         vector<pair<FourVector, PseudoJet>> GenJets;
-         for(int iG = 0; iG < GenFastJets.size(); iG++)
-         {
-            if(GenFastJets[iG].eta() < EtaMin || GenFastJets[iG].eta() > EtaMax)
-               continue;
-            
-            PseudoJet &J = GenFastJets[iG];
-            FourVector P(J.e(), J.px(), J.py(), J.pz());
-            GenJets.push_back(pair<FourVector, PseudoJet>(P, J));
+            for(int iG = 0; iG < GenFastJets.size(); iG++)
+            {
+               if(GenFastJets[iG].eta() < EtaMin || GenFastJets[iG].eta() > EtaMax)
+                  continue;
+
+               PseudoJet &J = GenFastJets[iG];
+               FourVector P(J.e(), J.px(), J.py(), J.pz());
+               GenJets.push_back(pair<FourVector, PseudoJet>(P, J));
+            }
          }
       }
       
-      for(int iR = 0; iR < MJet.JetCount; iR++)
+      if(UseStoredReco == true)
       {
-         if(MJet.JetEta[iR] < EtaMin || MJet.JetEta[iR] > EtaMax)
-            continue;
-         
-         JEC.SetJetPT(MJet.JetRawPT[iR]);
-         JEC.SetJetEta(MJet.JetEta[iR]);
-         JEC.SetJetPhi(MJet.JetPhi[iR]);
-         MJet.JetPT[iR] = JEC.GetCorrectedPT();
+         for(int iR = 0; iR < MJet.JetCount; iR++)
+         {
+            if(MJet.JetEta[iR] < EtaMin || MJet.JetEta[iR] > EtaMax)
+               continue;
 
-         FourVector P;
-         P.SetPtEtaPhi(MJet.JetPT[iR], MJet.JetEta[iR], MJet.JetPhi[iR]);
-         PseudoJet J(P[1], P[2], P[3], P[0]);
-         RecoJets.push_back(pair<FourVector, PseudoJet>(P, J));
-         RecoJetJEC.push_back(JEC.GetCorrection());
+            JEC.SetJetPT(MJet.JetRawPT[iR]);
+            JEC.SetJetEta(MJet.JetEta[iR]);
+            JEC.SetJetPhi(MJet.JetPhi[iR]);
+            MJet.JetPT[iR] = JEC.GetCorrectedPT();
+
+            if(MJet.JetPT[iR] < PTMin && MJet.JetRawPT[iR] < PTMin)
+               continue;
+
+            FourVector P;
+            P.SetPtEtaPhi(MJet.JetPT[iR], MJet.JetEta[iR], MJet.JetPhi[iR]);
+            PseudoJet J(P[1], P[2], P[3], P[0]);
+            RecoJets.push_back(pair<FourVector, PseudoJet>(P, J));
+            RecoJetJEC.push_back(JEC.GetCorrection());
+         }
+      }
+      else
+      {
+         // Cluster reco jets from PF candidates.  No subtraction at the moment
+         vector<PseudoJet> Particles;
+         for(int iPF = 0; iPF < MPF.ID->size(); iPF++)
+         {
+            FourVector P;
+            P.SetPtEtaPhi(MPF.PT->at(iPF), MPF.Eta->at(iPF), MPF.Phi->at(iPF));
+            P[0] = MPF.E->at(iPF);
+
+            Particles.emplace_back(PseudoJet(P[1], P[2], P[3], P[0]));
+         }
+
+         JetDefinition Definition(antikt_algorithm, JetR);
+         ClusterSequence Sequence(Particles, Definition);
+         vector<PseudoJet> FastJets = Sequence.inclusive_jets(0.5);   // anti-kt, R = 0.4
+
+         for(int iR = 0; iR < FastJets.size(); iR++)
+         {
+            if(FastJets[iR].eta() < EtaMin || FastJets[iR].eta() > EtaMax)
+               continue;
+            
+            PseudoJet &J = FastJets[iR];
+            FourVector P(J.e(), J.px(), J.py(), J.pz());
+            
+            JEC.SetJetPT(P.GetPT());
+            JEC.SetJetEta(P.GetEta());
+            JEC.SetJetPhi(P.GetPhi());
+
+            if(P.GetPT() < PTMin && P.GetPT() * JEC.GetCorrection() < PTMin)
+               continue;
+            
+            P = P * JEC.GetCorrection();
+            
+            RecoJets.push_back(pair<FourVector, PseudoJet>(P, J));
+            RecoJetJEC.push_back(JEC.GetCorrection());
+         }
       }
 
-      // Export gen jet as clustered from the gen particles
+      // Export gen jet
       NGenJets = GenJets.size();
       GenJetPT.resize(NGenJets);
       GenJetEta.resize(NGenJets);
