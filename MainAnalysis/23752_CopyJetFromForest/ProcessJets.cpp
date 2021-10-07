@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
    double EtaMax                 = CL.GetDouble("EtaMax", +2.0);
 
    double PTMin                  = CL.GetDouble("PTMin", 0);
+   double GenPTMin               = CL.GetDouble("GenPTMin", 0);
 
    bool CheckCentrality          = CL.GetBool("CheckCentrality", true);
    double CentralityMin          = CL.GetDouble("CentralityMin", 0.00);
@@ -58,6 +59,9 @@ int main(int argc, char *argv[])
    TTree OutputTree("UnfoldingTree", "Trees for unfolding studies");
 
    double EventWeight = 1;
+   int Run;
+   int Lumi;
+   long long Event;
    int NRecoJets = 0;
    vector<float> RecoJetPT;
    vector<float> RecoJetEta;
@@ -79,14 +83,17 @@ int main(int argc, char *argv[])
    vector<float> MatchedJetJEU;
 
    OutputTree.Branch("EventWeight",     &EventWeight,    "EventWeight/D");
-   OutputTree.Branch("NRecoJets",       &NRecoJets);
+   OutputTree.Branch("Run",             &Run,            "Run/I");
+   OutputTree.Branch("Lumi",            &Lumi,           "Lumi/I");
+   OutputTree.Branch("Event",           &Event,          "Event/L");
+   OutputTree.Branch("NRecoJets",       &NRecoJets,      "NRecoJets/I");
    OutputTree.Branch("RecoJetPT",       &RecoJetPT);
    OutputTree.Branch("RecoJetEta",      &RecoJetEta);
    OutputTree.Branch("RecoJetPhi",      &RecoJetPhi);
    OutputTree.Branch("RecoJetMass",     &RecoJetMass);
    OutputTree.Branch("RecoJetJEC",      &RecoJetJEC);
    OutputTree.Branch("RecoJetJEU",      &RecoJetJEU);
-   OutputTree.Branch("NGenJets",        &NGenJets);
+   OutputTree.Branch("NGenJets",        &NGenJets,       "NGenJets/I");
    OutputTree.Branch("GenJetPT",        &GenJetPT);
    OutputTree.Branch("GenJetEta",       &GenJetEta);
    OutputTree.Branch("GenJetPhi",       &GenJetPhi);
@@ -108,6 +115,10 @@ int main(int argc, char *argv[])
       JetTreeMessenger MJet(InputFile, JetName);
       TriggerTreeMessenger MTrigger(InputFile, "hltanalysis/HltTree");
       PFTreeMessenger MPF(InputFile, "pfcandAnalyzer/pfTree");
+
+      Run = MEvent.Run;
+      Lumi = MEvent.Lumi;
+      Event = MEvent.Event;
 
       int EntryCount = MEvent.Tree->GetEntries() * Fraction;
       ProgressBar Bar(cout, EntryCount);
@@ -155,6 +166,8 @@ int main(int argc, char *argv[])
             {
                if(MJet.GenEta[iG] < EtaMin || MJet.GenEta[iG] > EtaMax)
                   continue;
+               if(MJet.GenPT[iG] < GenPTMin)
+                  continue;
 
                FourVector P;
                P.SetPtEtaPhi(MJet.GenPT[iG], MJet.GenEta[iG], MJet.GenPhi[iG]);
@@ -192,6 +205,8 @@ int main(int argc, char *argv[])
                for(int iG = 0; iG < GenFastJets.size(); iG++)
                {
                   if(GenFastJets[iG].eta() < EtaMin || GenFastJets[iG].eta() > EtaMax)
+                     continue;
+                  if(GenFastJets[iG].perp() < GenPTMin)
                      continue;
 
                   PseudoJet &J = GenFastJets[iG];

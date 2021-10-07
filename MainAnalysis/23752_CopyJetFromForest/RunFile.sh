@@ -11,6 +11,8 @@ IsMC=$4
 IsPP=$5
 Recluster=$6
 
+echo $InputFile $Tag $Trigger $IsMC $IsPP $Recluster
+
 Fraction=1
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
@@ -62,16 +64,16 @@ do
          ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
             --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
             --Fraction $Fraction \
-            --UseStoredGen true --Trigger $Trigger \
+            --UseStoredGen true --UseStoredReco true --DoRecoSubtraction false --Trigger $Trigger \
             --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-            --PTMin 15
+            --PTMin 15 --GenPTMin 10
       else
          ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
             --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
             --Fraction $Fraction \
             --UseStoredGen false --UseStoredReco false --DoRecoSubtraction false --Trigger $Trigger \
             --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-            --PTMin 15
+            --PTMin 15 --GenPTMin 10
       fi
    done
 done

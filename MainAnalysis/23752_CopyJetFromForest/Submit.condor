@@ -1,0 +1,20 @@
+Universe              = vanilla
+Executable            = /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/MainAnalysis/23752_CopyJetFromForest/JobWrapper.sh
+should_transfer_files = NO
++JobFlavour           = "workday"
+
+PPMC = /eos/cms/store/group/phys_heavyions/chenyi///pp2017/Forest/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+PPData = /eos/cms/store/group/phys_heavyions/chenyi///pp2017/Forest/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20201111FirstRun/201111_162524/0000//
+
+Arguments = $(PPMC)/HiForest_1000.root,$(PPMC)/HiForest_1001.root,$(PPMC)/HiForest_1002.root,$(PPMC)/HiForest_1003.root,$(PPMC)/HiForest_1004.root,$(PPMC)/HiForest_1005.root,$(PPMC)/HiForest_1006.root,$(PPMC)/HiForest_1007.root,$(PPMC)/HiForest_1008.root,$(PPMC)/HiForest_1009.root  TestRunPPMC   None             1 1 1
+Output    = Log/PPMC.out
+Error     = Log/PPMC.err
+Log       = Log/PPMC.log
+Queue
+
+Arguments = $(PPData)/HiForestAOD_100.root,$(PPData)/HiForestAOD_101.root,$(PPData)/HiForestAOD_102.root,$(PPData)/HiForestAOD_103.root,$(PPData)/HiForestAOD_104.root,$(PPData)/HiForestAOD_105.root,$(PPData)/HiForestAOD_106.root,$(PPData)/HiForestAOD_107.root,$(PPData)/HiForestAOD_108.root,$(PPData)/HiForestAOD_109.root TestRunPPData HLT_HIAK4PFJet80 0 1 1
+Output    = Log/PPData.out
+Error     = Log/PPData.err
+Log       = Log/PPData.log
+Queue
+
