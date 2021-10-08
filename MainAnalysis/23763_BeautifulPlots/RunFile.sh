@@ -22,6 +22,11 @@ do
 
       RValue=`DHQuery GlobalSetting.dh JetR $R`
 
+      State=TestRunData
+      if [[ "$IsPP" == "1" ]]; then
+         State=TestRunPPData
+      fi
+
       ./Execute \
          --Input Input/${PRCN} \
          --Systematic Systematics/${PRC}.root \
@@ -29,9 +34,9 @@ do
          --MCFile "Input/${PRCN}" \
          --MCHistogram "HMCTruth" \
          --MCLabel "MC (normalized to data)" \
-         --PrimaryName HUnfoldedBayes15 \
+         --PrimaryName HUnfoldedBayes`DHQuery GlobalSetting.dh ${State} BestIteration_R${R}_Centrality${C}` \
          --DoSelfNormalize false \
-         --WorldXMin 150 --WorldXMax 1000 --WorldYMin 0.0005 --WorldYMax 500 --WorldRMin 0.51 --WorldRMax 1.49 \
+         --WorldXMin 150 --WorldXMax 1000 --WorldYMin 0.0005 --WorldYMax 5000 --WorldRMin 0.51 --WorldRMax 1.49 \
          --LogX true --LogY true \
          --XLabel "Jet p_{T} (GeV)" --YLabel "dN / d(Jet p_{T})" --Binning None \
          --LegendX 0.45 --LegendY 0.55 --LegendSize 0.04 \

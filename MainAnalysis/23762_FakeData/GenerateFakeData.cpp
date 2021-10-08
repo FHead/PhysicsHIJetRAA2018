@@ -12,6 +12,8 @@ using namespace std;
 
 int main(int argc, char *argv[]);
 double GetRandom(TH1D *H);
+void GenerateSample(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, int ActualEvent);
+void GenerateSampleFast(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, int ActualEvent);
 
 int main(int argc, char *argv[])
 {
@@ -62,8 +64,7 @@ int main(int argc, char *argv[])
 
    TH1D *HNewData = (TH1D *)HShape->Clone();
    HNewData->Reset();
-   while(HNewData->Integral(1 + Underflow, HNewData->GetNbinsX() - Overflow) < ActualEvent)
-      HNewData->Fill(GetRandom(HShape));
+   GenerateSampleFast(HShape, HNewData, Underflow, Overflow, ActualEvent);
    HNewData->SetName("HDataReco");
    HNewData->Write();
 
@@ -95,6 +96,53 @@ double GetRandom(TH1D *H)
    return 0;
 }
 
+void GenerateSample(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, int ActualEvent)
+{
+   // Simply fill histogram until we get the target count in the relevant bins
 
+   if(HShape == nullptr || HTarget == nullptr)
+      return;
+   if(HTarget == HShape)   // WTF
+      return;
+   
+   while(HTarget->Integral(1 + Underflow, HTarget->GetNbinsX() - Overflow) < ActualEvent)
+      HTarget->Fill(GetRandom(HShape));
+}
+
+void GenerateSampleFast(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, int ActualEvent)
+{
+   // In this function we under-generate using poisson in each bin.  Then we call the old generate sample to
+   //    fill in the gap.
+
+   if(HShape == nullptr || HTarget == nullptr)
+      return;
+   if(HTarget == HShape)   // WTF
+      return;
+   
+   int N = HTarget->GetNbinsX();
+
+   vector<int> Events(N);
+   double Factor = ActualEvent / HShape->Integral(1 + Underflow, N - Overflow);
+   double Total = 0;
+
+   do
+   {
+      for(int i = 0; i < N; i++)
+         Events[i] = DrawPoisson(HShape->GetBinContent(i + 1) * Factor);
+
+      Total = 0;
+      for(int i = Underflow; i < N - Overflow; i++)
+         Total = Total + Events[i];
+
+   } while(Total > ActualEvent);
+
+   for(int i = 0; i < N; i++)
+   {
+      HTarget->SetBinContent(i + 1, Events[i]);
+      HTarget->SetBinError(i + 1, sqrt(Events[i]));
+   }
+
+   GenerateSample(HShape, HTarget, Underflow, Overflow, ActualEvent);
+}
 
 

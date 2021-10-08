@@ -12,5 +12,9 @@ TestRun: Execute
 	bash RunFile.sh TestRunMC Nominal 0
 	bash RunFile.sh TestRunPPMC Nominal 1
 
+TestRunData: Execute
+	bash RunFile.sh TestRunData Nominal 0 TestRunMC
+	bash RunFile.sh TestRunPPData Nominal 1 TestRunPPMC
+
 Execute: GeneratePerfectData.cpp
 	CompileRootMacro GeneratePerfectData.cpp Execute

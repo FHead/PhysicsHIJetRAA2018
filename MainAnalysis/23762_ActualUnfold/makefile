@@ -24,4 +24,8 @@ TestRunPP: Execute
 	bash RunFile.sh Input TestRunPPData JECUp 1
 	bash RunFile.sh Input TestRunPPData JECDown 1
 
+TestRunDataToy: Execute
+	bash RunFile.sh ToyInput TestRunData Nominal_Toy 0
+	bash RunFile.sh ToyInput TestRunPPData Nominal_Toy 1
+
 

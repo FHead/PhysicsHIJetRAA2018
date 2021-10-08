@@ -3,6 +3,7 @@
 Prefix=$1
 Suffix=$2
 IsPP=$3
+IterationPrefix=$4
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 
@@ -18,10 +19,23 @@ do
    echo $R
    for C in $Centrality
    do
+      GenHistogram=HMCGen
+      GenFolder=Input
+      if [[ "$IterationPrefix" == "" ]]; then
+         GenHistogram=HMCGen
+         GenFolder=Input
+      else
+         GenHistogram=HUnfoldedBayes`DHQuery GlobalSetting.dh ${IterationPrefix} BestIteration_R${R}_Centrality${C}`
+         GenFolder=UnfoldedInput
+      fi
+
       echo $C
+      echo GenHistogram = $GenHistogram
+      echo Input = Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root
+
       ./Execute --MC Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Yield     Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
-         --Gen       Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root --GenHistogram HMCGen \
+         --Gen       $GenFolder/${Prefix}_R${R}_Centrality${C}_${Suffix}.root --GenHistogram $GenHistogram \
          --Output    Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_PerfectReco.root
    done
 done
