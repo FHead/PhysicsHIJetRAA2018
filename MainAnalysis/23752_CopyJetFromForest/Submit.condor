@@ -5,6 +5,8 @@ should_transfer_files = NO
 
 PPMC = /eos/cms/store/group/phys_heavyions/chenyi///pp2017/Forest/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
 PPData = /eos/cms/store/group/phys_heavyions/chenyi///pp2017/Forest/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20201111FirstRun/201111_162524/0000//
+PbPbMC = /eos/cms/store/group/phys_heavyions/chenyi///Share/23771_ExampleMiniAOD//
+PbPbData = /eos/cms/store/group/phys_heavyions/chenyi///Share/23771_ExampleMiniAODData//
 
 Arguments = $(PPMC)/HiForest_1000.root,$(PPMC)/HiForest_1001.root,$(PPMC)/HiForest_1002.root,$(PPMC)/HiForest_1003.root,$(PPMC)/HiForest_1004.root,$(PPMC)/HiForest_1005.root,$(PPMC)/HiForest_1006.root,$(PPMC)/HiForest_1007.root,$(PPMC)/HiForest_1008.root,$(PPMC)/HiForest_1009.root  TestRunPPMC   None             1 1 1
 Output    = Log/PPMC.out
@@ -17,4 +19,18 @@ Output    = Log/PPData.out
 Error     = Log/PPData.err
 Log       = Log/PPData.log
 Queue
+
+Arguments = $(PbPbMC)/OutputAll.root TestRunMC None 1 0 0
+Output    = Log/PbPbMC.out
+Error     = Log/PbPbMC.err
+Log       = Log/PbPbMC.log
+Queue
+
+Arguments = $(PbPbData)/OutputAll.root TestRunData HLT_HIPuAK4CaloJet100Eta5p1 0 0 0
+Output    = Log/PbPbData.out
+Error     = Log/PbPbData.err
+Log       = Log/PbPbData.log
+Queue
+
+
 

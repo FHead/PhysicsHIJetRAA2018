@@ -116,10 +116,6 @@ int main(int argc, char *argv[])
       TriggerTreeMessenger MTrigger(InputFile, "hltanalysis/HltTree");
       PFTreeMessenger MPF(InputFile, "pfcandAnalyzer/pfTree");
 
-      Run = MEvent.Run;
-      Lumi = MEvent.Lumi;
-      Event = MEvent.Event;
-
       int EntryCount = MEvent.Tree->GetEntries() * Fraction;
       ProgressBar Bar(cout, EntryCount);
       Bar.SetStyle(2);
@@ -135,6 +131,10 @@ int main(int argc, char *argv[])
          MJet.GetEntry(iE);
          MTrigger.GetEntry(iE);
          MPF.GetEntry(iE);
+
+         Run = MEvent.Run;
+         Lumi = MEvent.Lumi;
+         Event = MEvent.Event;
 
          EventWeight = MEvent.weight;
 

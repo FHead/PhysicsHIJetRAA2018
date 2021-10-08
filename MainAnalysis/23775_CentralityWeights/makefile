@@ -9,18 +9,14 @@ default: TestRun
 Prepare:
 	echo $(ProjectBase)
 	ln -sf ../GlobalSetting/GlobalSetting.dh .
-	# ln -sf $(ProjectBase)/Samples/Example SampleExample
 	# mkdir -p Output/
 
 TestRun: Execute
-	# arguments = file tag trigger MC? PP? Recluster?
-	# bash RunFile.sh ExamplePbPbMC/OutputAll.root TestRunMC None 1 0 0
-	# bash RunFile.sh ExamplePbPbData/OutputAll.root TestRunData HLT_HIPuAK4CaloJet100Eta5p1 0 0 0
-	bash RunFile.sh `ls PPMC/*.root | head -n10 | tr '\n' ','`   TestRunPPMC   None             1 1 1
-	bash RunFile.sh `ls PPData/*.root | head -n10 | tr '\n' ','` TestRunPPData HLT_HIAK4PFJet80 0 1 1
+	time ./Execute --Data ExamplePbPbData/OutputAll.root --MC ExamplePbPbMC/OutputAll.root \
+		--Output Result.root
 
-Execute: ProcessJets.cpp
-	CompileRootMacro ProcessJets.cpp Execute \
+Execute: DeriveWeight.cpp
+	CompileRootMacro DeriveWeight.cpp Execute \
 		-I$(ProjectBase)/CommonCode/include \
 		$(ProjectBase)/CommonCode/library/*.o \
 		`$(FastJet) --cxxflags --libs` \
