@@ -39,6 +39,8 @@ int main(int argc, char *argv[])
 
          cout << "time ./Execute --MC " << MCFile << " --Data " << DataFile
             << " --Output Output/" << Prefix << "_" << RC << "_" << Suffix << ".root"
+            << " --JSONOutput Output/" << Prefix << "_" << RC << "_" << Suffix << "_JSON.txt"
+            << " --ExportJSON true"
             << " --Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1"
             << " --ObservableGenBins " << Binnings["GenBins"]
             << " --ObservableRecoBins " << Binnings["RecoBins"]

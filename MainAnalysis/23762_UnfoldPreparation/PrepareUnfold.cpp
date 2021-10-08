@@ -1,4 +1,7 @@
 #include <vector>
+#include <fstream>
+#include <iostream>
+#include <map>
 using namespace std;
 
 #include "TH1D.h"
@@ -20,6 +23,9 @@ class Messenger
 {
 private:
    TTree *Tree;
+   int                    Run;
+   int                    Lumi;
+   long long              Event;
    double                 EventWeight;
    vector<float>         *RecoJetPT;
    vector<float>         *RecoJetEta;
@@ -51,6 +57,9 @@ public:
    void Initialize(TTree *InputTree = nullptr)
    {
       EventWeight = 1;
+      Run = 1;
+      Lumi = 1;
+      Event = 1;
       RecoJetPT = nullptr;
       RecoJetEta = nullptr;
       RecoJetPhi = nullptr;
@@ -75,6 +84,9 @@ public:
          return;
 
       Tree->SetBranchAddress("EventWeight", &EventWeight);
+      Tree->SetBranchAddress("Run", &Run);
+      Tree->SetBranchAddress("Event", &Event);
+      Tree->SetBranchAddress("Lumi", &Lumi);
       Tree->SetBranchAddress("RecoJetPT", &RecoJetPT);
       Tree->SetBranchAddress("RecoJetEta", &RecoJetEta);
       Tree->SetBranchAddress("RecoJetPhi", &RecoJetPhi);
@@ -117,6 +129,9 @@ public:
       }
    }
    int GetEntries()           { if(Tree != nullptr) return Tree->GetEntries(); return 0;}
+   int GetRun()               { return Run; }
+   int GetLumi()              { return Lumi; }
+   long long GetEvent()       { return Event; }
    double GetItemCount(ObservableStep Step, ObservableType &Type)
    {
       if(Type == ObservableJetPT && Step == Gen)
@@ -206,6 +221,8 @@ int main(int argc, char *argv[])
    string MCFileName     = CL.Get("MC");
    string DataFileName   = CL.Get("Data");
    string OutputFileName = CL.Get("Output");
+   bool ExportJSON       = CL.GetBool("ExportJSON", true);
+   string JSONFileName   = CL.Get("JSONOutput", "JSON.txt");
 
    vector<double> Default{0.0, 1.0};
    string Primary                 = CL.Get("Observable", "JetP");
@@ -375,11 +392,24 @@ int main(int argc, char *argv[])
                HResponse.SetBinContent(i, j, 0.5);
    }
 
+   map<int, vector<int>> Lumis;
+
    Messenger MData(FData);
    EntryCount = MData.GetEntries();
    for(int iE = 0; iE < EntryCount; iE++)
    {
       MData.GetEntry(iE);
+      
+      if(Lumis.find(MData.GetRun()) == Lumis.end())
+         Lumis.insert(pair<int, vector<int>>(MData.GetRun(), vector<int>{}));
+      Lumis[MData.GetRun()].push_back(MData.GetLumi());
+      if(Lumis[MData.GetRun()].size() > 2500)
+      {
+         vector<int> V = Lumis[MData.GetRun()];
+         sort(V.begin(), V.end());
+         V.erase(unique(V.begin(), V.end()), V.end());
+         Lumis[MData.GetRun()] = V;
+      }
 
       int NJet = MData.GetItemCount(Reco, PrimaryType);
       for(int iJ = 0; iJ < NJet; iJ++)
@@ -389,6 +419,41 @@ int main(int argc, char *argv[])
             BinningType, BinningIndex, iJ, BinningRecoBins, 0, 1, 1, BinningRecoMin, BinningRecoMax);
          HDataReco.Fill(RecoBin, MData.GetEventWeight());
       }
+   }
+
+   if(ExportJSON == true)
+   {
+      bool First = true;
+
+      ofstream JSON(JSONFileName);
+
+      JSON << "{";
+      for(pair<int, vector<int>> P : Lumis)
+      {
+         if(First == true)
+            First = false;
+         else
+            JSON << ",";
+         
+         vector<int> &V = P.second;
+         sort(V.begin(), V.end());
+         V.erase(unique(V.begin(), V.end()), V.end());
+
+         bool FirstLumi = true;
+
+         JSON << "\"" << P.first << "\": [";
+         for(int L : V)
+         {
+            if(FirstLumi == true)
+               FirstLumi = false;
+            else
+               JSON << ",";
+            JSON << "[" << L << "," << L << "]";
+         }
+         JSON << "]";
+      }
+
+      JSON.close();
    }
 
    FOutput.cd();
