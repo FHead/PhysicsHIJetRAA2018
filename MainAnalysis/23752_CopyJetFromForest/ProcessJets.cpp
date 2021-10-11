@@ -29,6 +29,9 @@ int main(int argc, char *argv[])
 
    double Fraction               = CL.GetDouble("Fraction", 1.00);
 
+   bool DoBaselineCutPP          = CL.GetBool("DoBaselineCutPP", false);
+   bool DoBaselineCutAA          = CL.GetBool("DoBaselineCutAA", false);
+
    string JetName                = CL.Get("Jet", "akFlowPuCs4PFJetAnalyzer/t");
    double JetR                   = CL.GetDouble("JetR", 0.4);
    vector<string> JECFile        = CL.GetStringVector("JEC", vector<string>{"None"});
@@ -115,6 +118,7 @@ int main(int argc, char *argv[])
       JetTreeMessenger MJet(InputFile, JetName);
       TriggerTreeMessenger MTrigger(InputFile, "hltanalysis/HltTree");
       PFTreeMessenger MPF(InputFile, "pfcandAnalyzer/pfTree");
+      SkimTreeMessenger MSkim(InputFile);
 
       int EntryCount = MEvent.Tree->GetEntries() * Fraction;
       ProgressBar Bar(cout, EntryCount);
@@ -131,6 +135,7 @@ int main(int argc, char *argv[])
          MJet.GetEntry(iE);
          MTrigger.GetEntry(iE);
          MPF.GetEntry(iE);
+         MSkim.GetEntry(iE);
 
          Run = MEvent.Run;
          Lumi = MEvent.Lumi;
@@ -153,6 +158,27 @@ int main(int argc, char *argv[])
             if(MEvent.hiBin * 0.005 < CentralityMin)
                continue;
             if(MEvent.hiBin * 0.005 > CentralityMax)
+               continue;
+         }
+
+         if(DoBaselineCutAA == true)
+         {
+            if(MSkim.HBHENoiseRun2Loose != 1)
+               continue;
+            if(MSkim.PVFilter != 1)
+               continue;
+            if(MSkim.ClusterCompatibilityFilter != 1)
+               continue;
+            if(MSkim.HFCoincidenceFilter2Th4 != 1)
+               continue;
+         }
+         if(DoBaselineCutPP == true)
+         {
+            if(MSkim.HBHENoiseRun2Loose != 1)
+               continue;
+            if(MSkim.PVFilter != 1)
+               continue;
+            if(MSkim.BeamScrapingFilter != 1)
                continue;
          }
 

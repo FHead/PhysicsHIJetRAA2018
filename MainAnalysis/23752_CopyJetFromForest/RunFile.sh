@@ -48,6 +48,15 @@ do
 
    JEU=$JECBase/$JECTag/${JECTag}_Uncertainty_AK${RTag}PF.txt
 
+   BaselineCutAA=false
+   if [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "0" ]]; then
+      BaselineCutAA=true
+   fi
+   BaselineCutPP=false
+   if [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "1" ]]; then
+      BaselineCutPP=true
+   fi
+
    for CTag in $Centrality
    do
       CMin=`DHQuery GlobalSetting.dh CentralityMin $CTag`
@@ -66,14 +75,14 @@ do
             --Fraction $Fraction \
             --UseStoredGen true --UseStoredReco true --DoRecoSubtraction false --Trigger $Trigger \
             --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-            --PTMin 15 --GenPTMin 10
+            --PTMin 15 --GenPTMin 10 --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA
       else
          ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
             --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
             --Fraction $Fraction \
             --UseStoredGen false --UseStoredReco false --DoRecoSubtraction false --Trigger $Trigger \
             --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-            --PTMin 15 --GenPTMin 10
+            --PTMin 15 --GenPTMin 10 --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA
       fi
    done
 done
