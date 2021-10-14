@@ -27,21 +27,48 @@ do
          State=TestRunPPData
       fi
 
+      ExtraScale=0.25 # coming from |eta| going from -2 to +2
+      if [[ "$IsPP" == "1" ]]; then
+         Luminosity=`DHQuery GlobalSetting.dh Lumi ${State}_R${R}_Centrality${C}_BRIL | tr -d '"' | DivideConst 1000000`
+         ExtraScale=`echo $ExtraScale | DivideConst $Luminosity | DivideConst 1000`
+         echo Lumi = $Luminosity
+         echo Extra scale = $ExtraScale
+      fi
+
+      System="PbPb"
+      if [[ "$IsPP" == "1" ]]; then
+         System="pp"
+      else
+         System="PbPb"
+      fi
+
+      CentralityString=" "
+      if [[ "$IsPP" == "1" ]]; then
+         CentralityString=" "
+      else
+         CentralityMin=`DHQuery GlobalSetting.dh CentralityMin ${C} | tr -d '"' | MultiplyConst 100`
+         CentralityMax=`DHQuery GlobalSetting.dh CentralityMax ${C} | tr -d '"' | MultiplyConst 100`
+         CentralityString="Centrality ${CentralityMin}%-${CentralityMax}%"
+      fi
+
       ./Execute \
          --Input Input/${PRCN} \
          --Systematic Systematics/${PRC}.root \
          --Output Plots/QualityPlots_${PRC}${Suffix}.pdf --FinalOutput Plots/${PRC}${Suffix}.pdf \
-         --MCFile "Input/${PRCN}" \
-         --MCHistogram "HMCTruth" \
-         --MCLabel "MC (normalized to data)" \
+         --MCFile "Input/${PRCN}","HEPData/Graph_pp_CMSR${R}.root","HEPData/Graph_pp_ATLASR${R}.root" \
+         --MCHistogram "HMCTruth","GHEPData","GHEPData" \
+         --MCLabel "MC (normalized to data)","CMS HIN-18-014 |#eta|<2.0","ATLAS (2019) |y|<2.8" \
+         --NormalizeMCToData true,false,false \
          --PrimaryName HUnfoldedBayes`DHQuery GlobalSetting.dh ${State} BestIteration_R${R}_Centrality${C}` \
          --DoSelfNormalize false \
-         --WorldXMin 150 --WorldXMax 1000 --WorldYMin 0.0005 --WorldYMax 5000 --WorldRMin 0.51 --WorldRMax 1.49 \
+         --ExtraScale $ExtraScale \
+         --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.0000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \
          --LogX true --LogY true \
-         --XLabel "Jet p_{T} (GeV)" --YLabel "dN / d(Jet p_{T})" --Binning None \
-         --LegendX 0.45 --LegendY 0.55 --LegendSize 0.04 \
+         --XLabel "Jet p_{T} (GeV)" --YLabel "d#sigma / dp_{T}d#eta (nb)" --Binning None \
+         --LegendX 0.10 --LegendY 0.10 --LegendSize 0.04 \
          --XAxis 505 --YAxis 505 --RAxis 505 --MarkerModifier 0.5 \
-         --Texts 0,0.65,0.9,"Anti-k_{T} jet R = $RValue",0,0.65,0.85,"|#eta_{jet}| < 2.0",0,0.65,0.8,"Centrality 0-90%" \
+         --Texts 0,0.65,0.9,"Anti-k_{T} jet R = $RValue",0,0.65,0.85,"|#eta_{jet}| < 2.0",0,0.65,0.8,"$CentralityString" \
+         --Luminosity $Luminosity --LuminosityUnit "pb^{-1}" --System $System \
          --IgnoreGroup 0 --Row 1 --Column 1
    done
 done

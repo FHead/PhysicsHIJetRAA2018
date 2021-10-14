@@ -30,9 +30,6 @@ void HumanPlots(PdfFileHelper &PdfFile,
    map<string, TH1D *> &H, vector<string> Names, vector<string> Labels, vector<int> Colors,
    vector<double> Bins1, vector<double> Bins2,
    string BinningObservable = "", string Title = "", string XTitle = "", string YTitle = "");
-void DoStep1Correction(string CorrectionFileName, string CorrectionState, TH1D *H);
-void DoCorrection(string CorrectionFileName, string CorrectionState, TH1D *H,
-   vector<double> Bins1, vector<double> Bins2);
 void SelfNormalize(TH1D *H, vector<double> Bins1, vector<double> Bins2);
 TH1D *BuildSystematics(TH1D *HResult, TH1D *HVariation);
 vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true);
@@ -40,13 +37,11 @@ void SetPad(TPad *P);
 void SetAxis(TGaxis &A);
 void SetWorld(TH2D *H);
 TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2);
-double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -999);
+double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -99999);
 double AddUp(TH1D *H, double XMin, double XMax, vector<double> Bins);
 vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
    double MinOverwrite, double MaxOverwrite, double XMin, double XMax,
-   bool DoSelfNormalize = false, double Scale = 1,
-   bool ApplyStep1Correction = false, string Step1CorrectionFileName = "NONE", string Step1CorrectionState = "NONE",
-   bool ApplyCorrection = false, string CorrectionFileName = "NONE", string CorrectionState = "NONE");
+   bool DoSelfNormalize = false, double Scale = 1);
 
 int main(int argc, char *argv[])
 {
@@ -59,25 +54,20 @@ int main(int argc, char *argv[])
    string SystematicFileName      = CL.Get("Systematic");
    string OutputFileName          = CL.Get("Output");
    string FinalOutputFileName     = CL.Get("FinalOutput", "Meow.pdf");
-   double GenPrimaryMinOverwrite  = CL.GetDouble("GenPrimaryMin", -999);
-   double GenPrimaryMaxOverwrite  = CL.GetDouble("GenPrimaryMax", 999);
-   double RecoPrimaryMinOverwrite = CL.GetDouble("RecoPrimaryMin", -999);
-   double RecoPrimaryMaxOverwrite = CL.GetDouble("RecoPrimaryMax", 999);
+   double GenPrimaryMinOverwrite  = CL.GetDouble("GenPrimaryMin", -99999);
+   double GenPrimaryMaxOverwrite  = CL.GetDouble("GenPrimaryMax", 99999);
+   double RecoPrimaryMinOverwrite = CL.GetDouble("RecoPrimaryMin", -99999);
+   double RecoPrimaryMaxOverwrite = CL.GetDouble("RecoPrimaryMax", 99999);
    string PrimaryName             = CL.Get("PrimaryName", "HUnfoldedBayes14");
    bool DoSelfNormalize           = CL.GetBool("DoSelfNormalize", false);
    bool DoEventNormalize          = CL.GetBool("DoEventNormalize", false);
    double ExtraScale              = CL.GetDouble("ExtraScale", 1.00);
-   string CorrectionFileName      = CL.Get("CorrectionFile", "NONE");
-   string CorrectionState         = CL.Get("CorrectionState", "NONE");
-   string Step1CorrectionFileName = CL.Get("Step1CorrectionFile", "NONE");
-   string Step1CorrectionState    = CL.Get("Step1CorrectionState", "NONE");
 
    vector<string> MCFileNames     = CL.GetStringVector("MCFile", vector<string>{InputFileName});
    vector<string> MCHistNames     = CL.GetStringVector("MCHistogram", vector<string>{"HMCTruth"});
    vector<string> MCLabels        = CL.GetStringVector("MCLabel", vector<string>{"PYTHIA6"});
    vector<int> MCColors           = CL.GetIntVector("MCColors", vector<int>{0, 1, 3, 5, 4, 7});
-   vector<bool> MCCorrection      = CL.GetBoolVector("MCCorrection", vector<bool>{false, false, false, false, false, false, false, false, false, false});
-   vector<bool> MCStep1Correction = CL.GetBoolVector("MCStep1Correction", vector<bool>{false, false, false, false, false, false, false, false, false, false});
+   vector<bool> NormalizeMCToData = CL.GetBoolVector("NormalizeMCToData", vector<bool>{0, 0, 0, 0, 0, 0, 0, 0});
 
    vector<string> Texts           = CL.GetStringVector("Texts", vector<string>());
 
@@ -103,6 +93,10 @@ int main(int argc, char *argv[])
    double LegendX                 = CL.GetDouble("LegendX", 0.5);
    double LegendY                 = CL.GetDouble("LegendY", 0.5);
    double LegendSize              = CL.GetDouble("LegendSize", 0.075);
+
+   double Luminosity              = CL.GetDouble("Luminosity", 1);
+   string LuminosityUnit          = CL.Get("LuminosityUnit", "#mub^{-1}");
+   string System                  = CL.Get("System", "AA+pp");
 
    Assert(DoSelfNormalize == false || DoEventNormalize == false, "Multiple normalization option chosen!");
 
@@ -138,11 +132,6 @@ int main(int argc, char *argv[])
    map<string, TH1D *> H1;
    for(string Name : H1Names)
       H1[Name] = (TH1D *)InputFile.Get(Name.c_str());
-
-   if(Step1CorrectionFileName != "NONE" && Step1CorrectionState != "NONE")
-      DoStep1Correction(Step1CorrectionFileName, Step1CorrectionState, H1[PrimaryName]);
-   if(CorrectionFileName != "NONE" && CorrectionState != "NONE")
-      DoCorrection(CorrectionFileName, CorrectionState, H1[PrimaryName], GenBins1, GenBins2);
 
    if(DoSelfNormalize == true)
       SelfNormalize(H1[PrimaryName], GenBins1, GenBins2);
@@ -199,9 +188,7 @@ int main(int argc, char *argv[])
    for(int i = 0; i < MCCount; i++)
       GMC[i] = TranscribeMC(MCFileNames[i], MCHistNames[i],
          GenPrimaryMinOverwrite, GenPrimaryMaxOverwrite,
-         WorldXMin, WorldXMax, DoSelfNormalize, PrimaryScale,
-         MCStep1Correction[i], Step1CorrectionFileName, Step1CorrectionState,
-         MCCorrection[i], CorrectionFileName, CorrectionState);
+         WorldXMin, WorldXMax, DoSelfNormalize, (NormalizeMCToData[i] ? PrimaryScale : -1));
    
    for(TGraphAsymmErrors G : GResult)
       cout << "Total integral = " << CalculateIntegral(G, WorldXMin) << endl;
@@ -213,7 +200,15 @@ int main(int argc, char *argv[])
       GRResult.push_back(CalculateRatio(GResult[i], GResult[i]));
       GRSystematics.push_back(CalculateRatio(GSystematics[i], GResult[i]));
       for(int j = 0; j < MCCount; j++)
-         GRMC[j].push_back(CalculateRatio(GMC[j][i], GResult[i]));
+      {
+         if(GMC[j].size() > i)
+            GRMC[j].push_back(CalculateRatio(GMC[j][i], GResult[i]));
+         else
+         {
+            TGraphAsymmErrors Dummy;
+            GRMC[j].push_back(CalculateRatio(Dummy, GResult[i]));
+         }
+      }
    }
 
    PdfFile.AddTextPage("Result");
@@ -303,7 +298,8 @@ int main(int argc, char *argv[])
    Latex.SetTextAlign(11);
    Latex.DrawLatex(PadX0, PadY0 + PadDR * Row + PadDY * Row + 0.01, "CMS #font[52]{Preliminary}");
    Latex.SetTextAlign(31);
-   Latex.DrawLatex(PadX0 + PadDX * Column, PadY0 + PadDR * Row + PadDY * Row + 0.01, "PbPb 5.02 TeV xxx nb^{-1}");
+   Latex.DrawLatex(PadX0 + PadDX * Column, PadY0 + PadDR * Row + PadDY * Row + 0.01,
+      Form("%s 5.02 TeV %.2f %s", System.c_str(), Luminosity, LuminosityUnit.c_str()));
 
    // Setup worlds
    vector<TH2D *> HWorld;
@@ -334,10 +330,10 @@ int main(int argc, char *argv[])
          Pads[Index]->cd();
 
          string BinLabel = "";
-         if(GenBins2[i] > -999)
+         if(GenBins2[i] > -99999)
             BinLabel = BinLabel + Form("%.1f < ", GenBins2[i]);
          BinLabel = BinLabel + BinningLabel;
-         if(GenBins2[i+1] < 999)
+         if(GenBins2[i+1] < 99999)
             BinLabel = BinLabel + Form(" < %.1f", GenBins2[i+1]);
 
          Latex.SetTextFont(42);
@@ -355,7 +351,8 @@ int main(int argc, char *argv[])
    Legend.SetBorderSize(0);
    Legend.AddEntry(&GSystematics[BinningCount-1], "Data", "plf");
    for(int j = 0; j < MCCount; j++)
-      Legend.AddEntry(&GMC[j][BinningCount-1], MCLabels[j].c_str(), "l");
+      if(GMC[j].size() > 0)
+         Legend.AddEntry(&GMC[j][BinningCount-1], MCLabels[j].c_str(), "l");
 
    // Plot the actual curves & legend
    for(int i = IgnoreGroup; i < BinningCount; i++)
@@ -366,10 +363,13 @@ int main(int argc, char *argv[])
 
       for(int j = 0; j < MCCount; j++)
       {
-         GMC[j][i].SetLineWidth(2);
-         GMC[j][i].SetLineColor(Colors[MCColors[j]]);
-         GMC[j][i].SetMarkerStyle(1);
-         GMC[j][i].SetMarkerColor(Colors[MCColors[j]]);
+         if(GMC[j].size() > i)
+         {
+            GMC[j][i].SetLineWidth(2);
+            GMC[j][i].SetLineColor(Colors[MCColors[j]]);
+            GMC[j][i].SetMarkerStyle(1);
+            GMC[j][i].SetMarkerColor(Colors[MCColors[j]]);
+         }
       }
       
       GSystematics[i].SetLineWidth(2);
@@ -387,7 +387,8 @@ int main(int argc, char *argv[])
 
       GSystematics[i].Draw("2");
       for(int j = 0; j < MCCount; j++)
-         GMC[j][i].Draw("lz");
+         if(GMC[j].size() > i)
+            GMC[j][i].Draw("lz");
       GResult[i].Draw("pz");
 
       HWorld[Index]->Draw("axis same");
@@ -498,6 +499,9 @@ vector<double> DetectBins(TH1D *HMin, TH1D *HMax)
    vector<double> Result;
    for(auto iterator : Bins)
    {
+      if(iterator.second == 999)
+         iterator.second = 9999;
+
       Result.push_back(iterator.first);
       Result.push_back(iterator.second);
    }
@@ -507,73 +511,6 @@ vector<double> DetectBins(TH1D *HMin, TH1D *HMax)
    Result.erase(iterator2, Result.end());
 
    return Result;
-}
-
-void DoStep1Correction(string CorrectionFileName, string CorrectionState, TH1D *H)
-{
-   if(H == nullptr)
-      return;
-
-   if(CorrectionFileName == "NONE")
-      return;
-   if(CorrectionState == "NONE")
-      return;
-
-   DataHelper DHFile(CorrectionFileName);
-   if(DHFile.Exist(CorrectionState) == false)
-      return;
-
-   int N = DHFile[CorrectionState]["N"].GetInteger();
-   for(int i = 1; i <= N; i++)
-      H->SetBinContent(i, H->GetBinContent(i) * DHFile[CorrectionState][Form("R%d",i)].GetDouble());
-}
-
-void DoCorrection(string CorrectionFileName, string CorrectionState, TH1D *H, vector<double> Bins1, vector<double> Bins2)
-{
-   if(H == nullptr)
-      return;
-
-   if(CorrectionFileName == "NONE")
-      return;
-   if(CorrectionState == "NONE")
-      return;
-
-   DataHelper DHFile(CorrectionFileName);
-   if(DHFile.Exist(CorrectionState) == false)
-      return;
-   if(DHFile[CorrectionState].Exist("Formula") == false)
-      return;
-
-   int N = DHFile[CorrectionState]["N"].GetInteger();
-   TF1 F("F", DHFile[CorrectionState]["Formula"].GetString().c_str());
-   for(int i = 0; i < N; i++)
-   {
-      F.SetParameter(i, DHFile[CorrectionState]["P"+to_string(i)].GetDouble());
-      F.SetParError(i, DHFile[CorrectionState]["E"+to_string(i)].GetDouble());
-   }
-
-   int BinningCount = Bins2.size() - 1;
-   if(BinningCount <= 0)
-      BinningCount = 1;
-
-   for(int iB = 0; iB < BinningCount; iB++)
-   {
-      int BinCount = Bins1.size() - 1;
-      if(BinCount <= 0)
-         BinCount = 1;
-
-      for(int i = 0; i < BinCount; i++)
-      {
-         double XL = (i < Bins1.size()) ? Bins1[i] : 0;
-         double XR = (i + 1 < Bins1.size()) ? Bins1[i+1] : 0;
-         double X = (XL + XR) / 2;
-
-         double Correction = F.Eval(X);
-
-         double Y = H->GetBinContent(i + 1 + iB * BinCount);
-         H->SetBinContent(i + 1 + iB * BinCount, Y * Correction);
-      }
-   }
 }
 
 void SelfNormalize(TH1D *H, vector<double> Bins1, vector<double> Bins2)
@@ -719,6 +656,11 @@ void SetWorld(TH2D *H)
 TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
 {
    TGraphAsymmErrors G;
+   
+   if(G1.GetN() != G2.GetN())
+      return G;
+
+   cout << G1.GetN() << " " << G2.GetN() << endl;
 
    int N = G2.GetN();
    for(int i = 0; i < N; i++)
@@ -792,9 +734,7 @@ double AddUp(TH1D *H, double XMin, double XMax, vector<double> Bins)
 }
 
 vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
-   double MinOverwrite, double MaxOverwrite, double XMin, double XMax, bool DoSelfNormalize, double Scale,
-   bool ApplyStep1Correction, string Step1CorrectionFileName, string Step1CorrectionState,
-   bool ApplyCorrection, string CorrectionFileName, string CorrectionState)
+   double MinOverwrite, double MaxOverwrite, double XMin, double XMax, bool DoSelfNormalize, double Scale)
 {
    vector<TGraphAsymmErrors> G;
 
@@ -804,6 +744,7 @@ vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
    if(Object == nullptr)
    {
       File.Close();
+      G.resize(1);
       return G;
    }
 
@@ -849,8 +790,16 @@ vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
          EYL = GRaw.GetErrorYlow(i);
          EYH = GRaw.GetErrorYhigh(i);
 
-         GNew.SetPoint(i, X, Y * Scale / Total);
-         GNew.SetPointError(i, EXL, EXH, EYL * Scale / Total, EYH * Scale / Total);
+         if(Scale > 0)
+         {
+            GNew.SetPoint(i, X, Y * Scale / Total);
+            GNew.SetPointError(i, EXL, EXH, EYL * Scale / Total, EYH * Scale / Total);
+         }
+         else
+         {
+            GNew.SetPoint(i, X, Y);
+            GNew.SetPointError(i, EXL, EXH, EYL, EYH);
+         }
       }
 
       G.push_back(GNew);
@@ -866,11 +815,6 @@ vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
       = DetectBins((TH1D *)File.Get("HGenBinningBinMin"), (TH1D *)File.Get("HGenBinningBinMax"));
    GenBins1[0] = MinOverwrite;
    GenBins1[GenBins1.size()-1] = MaxOverwrite;
-
-   if(ApplyStep1Correction == true)
-      DoStep1Correction(Step1CorrectionFileName, Step1CorrectionState, H);
-   if(ApplyCorrection == true)
-      DoCorrection(CorrectionFileName, CorrectionState, H, GenBins1, GenBins2);
 
    double Total = AddUp(H, XMin, XMax, GenBins1);
    H->Scale(Scale / Total);

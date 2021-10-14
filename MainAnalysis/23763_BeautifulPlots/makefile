@@ -1,11 +1,12 @@
 default: RunTestRunJetPT RunTestRunJetPTClosure
 
 Prepare:
-	rm -f OriginalInput Input Systematics
+	rm -f OriginalInput Input Systematics HEPData
 	ln -sf ../23762_UnfoldPreparation/Output OriginalInput
 	ln -sf ../23762_ActualUnfold/Output Input
 	ln -sf ../23763_Systematics/Output Systematics
 	ln -sf ../GlobalSetting/GlobalSetting.dh
+	ln -sf ../24113_HEPData/ HEPData
 	mkdir -p Plots
 
 Deploy:
