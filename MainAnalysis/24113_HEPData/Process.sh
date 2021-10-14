@@ -28,13 +28,13 @@ cat ATLAS-R04.txt | TextToTree ATLAS-R04.root 9 "XMin:XMax:Y:StatLow:StatHigh:Sy
 
 ./Execute
 
-ln -s Graph_CMS-R02.root GraphPPCMSR2.root
-ln -s Graph_CMS-R03.root GraphPPCMSR3.root
-ln -s Graph_CMS-R04.root GraphPPCMSR4.root
-ln -s Graph_CMS-R06.root GraphPPCMSR6.root
-ln -s Graph_CMS-R08.root GraphPPCMSR7.root
-ln -s Graph_CMS-R10.root GraphPPCMSR8.root
-ln -s Graph_ATLAS-R04.root GraphPPATLASR4.root
+ln -sf Graph_CMS-R02.root Graph_pp_CMSR2.root
+ln -sf Graph_CMS-R03.root Graph_pp_CMSR3.root
+ln -sf Graph_CMS-R04.root Graph_pp_CMSR4.root
+ln -sf Graph_CMS-R06.root Graph_pp_CMSR6.root
+ln -sf Graph_CMS-R08.root Graph_pp_CMSR7.root
+ln -sf Graph_CMS-R10.root Graph_pp_CMSR8.root
+ln -sf Graph_ATLAS-R04.root Graph_pp_ATLASR4.root
 
 
 
