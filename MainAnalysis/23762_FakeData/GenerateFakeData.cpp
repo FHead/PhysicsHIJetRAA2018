@@ -61,10 +61,12 @@ int main(int argc, char *argv[])
 
    TH1D *HShape = (TH1D *)ShapeFile.Get("HDataReco");
    cout << HShape->Integral(1 + Underflow, HShape->GetNbinsX() - Overflow) << " " << HShape->Integral() << endl;
+   cout << ActualEvent << endl;
 
    TH1D *HNewData = (TH1D *)HShape->Clone();
    HNewData->Reset();
-   GenerateSampleFast(HShape, HNewData, Underflow, Overflow, ActualEvent);
+   if(HShape->Integral() == HShape->Integral())
+      GenerateSampleFast(HShape, HNewData, Underflow, Overflow, ActualEvent);
    HNewData->SetName("HDataReco");
    HNewData->Write();
 
