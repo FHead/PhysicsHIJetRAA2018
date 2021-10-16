@@ -19,6 +19,15 @@ default:
 	DHSet GlobalSetting.dh "JetR" "7" float 0.80
 	DHSet GlobalSetting.dh "JetR" "8" float 1.00
 	DHSet GlobalSetting.dh "JetR" "9" float 1.20
+	DHSet GlobalSetting.dh "JetRMatch" "1" float 0.07
+	DHSet GlobalSetting.dh "JetRMatch" "2" float 0.10
+	DHSet GlobalSetting.dh "JetRMatch" "3" float 0.15
+	DHSet GlobalSetting.dh "JetRMatch" "4" float 0.20
+	DHSet GlobalSetting.dh "JetRMatch" "5" float 0.25
+	DHSet GlobalSetting.dh "JetRMatch" "6" float 0.30
+	DHSet GlobalSetting.dh "JetRMatch" "7" float 0.40
+	DHSet GlobalSetting.dh "JetRMatch" "8" float 0.50
+	DHSet GlobalSetting.dh "JetRMatch" "9" float 0.60
 	DHSet GlobalSetting.dh "CentralityMin" "0to10" float 0.00
 	DHSet GlobalSetting.dh "CentralityMin" "10to30" float 0.10
 	DHSet GlobalSetting.dh "CentralityMin" "30to50" float 0.30
