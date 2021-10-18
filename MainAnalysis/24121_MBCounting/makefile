@@ -13,6 +13,9 @@ MergeMB:
 Execute: GetMB.cpp
 	CompileRootMacro GetMB.cpp Execute
 
+RunAA: Execute
+	for i in Input/TestRunData_R*Nominal_JSON.txt; do bash CheckJSON.sh $$i; done
+
 TestRun: Execute
 	./Execute --JSON Input/TestRunData_R4_Centrality0to10_Nominal_JSON.txt \
 		--MB MergedMB.root \
