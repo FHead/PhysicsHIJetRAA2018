@@ -3,6 +3,7 @@
 #include <map>
 using namespace std;
 
+#include "DataHelper.h"
 #include "CommandLine.h"
 
 int main(int argc, char *argv[]);
@@ -26,11 +27,19 @@ int main(int argc, char *argv[])
    vector<string> JetR       = CL.GetStringVector("JetR", {"1", "2", "3", "4", "5", "6", "7", "8", "9"});
    vector<string> Centrality = CL.GetStringVector("Centrality", {"0to10", "10to30", "30to50", "50to90"});
 
-   Binnings["GenBins"]       = CL.Get("GenBins", Binnings["GenBins"]);
-   Binnings["RecoBins"]      = CL.Get("RecoBins", Binnings["RecoBins"]);
+   double MCFraction         = CL.GetDouble("MCFraction", 1.0);
+   double DataFraction       = CL.GetDouble("DataFraction", 1.0);
+
+   string GlobalSettingFile  = CL.Get("GlobalSetting", "GlobalSetting.dh");
+   DataHelper DHFile(GlobalSettingFile);
+
+   Binnings["GenBins"]       = CL.Get("GenBins", DHFile["Binning"]["GenPT"].GetString());
+   Binnings["RecoBins"]      = CL.Get("RecoBins", DHFile["Binning"]["RecoPT"].GetString());
 
    for(string R : JetR)
    {
+      double RValue = DHFile["JetR"][R].GetDouble();
+
       for(string C : Centrality)
       {
          string RC = "R" + R + "_Centrality" + C;
@@ -38,6 +47,7 @@ int main(int argc, char *argv[])
          string DataFile = DataTag + "_" + RC + ".root";
 
          cout << "time ./Execute --MC " << MCFile << " --Data " << DataFile
+            << " --MCFraction " << MCFraction << " --DataFraction " << DataFraction
             << " --Output Output/" << Prefix << "_" << RC << "_" << Suffix << ".root"
             << " --JSONOutput Output/" << Prefix << "_" << RC << "_" << Suffix << "_JSON.txt"
             << " --ExportJSON true"
@@ -48,6 +58,7 @@ int main(int argc, char *argv[])
             << " --ObservableUncertaintyShift " << JetShift
             << " --ObservableUncertaintySmear " << JetSmear
             << " --Flooring " << Flooring
+            << " --CheckMatchAngle true --MaxMatchAngle " << DHFile["JetRMatch"][R].GetDouble()
             << ";" << endl;
       }
    }

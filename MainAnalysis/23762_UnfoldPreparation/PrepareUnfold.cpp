@@ -11,6 +11,7 @@ using namespace std;
 
 #include "CustomAssert.h"
 #include "CommandLine.h"
+#include "ProgressBar.h"
 
 enum ObservableType {ObservableNone, ObservableJetPT};
 enum ObservableStep {Gen, Reco, Matched};
@@ -205,8 +206,8 @@ public:
    }
    double GetMatchedAngle(ObservableType Type, int Item)
    {
-      if(Item < 0)                          return 999;
-      if(Item >= MatchedJetAngle->size())   return 999;
+      if(Item < 0)                          return 99999;
+      if(Item >= MatchedJetAngle->size())   return 99999;
       return (*MatchedJetAngle)[Item];
    }
    double GetEventWeight()
@@ -223,6 +224,8 @@ int main(int argc, char *argv[])
    string OutputFileName = CL.Get("Output");
    bool ExportJSON       = CL.GetBool("ExportJSON", true);
    string JSONFileName   = CL.Get("JSONOutput", "JSON.txt");
+   double MCFraction     = CL.GetDouble("MCFraction", 1.00);
+   double DataFraction   = CL.GetDouble("DataFraction", 1.00);
 
    vector<double> Default{0.0, 1.0};
    string Primary                 = CL.Get("Observable", "JetP");
@@ -238,6 +241,7 @@ int main(int argc, char *argv[])
    double BinningUncertaintyShift = CL.GetDouble("BinningUncertaintyShift", 0);
    double BinningUncertaintySmear = CL.GetDouble("BinningUncertaintySmear", 1);
    bool CheckMatchAngle           = CL.GetBool("CheckMatchAngle", true);
+   double MaxMatchAngle           = CL.GetDouble("MaxMatchAngle", 0.2);
    
    double PrimaryGenMin           = CL.GetDouble("ObservableGenMin", -99999);
    double PrimaryGenMax           = CL.GetDouble("ObservableGenMax", +99999);
@@ -322,11 +326,19 @@ int main(int argc, char *argv[])
 
    Messenger MMC(FMC);
    if(CheckMatchAngle == true)
-      MMC.SetMaxMatchedJetAngle(0.2);
-   int EntryCount = MMC.GetEntries();
+      MMC.SetMaxMatchedJetAngle(MaxMatchAngle);
+
+   int EntryCount = MMC.GetEntries() * MCFraction;
+   ProgressBar BarMC(cout, EntryCount);
+   BarMC.SetStyle(2);
+
    for(int iE = 0; iE < EntryCount; iE++)
    {
       MMC.GetEntry(iE);
+
+      BarMC.Update(iE);
+      if(EntryCount < 300 || (iE % (EntryCount / 200)) == 0)
+         BarMC.Print();
 
       int NJet = MMC.GetItemCount(Gen, PrimaryType);
       for(int iJ = 0; iJ < NJet; iJ++)
@@ -344,7 +356,7 @@ int main(int argc, char *argv[])
       for(int iJ = 0; iJ < NJet; iJ++)
       {
          double Angle = MMC.GetMatchedAngle(PrimaryMatrixType, iJ);
-         if(CheckMatchAngle == true && (Angle > 0.2 || Angle < 0))
+         if(CheckMatchAngle == true && (Angle > MaxMatchAngle || Angle < 0))
             continue;
 
          int GenBin = MMC.GetCompositeBin(Gen,
@@ -384,6 +396,10 @@ int main(int argc, char *argv[])
       }
    }
 
+   BarMC.Update(EntryCount);
+   BarMC.Print();
+   BarMC.PrintLine();
+
    if(DoFlooring == true)
    {
       for(int i = 1; i <= HResponse.GetNbinsX(); i++)
@@ -395,11 +411,18 @@ int main(int argc, char *argv[])
    map<int, vector<int>> Lumis;
 
    Messenger MData(FData);
-   EntryCount = MData.GetEntries();
+   EntryCount = MData.GetEntries() * DataFraction;
+   ProgressBar BarData(cout, EntryCount);
+   BarData.SetStyle(2);
+   
    for(int iE = 0; iE < EntryCount; iE++)
    {
       MData.GetEntry(iE);
       
+      BarData.Update(iE);
+      if(EntryCount < 300 || (iE % (EntryCount / 200)) == 0)
+         BarData.Print();
+
       if(Lumis.find(MData.GetRun()) == Lumis.end())
          Lumis.insert(pair<int, vector<int>>(MData.GetRun(), vector<int>{}));
       Lumis[MData.GetRun()].push_back(MData.GetLumi());
@@ -420,6 +443,10 @@ int main(int argc, char *argv[])
          HDataReco.Fill(RecoBin, MData.GetEventWeight());
       }
    }
+   
+   BarData.Update(EntryCount);
+   BarData.Print();
+   BarData.PrintLine();
 
    if(ExportJSON == true)
    {
@@ -452,6 +479,7 @@ int main(int argc, char *argv[])
          }
          JSON << "]";
       }
+      JSON << "}";
 
       JSON.close();
    }
@@ -493,22 +521,22 @@ void FillMinMax(TH1D &HMin1, TH1D &HMax1, TH1D &HMin2, TH1D &HMax2, vector<doubl
          int Bin = iB * (Bin1.size() + 1) + iP + 1;
 
          if(iP == 0)
-            HMin1.SetBinContent(Bin, -999);
+            HMin1.SetBinContent(Bin, -99999);
          else
             HMin1.SetBinContent(Bin, Bin1[iP-1]);
          
          if(iP >= Bin1.size())
-            HMax1.SetBinContent(Bin, 999);
+            HMax1.SetBinContent(Bin, 99999);
          else
             HMax1.SetBinContent(Bin, Bin1[iP]);
 
          if(iB == 0)
-            HMin2.SetBinContent(Bin, -999);
+            HMin2.SetBinContent(Bin, -99999);
          else
             HMin2.SetBinContent(Bin, Bin2[iB-1]);
          
          if(iB >= Bin2.size())
-            HMax2.SetBinContent(Bin, 999);
+            HMax2.SetBinContent(Bin, 99999);
          else
             HMax2.SetBinContent(Bin, Bin2[iB]);
       }

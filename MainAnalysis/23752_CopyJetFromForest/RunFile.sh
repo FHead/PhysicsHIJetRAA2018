@@ -35,9 +35,9 @@ do
    elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "0" ]]; then
       JECTag="Autumn18_HI_RAAV2_MC"
    elif [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "1" ]]; then
-      JECTag="Autumn18_HI_RAAV2_MC"
+      JECTag="Spring18_ppRef5TeV_RAAV2_MC"
    elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "1" ]]; then
-      JECTag="Autumn18_HI_RAAV2_MC"
+      JECTag="Spring18_ppRef5TeV_RAAV2_MC"
    fi
       
    if [[ "$IsMC" == "1" ]]; then
@@ -47,6 +47,9 @@ do
    fi
 
    JEU=$JECBase/$JECTag/${JECTag}_Uncertainty_AK${RTag}PF.txt
+
+   echo $JEC
+   echo $JEU
 
    BaselineCutAA=false
    if [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "0" ]]; then
