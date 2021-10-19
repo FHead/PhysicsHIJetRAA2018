@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 
    if(Lumis.size() > 0)
    {
-      cout << "Lumis not found in MB file:" << endl;
+      cout << "Lumis in JSON but not found in MB file:" << endl;
       for(int iL = 0; iL < Lumis.size(); iL++)
          cout << "(" << Lumis[iL].first << ", " << Lumis[iL].second << ")" << endl;
    }
