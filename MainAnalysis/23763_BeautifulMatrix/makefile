@@ -1,4 +1,4 @@
-default: Prepare TestRun
+default: Prepare TestRunPP
 
 Prepare:
 	rm -f Input
@@ -10,12 +10,18 @@ Deploy:
 	mkdir -p ../FinalResult/SmearingMatrix
 	cp Plots/*png ../FinalResult/SmearingMatrix
 
+TestRunPP: Execute
+	bash RunFile.sh TestRunPPData "" 1
+
 TestRun: Execute
+	bash RunFile.sh TestRunData "" 0
+
+TestRunOld: Execute
 	./Execute --Input Input/TestRunData.root \
 		--Output Plots/TestRunMC.pdf --FinalOutput Plots/MatrixTestRunMC.pdf \
-		--WorldXMin 0 --WorldXMax 1000 --WorldYMin 0 --WorldYMax 1000 --WorldZMin 0.0001 --WorldZMax 0.1 --LogZ true \
+		--WorldXMin 1 --WorldXMax 1000 --WorldYMin 1 --WorldYMax 1000 --WorldZMin 0.0001 --WorldZMax 0.1 --LogZ true \
 		--UseActualZMax true \
-		--GenPrimaryMin 0 --GenPrimaryMax 1000 --RecoPrimaryMin 0 --RecoPrimaryMax 1000 \
+		--GenPrimaryMin 1 --GenPrimaryMax 1000 --RecoPrimaryMin 1 --RecoPrimaryMax 1000 \
 		--Primary "Jet p_{T} (GeV)" --Binning "None" --RowNormalize true \
 		--XAxis 303 --YAxis 303 \
 		--GroupX 1 --GroupY 1 --Row 1 --Column 1

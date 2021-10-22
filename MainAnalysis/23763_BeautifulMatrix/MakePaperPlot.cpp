@@ -34,7 +34,7 @@ void SetPad(TPad *P);
 void SetAxis(TGaxis &A);
 void SetWorld(TH2D *H);
 TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2);
-double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -999);
+double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -99999);
 
 int main(int argc, char *argv[])
 {
@@ -47,11 +47,13 @@ int main(int argc, char *argv[])
    string InputResponseName       = CL.Get("Response", "HMCResponse");
    string OutputFileName          = CL.Get("Output");
    string FinalOutputFileName     = CL.Get("FinalOutput", "Meow.pdf");
-   double GenPrimaryMinOverwrite  = CL.GetDouble("GenPrimaryMin", -999);
-   double GenPrimaryMaxOverwrite  = CL.GetDouble("GenPrimaryMax", 999);
-   double RecoPrimaryMinOverwrite = CL.GetDouble("RecoPrimaryMin", -999);
-   double RecoPrimaryMaxOverwrite = CL.GetDouble("RecoPrimaryMax", 999);
+   double GenPrimaryMinOverwrite  = CL.GetDouble("GenPrimaryMin", -99999);
+   double GenPrimaryMaxOverwrite  = CL.GetDouble("GenPrimaryMax", 99999);
+   double RecoPrimaryMinOverwrite = CL.GetDouble("RecoPrimaryMin", -99999);
+   double RecoPrimaryMaxOverwrite = CL.GetDouble("RecoPrimaryMax", 99999);
 
+   bool LogX                      = CL.GetBool("LogX", true);
+   bool LogY                      = CL.GetBool("LogY", true);
    bool LogZ                      = CL.GetBool("LogZ", true);
    bool DoRowNormalize            = CL.GetBool("RowNormalize", false);
    bool DoColumnNormalize         = CL.GetBool("ColumnNormalize", false);
@@ -157,12 +159,12 @@ int main(int argc, char *argv[])
    if(UseActualZMax == true)
       WorldZMax = ActualMaximum;
 
-   int PadWidth     = 250;
+   int PadWidth     = 225;
    int PadHeight    = 250;
-   int MarginLeft   = (50 + (VisibleColumn - 1) * 20);
-   int MarginRight  = (50 + (VisibleColumn - 1) * 10);
-   int MarginTop    = (25 + (VisibleColumn - 1) * 10);
-   int MarginBottom = (50 + (VisibleColumn - 1) * 20);
+   int MarginLeft   = (35 + (VisibleColumn - 1) * 20);
+   int MarginRight  = (35 + (VisibleColumn - 1) * 10);
+   int MarginTop    = (15 + (VisibleColumn - 1) * 10);
+   int MarginBottom = (30 + (VisibleColumn - 1) * 20);
    int ColorGap     = ( 5 + (VisibleColumn - 1) * 1.5);
    int ColorWidth   = (10 + (VisibleColumn - 1) * 2);
 
@@ -199,6 +201,10 @@ int main(int argc, char *argv[])
 
          Pads[IndexR][IndexC] = new TPad(Form("P%d%d", R, C), "", XMin, YMin, XMax, YMax);
 
+         if(LogX == true)
+            Pads[IndexR][IndexC]->SetLogx();
+         if(LogY == true)
+            Pads[IndexR][IndexC]->SetLogy();
          if(LogZ == true)
             Pads[IndexR][IndexC]->SetLogz();
       }
@@ -212,17 +218,25 @@ int main(int argc, char *argv[])
    vector<TGaxis *> XAxis, YAxis;
    for(int i = 0; i < VisibleColumn; i++)
    {
+      string Option = "";
+      if(LogX == true)
+         Option = "G";
+
       XAxis.emplace_back(new TGaxis(PadX0 + PadDX * i, PadY0, PadX0 + PadDX * (i + 1), PadY0,
-         WorldXMin, WorldXMax, XAxisSpacing, ""));
+         WorldXMin, WorldXMax, XAxisSpacing, Option.c_str()));
       SetAxis(*XAxis[i]);
       XAxis[i]->SetLabelSize(TextSize);
    }
    for(int i = 0; i < VisibleRow; i++)
    {
+      string Option = "";
+      if(LogY == true)
+         Option = "G";
+
       double YMin = PadY0 + PadDY * i;
       double YMax = YMin + PadDY;
       YAxis.emplace_back(new TGaxis(PadX0, YMin, PadX0, YMax,
-         WorldYMin, WorldYMax, YAxisSpacing, ""));
+         WorldYMin, WorldYMax, YAxisSpacing, Option.c_str()));
       SetAxis(*YAxis[i]);
       YAxis[i]->SetLabelSize(TextSize);
    }
@@ -235,7 +249,7 @@ int main(int argc, char *argv[])
    Latex.SetTextAlign(22);
    Latex.SetNDC();
    if(VisibleColumn == 1)
-      Latex.DrawLatex(PadX0 + PadDX * 0.5, PadY0 * 0.5, ("Reco " + PrimaryLabel).c_str());
+      Latex.DrawLatex(PadX0 + PadDX * 0.5, PadY0 * 0.3, ("Reco " + PrimaryLabel).c_str());
    else
    {
       for(int i = 0; i < VisibleColumn; i++)
@@ -243,10 +257,10 @@ int main(int argc, char *argv[])
          string Label = "Reco " + PrimaryLabel;
          Latex.DrawLatex(PadX0 + PadDX * (i + 0.5), PadY0 * 0.5, Label.c_str());
          Label = "[";
-         if(MatchedBins2[GroupX[i]] > -999)
+         if(MatchedBins2[GroupX[i]] > -99999)
             Label = Label + Form("%.1f", MatchedBins2[GroupX[i]]);
          Label = Label + " < ";
-         if(MatchedBins2[GroupX[i]+1] < 999)
+         if(MatchedBins2[GroupX[i]+1] < 99999)
             Label = Label + Form("%.1f", MatchedBins2[GroupX[i]+1]);
          Label = Label + "]";
          Latex.DrawLatex(PadX0 + PadDX * (i + 0.5), PadY0 * 0.2, Label.c_str());
@@ -255,7 +269,7 @@ int main(int argc, char *argv[])
    Latex.SetTextAngle(90);
    Latex.SetTextAlign(22);
    if(VisibleRow == 1)
-      Latex.DrawLatex(PadX0 * 0.5, PadY0 + PadDY * 0.5, ("Gen " + PrimaryLabel).c_str());
+      Latex.DrawLatex(PadX0 * 0.3, PadY0 + PadDY * 0.5, ("Gen " + PrimaryLabel).c_str());
    else
    {
       for(int i = 0; i < VisibleRow; i++)
@@ -263,10 +277,10 @@ int main(int argc, char *argv[])
          string Label = "Gen " + PrimaryLabel;
          Latex.DrawLatex(PadX0 * 0.2, PadY0 + PadDY * (i + 0.5), Label.c_str());
          Label = "[";
-         if(GenBins2[GroupY[i]] > -999)
+         if(GenBins2[GroupY[i]] > -99999)
             Label = Label + Form("%.1f", GenBins2[GroupY[i]]);
          Label = Label + " < ";
-         if(GenBins2[GroupY[i]+1] < 999)
+         if(GenBins2[GroupY[i]+1] < 99999)
             Label = Label + Form("%.1f", GenBins2[GroupY[i]+1]);
          Label = Label + "]";
          Latex.DrawLatex(PadX0 * 0.5, PadY0 + PadDY * (i + 0.5), Label.c_str());
@@ -474,6 +488,12 @@ TH2D *Transcribe(TH2D *HMaster, int R, int C, vector<double> &XBinning, vector<d
    for(int i = 0; i < YBinning.size(); i++)
       YBins[i] = YBinning[i];
 
+   // Transcribe binning
+   // for(int i = 0; i < XBinning.size(); i++)
+   //    cout << i << " " << XBinning[i] << endl;
+   // for(int i = 0; i < YBinning.size(); i++)
+   //    cout << i << " " << YBinning[i] << endl;
+
    int NX = XBinning.size() - 1;
    int NY = YBinning.size() - 1;
 
@@ -550,7 +570,7 @@ void SetAxis(TGaxis &A)
    A.SetLabelSize(0.030);
    A.SetMaxDigits(6);
    A.SetMoreLogLabels();
-   // A.SetNoExponent();
+   A.SetNoExponent();
    A.Draw();
 }
 
