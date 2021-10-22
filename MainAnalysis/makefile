@@ -21,8 +21,8 @@ TestRunPart2:
 	(cd 23763_Systematics           && make Prepare RunTestRunData)
 	(cd 24113_HEPData               && make default)
 	(cd 23763_BeautifulPlots        && make Prepare RunTestRunJetPT RunTestRunJetPTClosure)
+	(cd 23763_BeautifulMatrix       && make Prepare TestRunPP TestRun)
 	(cd 24114_PPRatioHEPData        && make default)
 	(cd 24114_BeautifulPPRatioPlots && make RunTestRunJetPT)
-	# (cd 23763_BeautifulMatrix       && make Prepare TestRun)
 
 
