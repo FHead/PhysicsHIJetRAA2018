@@ -6,10 +6,12 @@ using namespace std;
 
 #include "TFile.h"
 #include "TGraphAsymmErrors.h"
+#include "TGraph.h"
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TH1D.h"
 #include "TH2D.h"
+#include "TLatex.h"
 
 #include "CommandLine.h"
 #include "CustomAssert.h"
@@ -33,7 +35,11 @@ int main(int argc, char *argv[])
    string BaseRLabel         = CL.Get("BaseRLabel");
    vector<string> FileName   = CL.GetStringVector("FileName", vector<string>{});
    vector<string> RLabel     = CL.GetStringVector("RLabel", vector<string>{});
-   vector<int> Color         = CL.GetIntVector("Color", vector<int>{1,2,3,4,5,6,7});
+   vector<int> Color         = CL.GetIntVector("Color", vector<int>{1, 2, 3, 4, 5, 6, 7});
+
+   double XMin               = CL.GetDouble("XMin", 100);
+   double XMax               = CL.GetDouble("XMax", 1500);
+   
    bool AddHIN18014          = CL.GetBool("AddHIN18014", false);
 
    string OutputFileName     = CL.Get("Output", "PPRatio.pdf");
@@ -81,12 +87,21 @@ int main(int argc, char *argv[])
       for(int j = 0; j < GSpectra[i].size(); j++)
          GRatio[i].push_back(CalculateRatio(GSpectra[i][j], GBase[j]));
 
+   string LuminosityString
+      = DHFile["Lumi"][Form("TestRunPPData_R%s_CentralityInclusive_BRIL",BaseRLabel.c_str())].GetString();
+   double Luminosity = stof(LuminosityString) / 1000 / 1000;
+   string LuminosityUnit = "pb^{-1}";
+
+   cout << LuminosityString << endl;
+
+   // Start to assemble the plot
    TCanvas Canvas;
    Canvas.SetLogx();
 
    TH2D HWorld("HWorld", Form(";Jet p_{T} (GeV);(R = X) / (R = %.1f)", DHFile["JetR"][BaseRLabel].GetDouble()),
-      100, 100, 1500, 100, 0, 1.2);
+      100, XMin, XMax, 100, 0, 1.2);
    HWorld.SetStats(0);
+   HWorld.GetXaxis()->SetMoreLogLabels();
 
    HWorld.Draw("axis");
 
@@ -131,6 +146,30 @@ int main(int argc, char *argv[])
    for(int i = 0; i < FileCount; i++)
       Legend.AddEntry(&GRatio[i][0], Form("R = %.1f", DHFile["JetR"][RLabel[i]].GetDouble()), "lp");
    Legend.Draw();
+
+   TGraph GLine;
+   GLine.SetPoint(0, 0, 1);
+   GLine.SetPoint(1, 100000, 1);
+   GLine.Draw("l");
+
+   TLatex Latex;
+   Latex.SetTextFont(42);
+   Latex.SetTextSize(0.035);
+   Latex.SetNDC();
+
+   Latex.SetTextAlign(12);
+   Latex.DrawLatex(0.10, 0.92, "CMS #font[52]{Preliminary}");
+   Latex.SetTextAlign(32);
+   Latex.DrawLatex(0.85, 0.92, Form("pp 5.02 TeV %.2f %s", Luminosity, LuminosityUnit.c_str()));
+   
+   Latex.SetTextAlign(12);
+   Latex.DrawLatex(0.12, 0.87, "Statistical only");
+   
+   if(AddHIN18014 == true)
+   {
+      Latex.SetTextAlign(12);
+      Latex.DrawLatex(0.12, 0.82, "Line = HIN-18-014 Central value");
+   }
 
    Canvas.SaveAs(OutputFileName.c_str());
 
@@ -241,7 +280,7 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
    int N = G2.GetN();
    for(int i = 0; i < N; i++)
    {
-      double X1, X2, Y1, Y2, E1YH, E1YL, E1XH, E1XL;
+      double X1, X2, Y1, Y2, E1YH, E2YH, E1YL, E2YL, E1XH, E1XL;
 
       G1.GetPoint(i, X1, Y1);
       E1YH = G1.GetErrorYhigh(i);
@@ -249,6 +288,17 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
       E1XH = G1.GetErrorXhigh(i);
       E1XL = G1.GetErrorXlow(i);
       G2.GetPoint(i, X2, Y2);
+      E2YH = G2.GetErrorYhigh(i);
+      E2YL = G2.GetErrorYlow(i);
+
+      double REL1 = E1YL / Y1;
+      double REL2 = E2YL / Y2;
+      double REL = sqrt(REL1 * REL1 + REL2 * REL2);
+      double EL = REL * (Y1 / Y2);
+      double REH1 = E1YL / Y1;
+      double REH2 = E2YL / Y2;
+      double REH = sqrt(REH1 * REH1 + REH2 * REH2);
+      double EH = REH * (Y1 / Y2);
 
       if(Y2 == 0)
       {
@@ -258,7 +308,7 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
       else
       {
          G.SetPoint(i, X1, Y1 / Y2);
-         G.SetPointError(i, E1XL, E1XH, E1YL / Y2, E1YH / Y2);
+         G.SetPointError(i, E1XL, E1XH, EL, EH);
       }
    }
 
