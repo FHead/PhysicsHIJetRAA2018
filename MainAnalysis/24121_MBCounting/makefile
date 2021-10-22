@@ -8,7 +8,7 @@ Prepare:
 	ln -sf ~/EOSHI/PbPb2018/MBCount/HIMinimumBias0/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIMinimumBias0/CountMB0_20211018/211018_182616/0000/ MBInput
 
 MergeMB:
-	hadd -f MergedMB.root MBInput/MBCounter*root
+	hadd -f MergedMB.root MBInput2/MBCounter*root
 
 Execute: GetMB.cpp
 	CompileRootMacro GetMB.cpp Execute

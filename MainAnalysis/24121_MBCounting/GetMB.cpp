@@ -116,12 +116,21 @@ int main(int argc, char *argv[])
    for(int iC = 0; iC < 100; iC++)
       cout << iC << " " << Count[iC] << " " << HLTWeightedCount[iC] << " " << WeightedCount[iC] << endl;
 
+   string LumiNotFound = "";
+
    if(Lumis.size() > 0)
    {
       cout << "Lumis in JSON but not found in MB file:" << endl;
       for(int iL = 0; iL < Lumis.size(); iL++)
+      {
          cout << "(" << Lumis[iL].first << ", " << Lumis[iL].second << ")" << endl;
+         if(iL != 0)
+            LumiNotFound = LumiNotFound + ",";
+         LumiNotFound = LumiNotFound + "(" + Lumis[iL].first + "," + Lumis[iL].second + ")";
+      }
    }
+   else
+      LumiNotFound = "None";
 
    DataHelper DHFile(DHFileName);
 
@@ -134,8 +143,9 @@ int main(int argc, char *argv[])
       WeightedTotal = WeightedTotal + WeightedCount[iC];
    }
 
-   DHFile[State][Form("%s_TriggedCount",Tag.c_str())] = Total;
-   DHFile[State][Form("%s_WeightedCount",Tag.c_str())] = WeightedTotal;
+   DHFile[State][Tag+"_TriggedCount"]  = Total;
+   DHFile[State][Tag+"_WeightedCount"] = WeightedTotal;
+   DHFile[State][Tag+"_MissingLumi"]   = LumiNotFound;
 
    DHFile.SaveToFile();
 
