@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
       {
          cout << "(" << Lumis[iL].first << ", " << Lumis[iL].second << ")" << endl;
          if(iL != 0)
-            LumiNotFound = LumiNotFound + ",";
+            LumiNotFound = LumiNotFound + ";";
          LumiNotFound = LumiNotFound + "(" + Lumis[iL].first + "," + Lumis[iL].second + ")";
       }
    }
