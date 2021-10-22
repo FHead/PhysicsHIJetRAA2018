@@ -8,6 +8,8 @@ TestRunPart1:
 	(cd 23752_CopyJetFromForest && make Prepare TestRun)
 	(cd 23775_CentralityWeights && make Prepare TestRun)
 	(cd 23762_UnfoldPreparation && make Prepare TestRun)
+	(cd 24112_BrilCalc          && make Prepare RunPP RunAA)
+	(cd 24121_MBCounting        && make Prepare MergeMB RunAA)
 
 TestRunPart2:
 	(cd 23762_PerfectRecoGeneration && make Prepare TestRun)
