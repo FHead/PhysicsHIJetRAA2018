@@ -26,5 +26,6 @@ TestRunPart2:
 	(cd 23763_BeautifulMatrix       && make Prepare TestRunPP TestRun)
 	(cd 24114_PPRatioHEPData        && make default)
 	(cd 24114_BeautifulPPRatioPlots && make RunTestRunJetPT)
+	(cd 24122_RAA                   && make Prepare TestRun)
 
 
