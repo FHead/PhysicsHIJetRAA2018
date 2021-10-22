@@ -26,11 +26,13 @@ int main(int argc, char *argv[])
    string Reference      = CL.Get("Reference", "HMCTruth");
    string State          = CL.Get("State");
    string Key            = CL.Get("Key");
+   double DPower         = CL.GetDouble("DPower", 1.7);
 
    vector<int> Iteration{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 68, 70, 80, 90, 100, 125, 150, 175, 200, 250, 300, 350, 400, 450, 500};
 
    TGraph Graph;
    TGraph GraphD;
+   TGraph GraphWD;
 
    PdfFileHelper PdfFile(OutputFileName);
    PdfFile.AddTextPage("Iteration scan");
@@ -49,6 +51,7 @@ int main(int argc, char *argv[])
 
    double MaxChi2 = -1, MinChi2 = -1;
    double MaxD2 = -1, MinD2 = -1;
+   double MaxWD2 = -1, MinWD2 = -1;
 
    int BestIteration = -1;
 
@@ -61,13 +64,13 @@ int main(int argc, char *argv[])
       double Chi2 = CalculateChi2(HMCTruth, HUnfolded, PointsToIgnore, true);
       double D2 = CalculateChi2(HMCTruth, HUnfolded, PointsToIgnore, false);
 
-      if(Chi2 > 0)
+      if(Chi2 > 0 && isinf(Chi2) == false)
       {
          if(MaxChi2 < 0 || MaxChi2 < Chi2)   MaxChi2 = Chi2;
-         if(MinChi2 < 0 || MinChi2 > Chi2)   MinChi2 = Chi2, BestIteration = i;
+         if(MinChi2 < 0 || MinChi2 > Chi2)   MinChi2 = Chi2;
          Graph.SetPoint(Graph.GetN(), i, Chi2);
       }
-      if(D2 > 0)
+      if(D2 > 0 && isinf(D2) == false)
       {
          if(MaxD2 < 0 || MaxD2 < D2)   MaxD2 = D2;
          if(MinD2 < 0 || MinD2 > D2)   MinD2 = D2;
@@ -82,9 +85,50 @@ int main(int argc, char *argv[])
       PdfFile.AddCanvas(Canvas);
       Canvas.SetLogy();
       PdfFile.AddCanvas(Canvas);
+
+      TH1D *HTruthPower = (TH1D *)HMCTruth->Clone("TruthPower");
+      TH1D *HUnfoldedPower = (TH1D *)HUnfolded->Clone("UnfoldedPower");
+
+      double Power = 1;
+      for(int j = 1; j <= HTruthPower->GetNbinsX(); j++)
+      {
+         HTruthPower->SetBinContent(j, HTruthPower->GetBinContent(j) * Power);
+         HTruthPower->SetBinError(j, HTruthPower->GetBinError(j) * Power);
+         HUnfoldedPower->SetBinContent(j, HUnfoldedPower->GetBinContent(j) * Power);
+         HUnfoldedPower->SetBinError(j, HUnfoldedPower->GetBinError(j) * Power);
+         Power = Power * DPower;
+      }
+
+      HTruthPower->SetTitle(Form("Iteration %d power", i));
+      HTruthPower->Draw("hist");
+      HUnfoldedPower->SetMarkerStyle(20);
+      HUnfoldedPower->Draw("same");
+      PdfFile.AddCanvas(Canvas);
+      Canvas.SetLogy();
+      PdfFile.AddCanvas(Canvas);
+      
+      double WD2 = CalculateChi2(HTruthPower, HUnfoldedPower, PointsToIgnore, false);
+      if(WD2 > 0 && isinf(WD2) == false)
+      {
+         if(MaxWD2 < 0 || MaxWD2 < WD2)   MaxWD2 = WD2;
+         if(MinWD2 < 0 || MinWD2 > WD2)   MinWD2 = WD2, BestIteration = i;
+         GraphWD.SetPoint(GraphWD.GetN(), i, WD2);
+      }
    }
 
+   if(MinChi2 != MinChi2)   MinChi2 = 1;
+   if(MaxChi2 != MaxChi2)   MaxChi2 = 9999;
+   if(MinChi2 == MaxChi2)   MaxChi2 = MinChi2 + 1;
+   if(MinD2 != MinD2)   MinD2 = 1;
+   if(MaxD2 != MaxD2)   MaxD2 = 9999;
+   if(MinD2 == MaxD2)   MaxD2 = MinD2 + 1;
+   if(MinWD2 != MinWD2)   MinWD2 = 1;
+   if(MaxWD2 != MaxWD2)   MaxWD2 = 9999;
+   if(MinWD2 == MaxWD2)   MaxWD2 = MinWD2 + 1;
+
    InputFile.Close();
+
+   cout << "!" << endl;
 
    DataHelper DHFile("GlobalSetting.dh");
    DHFile[State][Key] = BestIteration;
@@ -94,14 +138,21 @@ int main(int argc, char *argv[])
 
    Graph.SetNameTitle("GChi2", "");
    GraphD.SetNameTitle("GD2", "");
+   GraphWD.SetNameTitle("GWD2", "");
 
    Graph.GetXaxis()->SetTitle("Number of iterations");
    Graph.GetYaxis()->SetTitle("#chi^{2}");
    GraphD.GetXaxis()->SetTitle("Number of iterations");
    GraphD.GetYaxis()->SetTitle("Distance^{2}");
+   GraphWD.GetXaxis()->SetTitle("Number of iterations");
+   GraphWD.GetYaxis()->SetTitle("Weighted distance^{2}");
 
    Graph.GetYaxis()->SetRangeUser(MinChi2, MaxChi2);
    GraphD.GetYaxis()->SetRangeUser(MinD2, MaxD2);
+   GraphWD.GetYaxis()->SetRangeUser(MinWD2, MaxWD2);
+
+   Graph.Print();
+   GraphD.Print();
 
    PdfFile.AddPlot(Graph, "apl");
    PdfFile.AddPlot(Graph, "apl", false, false, true, true);
@@ -109,6 +160,9 @@ int main(int argc, char *argv[])
    PdfFile.AddPlot(GraphD, "apl");
    PdfFile.AddPlot(GraphD, "apl", false, false, true, true);
    PdfFile.AddPlot(GraphD, "apl", true, false, true, true);
+   PdfFile.AddPlot(GraphWD, "apl");
+   PdfFile.AddPlot(GraphWD, "apl", false, false, true, true);
+   PdfFile.AddPlot(GraphWD, "apl", true, false, true, true);
 
    PdfFile.AddTimeStampPage();
    PdfFile.Close();
