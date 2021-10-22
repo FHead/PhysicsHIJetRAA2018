@@ -12,8 +12,8 @@ using namespace std;
 
 int main(int argc, char *argv[]);
 double GetRandom(TH1D *H);
-void GenerateSample(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, int ActualEvent);
-void GenerateSampleFast(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, int ActualEvent);
+void GenerateSample(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, long long ActualEvent);
+void GenerateSampleFast(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, long long ActualEvent);
 
 int main(int argc, char *argv[])
 {
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
    TFile YieldFile(YieldFileName.c_str());
    TH1D *HYield = (TH1D *)YieldFile.Get("HDataReco");
    double TargetEventCount = HYield->Integral(1 + Underflow, HYield->GetNbinsX() - Overflow) * TargetFraction;
-   int ActualEvent = DrawPoisson(TargetEventCount);
+   long long ActualEvent = DrawPoisson(TargetEventCount);
    YieldFile.Close();
    
    TFile ShapeFile(ShapeFileName.c_str());
@@ -98,7 +98,7 @@ double GetRandom(TH1D *H)
    return 0;
 }
 
-void GenerateSample(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, int ActualEvent)
+void GenerateSample(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, long long ActualEvent)
 {
    // Simply fill histogram until we get the target count in the relevant bins
 
@@ -111,7 +111,7 @@ void GenerateSample(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, in
       HTarget->Fill(GetRandom(HShape));
 }
 
-void GenerateSampleFast(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, int ActualEvent)
+void GenerateSampleFast(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow, long long ActualEvent)
 {
    // In this function we under-generate using poisson in each bin.  Then we call the old generate sample to
    //    fill in the gap.
@@ -121,9 +121,9 @@ void GenerateSampleFast(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow
    if(HTarget == HShape)   // WTF
       return;
    
-   int N = HTarget->GetNbinsX();
+   int N = HShape->GetNbinsX();
 
-   vector<int> Events(N);
+   vector<long long> Events(N);
    double Factor = ActualEvent / HShape->Integral(1 + Underflow, N - Overflow);
    double Total = 0;
 
@@ -140,6 +140,8 @@ void GenerateSampleFast(TH1D *HShape, TH1D *HTarget, int Underflow, int Overflow
 
    for(int i = 0; i < N; i++)
    {
+      // cout << i << " " << Events[i] << endl;
+
       HTarget->SetBinContent(i + 1, Events[i]);
       HTarget->SetBinError(i + 1, sqrt(Events[i]));
    }
