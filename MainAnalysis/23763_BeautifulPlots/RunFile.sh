@@ -1,4 +1,4 @@
-
+#!/bin/bash
 Prefix=$1
 Suffix=$2
 IsPP=$3
@@ -27,12 +27,21 @@ do
          State=TestRunPPData
       fi
 
+      Luminosity=1
+      LuminosityUnit="b^{-1}"
       ExtraScale=0.25 # coming from |eta| going from -2 to +2
       if [[ "$IsPP" == "1" ]]; then
          Luminosity=`DHQuery GlobalSetting.dh Lumi ${State}_R${R}_Centrality${C}_BRIL | tr -d '"' | DivideConst 1000000`
+         LuminosityUnit="pb^{-1}"
          ExtraScale=`echo $ExtraScale | DivideConst $Luminosity | DivideConst 1000`
          echo Lumi = $Luminosity
          echo Extra scale = $ExtraScale
+      else
+         Luminosity=`DHQuery GlobalSetting.dh Lumi ${State}_R${R}_Centrality${C}_BRIL | tr -d '"'`
+         LuminosityUnit="#mub^{-1}"
+         MBCount=`DHQuery GlobalSetting.dh MBCount ${State}_R${R}_Centrality${C}_WeightedCount | tr -d '"'`
+         TAA=`DHQuery GlobalSetting.dh TAA ${C} | tr -d '"' | DivideConst 1000000`
+         ExtraScale=`echo $ExtraScale | DivideConst $MBCount | DivideConst $TAA`
       fi
 
       System="PbPb"
@@ -51,24 +60,32 @@ do
          CentralityString="Centrality ${CentralityMin}%-${CentralityMax}%"
       fi
 
+      YLabel="default"
+      if [[ "$IsPP" == "1" ]]; then
+         YLabel="d^2#sigma / dp_{T}d#eta (nb)"
+      else
+         YLabel="#frac{1}{<T_{AA}>}#frac{1}{N_{evt}}#frac{d^{2}N_{jet}}{dp_{T}d#eta}"
+      fi
+
       ./Execute \
          --Input Input/${PRCN} \
          --Systematic Systematics/${PRC}.root \
          --Output Plots/QualityPlots_${PRC}${Suffix}.pdf --FinalOutput Plots/${PRC}${Suffix}.pdf \
+         --RootOutput Root/${PRC}${Suffix}.root \
          --MCFile "Input/${PRCN}","HEPData/Graph_pp_CMSR${R}.root","HEPData/Graph_pp_ATLASR${R}.root" \
          --MCHistogram "HMCTruth","GHEPData","GHEPData" \
-         --MCLabel "MC (normalized to data)","CMS HIN-18-014 |#eta|<2.0","ATLAS (2019) |y|<2.8" \
+         --MCLabel "MC (normalized to data)","CMS HIN-18-014 |#eta|<2.0 (pp)","ATLAS (2019) |y|<2.8 (pp)" \
          --NormalizeMCToData true,false,false \
          --PrimaryName HUnfoldedBayes`DHQuery GlobalSetting.dh ${State} BestIteration_R${R}_Centrality${C}` \
          --DoSelfNormalize false \
          --ExtraScale $ExtraScale \
          --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.0000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \
          --LogX true --LogY true \
-         --XLabel "Jet p_{T} (GeV)" --YLabel "d#sigma / dp_{T}d#eta (nb)" --Binning None \
+         --XLabel "Jet p_{T} (GeV)" --YLabel ${YLabel} --Binning None \
          --LegendX 0.10 --LegendY 0.10 --LegendSize 0.04 \
          --XAxis 505 --YAxis 505 --RAxis 505 --MarkerModifier 0.5 \
          --Texts 0,0.65,0.9,"Anti-k_{T} jet R = $RValue",0,0.65,0.85,"|#eta_{jet}| < 2.0",0,0.65,0.8,"$CentralityString" \
-         --Luminosity $Luminosity --LuminosityUnit "pb^{-1}" --System $System \
+         --Luminosity $Luminosity --LuminosityUnit $LuminosityUnit --System $System \
          --IgnoreGroup 0 --Row 1 --Column 1
    done
 done

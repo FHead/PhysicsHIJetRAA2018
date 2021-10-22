@@ -7,7 +7,7 @@ Prepare:
 	ln -sf ../23763_Systematics/Output Systematics
 	ln -sf ../GlobalSetting/GlobalSetting.dh
 	ln -sf ../24113_HEPData/ HEPData
-	mkdir -p Plots
+	mkdir -p Plots Root
 
 Deploy:
 	mkdir -p ../FinalResult/Unfolded/

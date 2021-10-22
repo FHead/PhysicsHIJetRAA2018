@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
    string SystematicFileName      = CL.Get("Systematic");
    string OutputFileName          = CL.Get("Output");
    string FinalOutputFileName     = CL.Get("FinalOutput", "Meow.pdf");
+   string RootOutputFileName      = CL.Get("RootOutput", "Meow.root");
    double GenPrimaryMinOverwrite  = CL.GetDouble("GenPrimaryMin", -99999);
    double GenPrimaryMaxOverwrite  = CL.GetDouble("GenPrimaryMax", 99999);
    double RecoPrimaryMinOverwrite = CL.GetDouble("RecoPrimaryMin", -99999);
@@ -464,6 +465,29 @@ int main(int argc, char *argv[])
    }
 
    Canvas.SaveAs(FinalOutputFileName.c_str());
+
+   // Finally write the graphs for downstream processing
+   if(RootOutputFileName != "")
+   {
+      TFile OutputFile(RootOutputFileName.c_str(), "RECREATE");
+
+      int Count = 0;
+      for(TGraphAsymmErrors G : GResult)
+      {
+         G.SetName(Form("Result%d", Count));
+         G.Write();
+         Count = Count + 1;
+      }
+      Count = 0;
+      for(TGraphAsymmErrors G : GSystematics)
+      {
+         G.SetName(Form("FullSystematics%d", Count));
+         G.Write();
+         Count = Count + 1;
+      }
+
+      OutputFile.Close();
+   }
 
    for(TH2D *H : HWorld)    delete H;
    for(TH2D *H : HWorldR)   delete H;
