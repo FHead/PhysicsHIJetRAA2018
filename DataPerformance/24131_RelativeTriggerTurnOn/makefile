@@ -20,6 +20,9 @@ Execute: MakeTurnOn.cpp
 		`$(FastJet) --cxxflags --libs` \
 		-L$(FJContrib)/lib -I$(FJContrib)/include -lConstituentSubtractor
 
+ExecuteFit: FitTurnOn.cpp
+	CompileRootMacro FitTurnOn.cpp ExecuteFit
+
 TestRun: Execute
 	time ./Execute --Input `ls $(PbPbData1)/*root | head -n10 | tr '\n' ','` \
 		--Base HLT_HIPuAK4CaloJet80Eta5p1 \
@@ -30,4 +33,6 @@ TestRun: Execute
 		--DoBaselineCutAA true --DoBaselineCutPP false \
 		--JEC "$(JECBase)/$(JECTag)/$(JECTag)_L2Relative_AK1PF.txt","$(JECBase)/$(JECTag)/$(JECTag)_L2L3Residual_AK1PF.txt"
 
-
+TestFit: ExecuteFit
+	./ExecuteFit --Input Result_R1_Centrality0to10.root --Output Plots_R1_Centrality0to10.pdf \
+		--DHFile GlobalSettingTest.dh --State PbPbTriggerTurnOn --KeyPrefix R1_Centrality0to10
