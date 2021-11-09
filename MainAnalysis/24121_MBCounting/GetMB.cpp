@@ -260,6 +260,10 @@ void CheckMBFile(string MBFileName, vector<string> &HLTMatch, vector<string> &L1
       // Remove lumi from list if count is nonzero
       if(TotalRawCount > 0)
          Lumis.erase(Lumis.begin() + LumiIndex);
+      else
+      {
+         cout << "Count = 0: " << Run << " " << Lumi << " " << MBFileName << endl;
+      }
    }
    
    MBFile.Close();

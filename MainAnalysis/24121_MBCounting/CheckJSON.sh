@@ -12,9 +12,15 @@ CentralityTag=`echo $Tag | egrep Centrality[0-9]*to[0-9]* -o | sed "s/Centrality
 # echo $CentralityTag
 
 ./Execute --JSON $JSON \
-   --MB MergedMB.root \
-   --HLTMatch "HLT_HIMinimumBias_","part0" \
-   --L1Match "L1_MinimumBiasHF1_AND_BptxAND" \
+   --MB1 MergedMB0.root \
+   --HLTMatch1 "HLT_HI","MinimumBias_","part0" \
+   --L1Match1 "L1_MinimumBiasHF1_AND_BptxAND" \
+   --MB2 MergedMB1.root \
+   --HLTMatch2 "HLT_HI","MinimumBias_","part1" \
+   --L1Match2 "L1_MinimumBiasHF1_AND_BptxAND" \
+   --MB3 MergedMB1.root \
+   --HLTMatch3 "HLT_HI","MinimumBias_","part2" \
+   --L1Match3 "L1_MinimumBiasHF1_AND_BptxAND" \
    --DHFile GlobalSetting.dh --State MBCount --Tag ${Tag} --CentralityTag $CentralityTag
 
 

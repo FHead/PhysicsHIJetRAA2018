@@ -15,7 +15,7 @@ Execute: GetMB.cpp
 	CompileRootMacro GetMB.cpp Execute
 
 RunAA: Execute
-	for i in Input/TestRunData_R*Nominal_JSON.txt; do bash CheckJSON.sh $$i; done
+	for i in Input/TestRunData_R*Nominal_JSON.txt; do echo $$i; bash CheckJSON.sh $$i; done
 
 TestRun: Execute
 	./Execute --JSON Input/TestRunData_R9_Centrality50to90_Nominal_JSON.txt \
