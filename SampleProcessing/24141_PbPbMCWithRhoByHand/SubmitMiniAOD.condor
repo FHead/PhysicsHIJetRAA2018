@@ -1,0 +1,606 @@
+Universe              = vanilla
+Executable            = /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand/RunMiniAOD.sh
+should_transfer_files = NO
++JobFlavour           = "workday"
+
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/cf467a58-1013-44e9-8bf0-70b0d472420a.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output0.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD0.out
+Error     = Log/MiniAOD0.err
+Log       = Log/MiniAOD0.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/1270af0b-32e2-4006-a2e7-4124a27d70fa.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output1.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD1.out
+Error     = Log/MiniAOD1.err
+Log       = Log/MiniAOD1.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/14088892-7df7-4cf2-9730-47980d8ec56e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output2.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD2.out
+Error     = Log/MiniAOD2.err
+Log       = Log/MiniAOD2.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/15cfe996-f2e2-4984-87a0-f8380c43475f.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output3.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD3.out
+Error     = Log/MiniAOD3.err
+Log       = Log/MiniAOD3.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/948e9033-dad8-44cd-bf09-18d8b69d3e0f.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output4.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD4.out
+Error     = Log/MiniAOD4.err
+Log       = Log/MiniAOD4.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/3163faa0-9c72-4607-8cf2-8c809d163965.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output5.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD5.out
+Error     = Log/MiniAOD5.err
+Log       = Log/MiniAOD5.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/71231b84-49e7-4c1f-88d0-d1a55cf9624d.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output6.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD6.out
+Error     = Log/MiniAOD6.err
+Log       = Log/MiniAOD6.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/9bd7558c-9679-4f45-ba0e-d104f1e7b4e2.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output7.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD7.out
+Error     = Log/MiniAOD7.err
+Log       = Log/MiniAOD7.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/0faf8e1f-6096-4ac6-a30c-c7e4c1ba52cb.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output8.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD8.out
+Error     = Log/MiniAOD8.err
+Log       = Log/MiniAOD8.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/9d0206aa-0edd-4e1d-a08c-49d2ce491bc6.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output9.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD9.out
+Error     = Log/MiniAOD9.err
+Log       = Log/MiniAOD9.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/e75c4ead-6004-4242-9ac0-fbe0a0d4c840.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output10.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD10.out
+Error     = Log/MiniAOD10.err
+Log       = Log/MiniAOD10.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/b8a69b6a-1386-4e36-9f4c-e54ad7687a3f.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output11.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD11.out
+Error     = Log/MiniAOD11.err
+Log       = Log/MiniAOD11.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/d4007e38-2a6e-4201-a595-719407952fee.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output12.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD12.out
+Error     = Log/MiniAOD12.err
+Log       = Log/MiniAOD12.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/f1b4d4e9-c2b0-4da3-b5ee-d479d61b225e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output13.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD13.out
+Error     = Log/MiniAOD13.err
+Log       = Log/MiniAOD13.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/6c10f0b7-3391-46e0-a0f0-8cd24a82193e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output14.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD14.out
+Error     = Log/MiniAOD14.err
+Log       = Log/MiniAOD14.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/97e383d8-578a-47b8-9510-8e33c0c8da1e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output15.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD15.out
+Error     = Log/MiniAOD15.err
+Log       = Log/MiniAOD15.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/da670abd-8060-410a-bae9-6e3306b7e776.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output16.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD16.out
+Error     = Log/MiniAOD16.err
+Log       = Log/MiniAOD16.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/86c93ffd-de03-4aa4-a2ab-52db5640ef69.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output17.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD17.out
+Error     = Log/MiniAOD17.err
+Log       = Log/MiniAOD17.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/c1de35dd-2898-4884-92de-95ac68979167.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output18.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD18.out
+Error     = Log/MiniAOD18.err
+Log       = Log/MiniAOD18.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/058344a6-96cb-4506-92da-2dc6b68c6c56.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output19.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD19.out
+Error     = Log/MiniAOD19.err
+Log       = Log/MiniAOD19.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/ebaf05ac-5290-4ce2-923b-2c18821d5c6c.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output20.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD20.out
+Error     = Log/MiniAOD20.err
+Log       = Log/MiniAOD20.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/1077e086-b32d-45ac-9b79-73a5aa039e0e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output21.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD21.out
+Error     = Log/MiniAOD21.err
+Log       = Log/MiniAOD21.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/b6b67a1e-06e6-4e78-8f80-db0bc641dba6.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output22.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD22.out
+Error     = Log/MiniAOD22.err
+Log       = Log/MiniAOD22.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/91305ea7-09e1-4be0-b9bc-7d6dc20bdc31.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output23.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD23.out
+Error     = Log/MiniAOD23.err
+Log       = Log/MiniAOD23.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/e4c1350c-b32a-4883-a80f-64181aef6ddb.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output24.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD24.out
+Error     = Log/MiniAOD24.err
+Log       = Log/MiniAOD24.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/c248093a-3c8b-4493-831c-883ed89b180d.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output25.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD25.out
+Error     = Log/MiniAOD25.err
+Log       = Log/MiniAOD25.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/858dce8b-3663-42cf-a720-58973d3e6392.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output26.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD26.out
+Error     = Log/MiniAOD26.err
+Log       = Log/MiniAOD26.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/19ceee6b-8d3c-44c7-acb4-58019fdccc66.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output27.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD27.out
+Error     = Log/MiniAOD27.err
+Log       = Log/MiniAOD27.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/15eec505-6d4e-4726-9fb7-4bc756e29532.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output28.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD28.out
+Error     = Log/MiniAOD28.err
+Log       = Log/MiniAOD28.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/20787b33-43fd-4f0f-b7aa-385410e151e7.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output29.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD29.out
+Error     = Log/MiniAOD29.err
+Log       = Log/MiniAOD29.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/f9324667-2233-4d38-80f3-f048de57b666.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output30.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD30.out
+Error     = Log/MiniAOD30.err
+Log       = Log/MiniAOD30.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/37a1b9c7-eeed-4edc-ab6c-01d848a0b7ca.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output31.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD31.out
+Error     = Log/MiniAOD31.err
+Log       = Log/MiniAOD31.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/298be55e-148d-4cb3-84fd-3f288c0de802.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output32.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD32.out
+Error     = Log/MiniAOD32.err
+Log       = Log/MiniAOD32.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/4bac48a5-1187-4d95-b3a5-6f8bda623fef.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output33.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD33.out
+Error     = Log/MiniAOD33.err
+Log       = Log/MiniAOD33.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/5e84f7ab-e5b3-4efc-9008-728b309e2282.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output34.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD34.out
+Error     = Log/MiniAOD34.err
+Log       = Log/MiniAOD34.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/216e6d57-ea6c-4a2a-82cb-ff2b16ebd4ec.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output35.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD35.out
+Error     = Log/MiniAOD35.err
+Log       = Log/MiniAOD35.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/2d5abeef-7800-41f9-9ba8-8c7ec33704dd.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output36.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD36.out
+Error     = Log/MiniAOD36.err
+Log       = Log/MiniAOD36.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/a6c47ef1-7681-4cf3-9c02-99193349edd4.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output37.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD37.out
+Error     = Log/MiniAOD37.err
+Log       = Log/MiniAOD37.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/94e41638-ccc9-4f2a-adf2-1fdd7888b0f1.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output38.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD38.out
+Error     = Log/MiniAOD38.err
+Log       = Log/MiniAOD38.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/282b905f-6386-4437-a2d3-718f26cb7a81.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output39.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD39.out
+Error     = Log/MiniAOD39.err
+Log       = Log/MiniAOD39.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/ae7071dc-6b02-4956-9882-30c304c5b39d.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output40.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD40.out
+Error     = Log/MiniAOD40.err
+Log       = Log/MiniAOD40.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/e2afd6e5-0912-4680-8438-963d47b933fb.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output41.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD41.out
+Error     = Log/MiniAOD41.err
+Log       = Log/MiniAOD41.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/7b1c9112-8247-4ab6-a96c-ac6a5d599cd6.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output42.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD42.out
+Error     = Log/MiniAOD42.err
+Log       = Log/MiniAOD42.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/e0b53e4f-be99-4e68-be5f-810eea95ff8c.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output43.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD43.out
+Error     = Log/MiniAOD43.err
+Log       = Log/MiniAOD43.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/917ee91b-80f6-4c40-af34-1830872b442f.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output44.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD44.out
+Error     = Log/MiniAOD44.err
+Log       = Log/MiniAOD44.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/d6441e92-985b-465f-ae48-85b7485b0a36.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output45.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD45.out
+Error     = Log/MiniAOD45.err
+Log       = Log/MiniAOD45.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/c2641216-56f2-4548-9806-3d4863346606.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output46.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD46.out
+Error     = Log/MiniAOD46.err
+Log       = Log/MiniAOD46.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/e90c9a02-9be8-4a46-85a1-05eabbd42a1a.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output47.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD47.out
+Error     = Log/MiniAOD47.err
+Log       = Log/MiniAOD47.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/05a8103c-8e26-499f-87c8-512518407618.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output48.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD48.out
+Error     = Log/MiniAOD48.err
+Log       = Log/MiniAOD48.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/fc563318-3664-48c5-b531-508215f6957e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output49.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD49.out
+Error     = Log/MiniAOD49.err
+Log       = Log/MiniAOD49.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/bbd791cd-5721-45d5-a3c9-b550f92c5ecf.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output50.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD50.out
+Error     = Log/MiniAOD50.err
+Log       = Log/MiniAOD50.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/375d8298-b61c-4718-8d50-2c71d3e54385.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output51.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD51.out
+Error     = Log/MiniAOD51.err
+Log       = Log/MiniAOD51.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/7b407d3e-82d7-4301-a7a4-c781a225d1a2.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output52.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD52.out
+Error     = Log/MiniAOD52.err
+Log       = Log/MiniAOD52.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/a9898391-2dce-4039-99f9-b949332ffd76.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output53.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD53.out
+Error     = Log/MiniAOD53.err
+Log       = Log/MiniAOD53.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/a59c944a-0688-4933-949e-de24c3840d00.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output54.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD54.out
+Error     = Log/MiniAOD54.err
+Log       = Log/MiniAOD54.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/9dbe33de-e9a7-4f70-803c-f040c827c834.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output55.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD55.out
+Error     = Log/MiniAOD55.err
+Log       = Log/MiniAOD55.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/c40092ca-4504-448d-98e3-6be24f4a6cf7.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output56.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD56.out
+Error     = Log/MiniAOD56.err
+Log       = Log/MiniAOD56.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/511b8db9-bd95-41da-ba5d-06bcf3eb78c7.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output57.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD57.out
+Error     = Log/MiniAOD57.err
+Log       = Log/MiniAOD57.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/79af5c03-aadb-4898-a855-8e5b9df7b94e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output58.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD58.out
+Error     = Log/MiniAOD58.err
+Log       = Log/MiniAOD58.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/a4aed5d7-2da8-489f-8101-4532b4da1681.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output59.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD59.out
+Error     = Log/MiniAOD59.err
+Log       = Log/MiniAOD59.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/5b418ab7-fc3e-4d34-b9b1-2bda98e2aa31.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output60.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD60.out
+Error     = Log/MiniAOD60.err
+Log       = Log/MiniAOD60.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/0d1d52f4-748b-4368-912e-4639661c90c1.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output61.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD61.out
+Error     = Log/MiniAOD61.err
+Log       = Log/MiniAOD61.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/fe6adea3-9075-4321-b216-eb4934807b9f.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output62.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD62.out
+Error     = Log/MiniAOD62.err
+Log       = Log/MiniAOD62.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/f9541c17-ba67-44ff-859a-f3ef912e7e67.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output63.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD63.out
+Error     = Log/MiniAOD63.err
+Log       = Log/MiniAOD63.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/ce3abe0d-8771-47d5-a03a-ad6854722071.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output64.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD64.out
+Error     = Log/MiniAOD64.err
+Log       = Log/MiniAOD64.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/b987705e-e308-475c-8213-d7000fb7a3af.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output65.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD65.out
+Error     = Log/MiniAOD65.err
+Log       = Log/MiniAOD65.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/20b50af1-2bdb-4623-895b-40ab9151b3de.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output66.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD66.out
+Error     = Log/MiniAOD66.err
+Log       = Log/MiniAOD66.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/7a0d4f18-3634-4adf-82c4-5de75fb6bc1f.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output67.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD67.out
+Error     = Log/MiniAOD67.err
+Log       = Log/MiniAOD67.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/8656f13e-e7f5-4fc1-8a21-babeead49524.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output68.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD68.out
+Error     = Log/MiniAOD68.err
+Log       = Log/MiniAOD68.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/30ce4c97-6afa-4fad-a813-149ac07cefa1.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output69.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD69.out
+Error     = Log/MiniAOD69.err
+Log       = Log/MiniAOD69.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/4fed3c66-cff8-41d8-a9cc-e22ec278dd3e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output70.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD70.out
+Error     = Log/MiniAOD70.err
+Log       = Log/MiniAOD70.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/ae98d013-e73c-411e-bf8a-8df6ac9effdf.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output71.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD71.out
+Error     = Log/MiniAOD71.err
+Log       = Log/MiniAOD71.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/c7ceb746-b075-4fc5-97fb-e758b9304aa8.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output72.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD72.out
+Error     = Log/MiniAOD72.err
+Log       = Log/MiniAOD72.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/bcb2710b-4e4f-4267-999c-5d356189c07e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output73.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD73.out
+Error     = Log/MiniAOD73.err
+Log       = Log/MiniAOD73.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/56a15cdc-acc2-4018-b963-bf29bb6a1b59.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output74.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD74.out
+Error     = Log/MiniAOD74.err
+Log       = Log/MiniAOD74.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/209cde4d-fafb-4429-9e7e-760b49ec58cf.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output75.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD75.out
+Error     = Log/MiniAOD75.err
+Log       = Log/MiniAOD75.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/71992fd0-0abe-4d5d-8585-08b65e707214.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output76.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD76.out
+Error     = Log/MiniAOD76.err
+Log       = Log/MiniAOD76.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/0032b2a4-ca1e-4df5-914c-38c69f3602f4.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output77.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD77.out
+Error     = Log/MiniAOD77.err
+Log       = Log/MiniAOD77.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/34fe11b8-c33e-48ba-a6fa-7ebdc97f5f3e.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output78.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD78.out
+Error     = Log/MiniAOD78.err
+Log       = Log/MiniAOD78.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/b3edd325-2ce4-4f7b-b7d3-e23ac1aafe56.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output79.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD79.out
+Error     = Log/MiniAOD79.err
+Log       = Log/MiniAOD79.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/23cd0752-5d2b-4619-b1fa-6e33d28fca5c.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output80.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD80.out
+Error     = Log/MiniAOD80.err
+Log       = Log/MiniAOD80.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/6952ca96-2f9f-4323-b3fc-282f1bbdec23.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output81.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD81.out
+Error     = Log/MiniAOD81.err
+Log       = Log/MiniAOD81.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/4ddf9357-9144-4420-8dbd-4ceeacbf1e56.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output82.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD82.out
+Error     = Log/MiniAOD82.err
+Log       = Log/MiniAOD82.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/0974b407-7305-4564-8665-397f56b3f5fd.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output83.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD83.out
+Error     = Log/MiniAOD83.err
+Log       = Log/MiniAOD83.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/41fc7a1e-5a74-4a0d-af40-53f041ddd53b.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output84.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD84.out
+Error     = Log/MiniAOD84.err
+Log       = Log/MiniAOD84.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/ef517fd8-9244-4b8f-8993-b190e3f6c4df.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output85.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD85.out
+Error     = Log/MiniAOD85.err
+Log       = Log/MiniAOD85.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/311154c6-18b6-4a44-8fb3-15d67ea5ca1d.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output86.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD86.out
+Error     = Log/MiniAOD86.err
+Log       = Log/MiniAOD86.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/e66c3a85-86cd-470c-a753-ec842ee03abe.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output87.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD87.out
+Error     = Log/MiniAOD87.err
+Log       = Log/MiniAOD87.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/086c4b56-0a3f-46ff-8be9-c57a74c741d9.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output88.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD88.out
+Error     = Log/MiniAOD88.err
+Log       = Log/MiniAOD88.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/d3bc40d4-a311-4cb4-b45e-0593a061029b.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output89.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD89.out
+Error     = Log/MiniAOD89.err
+Log       = Log/MiniAOD89.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/68c08ef7-d27d-4200-bac9-9da9cac291eb.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output90.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD90.out
+Error     = Log/MiniAOD90.err
+Log       = Log/MiniAOD90.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/a3311f8a-b3df-4348-bfac-a6cef50bcdf3.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output91.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD91.out
+Error     = Log/MiniAOD91.err
+Log       = Log/MiniAOD91.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/77644cef-0a92-4f82-bf03-a3ac05a6792b.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output92.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD92.out
+Error     = Log/MiniAOD92.err
+Log       = Log/MiniAOD92.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/25ba7503-7897-4984-a8ea-8010bf4cb7a4.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output93.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD93.out
+Error     = Log/MiniAOD93.err
+Log       = Log/MiniAOD93.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/67c98c00-ec88-4d28-bb78-595c43b47ae5.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output94.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD94.out
+Error     = Log/MiniAOD94.err
+Log       = Log/MiniAOD94.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/caf481bf-9f73-4173-96db-c7ee94ea70b4.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output95.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD95.out
+Error     = Log/MiniAOD95.err
+Log       = Log/MiniAOD95.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/794a1eed-454e-4c0e-b20c-0b75d12632d5.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output96.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD96.out
+Error     = Log/MiniAOD96.err
+Log       = Log/MiniAOD96.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/7d7b81ac-e60e-4df5-a512-8a46fe4a81a1.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output97.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD97.out
+Error     = Log/MiniAOD97.err
+Log       = Log/MiniAOD97.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/46de0a86-18e3-4cdf-80a4-98380258deb1.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output98.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD98.out
+Error     = Log/MiniAOD98.err
+Log       = Log/MiniAOD98.log
+Queue
+
+Arguments = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/100000/1cfee67c-33e5-41fc-92ed-cc791b29d510.root /eos/cms/store/group/phys_heavyions/chenyi/Share/24141_ExampleMiniAOD//Output99.root /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/24141_PbPbMCWithRhoByHand
+Output    = Log/MiniAOD99.out
+Error     = Log/MiniAOD99.err
+Log       = Log/MiniAOD99.log
+Queue
+
