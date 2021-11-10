@@ -1,0 +1,48 @@
+112 good
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/0420acac-c95b-49ee-b3f1-f0eed7770c8e.root'
+
+112 bad
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/01998afe-24ef-41e7-812f-cbdf02b9ea7d.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/046dccd2-3447-4e99-8b16-c9e0bfba68ce.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/0a7c5ee9-ffe0-44f7-895d-18bdfe72143e.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/117219a3-e7f4-4098-ba67-4ae1c91fce0f.root'
+
+
+113 good
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/128dcd20-0946-4d95-8b4f-857afdd98ba1.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/1c1f68f6-bf97-4334-b91a-09ca62d23d37.root'
+
+113 bad
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/11ec5112-64bb-41ac-8019-13911bb27627.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/25be8f18-0f71-48e9-9be5-eec24bbedd03.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/129dd25a-c51d-4059-9bcb-055e3c13d40b.root'
+
+
+115 good
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/655b099f-7a7a-4c2b-a9e9-a0aee43bf7ff.root'
+
+115 bad
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/582c2cde-123a-4e67-a526-9e428544176e.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/55cdcea5-b426-42d6-b34e-a1d25c23c1a7.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/50552770-2f2a-4965-9964-dbc7533aafc7.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/798e700b-9ebd-461d-8130-7308f42719fa.root'
+
+117 good
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/bfe04cf2-cf28-4a01-a695-4ca359deae9c.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/d4e9ae11-1267-4f62-ab44-d33bc0c44b8e.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/df90dae7-3e66-40a3-b02d-4be28db714e8.root'
+
+117 dead
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/c316661e-e8c4-42be-aa22-13f3f2b1e5c0.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/100000/c59552d3-d487-46de-85d1-e547009a55ad.root'
+
+257 all good
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/230000/d4600d88-3994-4754-81f6-0091255aac4b.root' 
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/230000/d4b78714-03db-4c8c-9123-cc9be2f1f1ba.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/230000/d504c484-5ef4-4862-ab60-76caedda0365.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/230000/d590f7f8-b4dc-4d83-8e1c-ab6580454dc9.root'
+'/store/hidata/HIRun2018A/HIMinimumBias0/MINIAOD/PbPb18_MiniAODv1-v1/230000/d592d018-5076-4963-a8e1-38ab1a97e961.root'
+
+
+
+
