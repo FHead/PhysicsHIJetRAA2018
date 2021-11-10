@@ -249,9 +249,11 @@ std::string SingleJetCorrector::StripBracket(std::string Line)
 SingleJetCorrector::Type SingleJetCorrector::ToType(std::string Line)
 {
    if(Line == "JetPt")    return TypeJetPT;
+   if(Line == "JetPT")    return TypeJetPT;
    if(Line == "JetEta")   return TypeJetEta;
    if(Line == "JetPhi")   return TypeJetPhi;
    if(Line == "JetA")     return TypeJetArea;
+   if(Line == "JetRho")   return TypeRho;
    if(Line == "Rho")      return TypeRho;
 
    std::cerr << "[SingleJetCorrector] Warning: variable type " << Line << " not found!" << std::endl;
