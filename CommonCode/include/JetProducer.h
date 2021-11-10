@@ -35,7 +35,7 @@ public:
    void SetJetR(double Value)           { JetR = Value; }
    void SetMinPTDiff(double Value)      { MinPTDiff = Value; }
    std::vector<FourVector> ClusterJets(const std::vector<FourVector> &PF,
-      const std::vector<FourVector> &PFID1);
+      const std::vector<FourVector> &PFID1, bool CalculateRho = true);
    RhoCalculator &GetRhoCalculator()    { return CRho; }
    RhoModulationCalculator &GetRhoModulationCalculator() { return CPhi; }
 };

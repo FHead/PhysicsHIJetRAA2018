@@ -29,7 +29,7 @@ void JetProducer::SetCMSPreset()
 }
    
 std::vector<FourVector> JetProducer::ClusterJets(const std::vector<FourVector> &PF,
-   const std::vector<FourVector> &PFID1)
+   const std::vector<FourVector> &PFID1, bool CalculateRho)
 {
    std::vector<fastjet::PseudoJet> FJPF;
    for(const FourVector &P : PF)
@@ -50,7 +50,12 @@ std::vector<FourVector> JetProducer::ClusterJets(const std::vector<FourVector> &
       return Jets;
    }
 
-   CRho.CalculateRho(PF);
+   if(CalculateRho == true)
+   {
+      std::vector<double> PRho = CRho.CalculateRho(PF);
+      // for(int i = 0; i < (int)PRho.size(); i++)
+      //    std::cout << i << " " << PRho[i] << std::endl;
+   }
    std::vector<double> PPhi = CPhi.DoRhoModulationFit(PFID1);
 
    for(fastjet::PseudoJet J : TempJets)
@@ -78,11 +83,14 @@ std::vector<FourVector> JetProducer::ClusterJets(const std::vector<FourVector> &
       if(PTDiff < MinPTDiff)
          continue;
 
+      // for(fastjet::PseudoJet &G : Ghost)
+      //    std::cout << J.perp() << " " << J.eta() << " " << J.phi() << " -- " << G.perp() << " " << G.eta() << " " << G.phi() << " " << G.area() << " " << CRho.GetRho(G.eta()) << std::endl;
+
       fastjet::contrib::ConstituentSubtractor Subtractor;
       Subtractor.set_distance_type(fastjet::contrib::ConstituentSubtractor::deltaR);
       Subtractor.set_max_distance(CSR);
       Subtractor.set_alpha(CSAlpha);
-      Subtractor.set_do_mass_subtraction(true);
+      // Subtractor.set_do_mass_subtraction(true);
       Subtractor.set_remove_all_zero_pt_particles(true);
 
       fastjet::PseudoJet Subtracted
