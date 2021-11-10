@@ -7,6 +7,6 @@ default: Execute
 
 
 Execute: ToGraph.cpp
-	CompileRooMacro ToGraph.cpp Execute
+	CompileRootMacro ToGraph.cpp Execute
 
 
