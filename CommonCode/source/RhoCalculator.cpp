@@ -180,13 +180,11 @@ std::vector<double> RhoCalculator::CalculateRho(const std::vector<FourVector> &P
    fastjet::ClusterSequence Sequence(TowerToPseudoJet(PFTowers), Definition);
    std::vector<fastjet::PseudoJet> FastJetJets = fastjet::sorted_by_pt(Sequence.inclusive_jets(PUPTMin));
 
-   /*
-   cout << FastJetJets.size() << endl;
-   for(int i = 0; i < (int)FastJetJets.size(); i++)
-   {
-      cout << "J" << i << " " << FastJetJets[i].perp() << " " << FastJetJets[i].eta() << " " << FastJetJets[i].phi() << endl;
-   }
-   */
+   // std::cout << "FJJet count " << FastJetJets.size() << std::endl;
+   // for(int i = 0; i < (int)FastJetJets.size(); i++)
+   // {
+   //    std::cout << "J" << i << " " << FastJetJets[i].perp() << " " << FastJetJets[i].eta() << " " << FastJetJets[i].phi() << std::endl;
+   // }
 
    // Find excluded towers overall
    std::vector<std::pair<int, int>> ExcludedTowers;
@@ -408,6 +406,8 @@ double RhoModulationCalculator::SetCMSPreset()
 
    Parameters.clear();
    Parameters.resize(9);
+
+   return 0;
 }
 
 std::vector<double> RhoModulationCalculator::DoRhoModulationFit(const std::vector<FourVector> &PF, bool FloatEventPlane, bool RandomizePhi)

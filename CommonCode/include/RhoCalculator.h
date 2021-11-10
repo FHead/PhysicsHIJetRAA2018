@@ -46,6 +46,7 @@ public:
    void SetSigmaCut(double SigmaCut = 5.0)         { SigmaCut = SigmaCut; }
    void SetReducedEtaBins()                        { InitializeCMSReducedEtaBins(); }
    double GetRho(double Eta);
+   void SetRhoVector(std::vector<double> Rho)      { RhoParameters = Rho; }
 public:
    void SetCMSPreset();
 };
