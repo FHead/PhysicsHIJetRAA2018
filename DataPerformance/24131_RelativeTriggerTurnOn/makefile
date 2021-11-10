@@ -33,6 +33,9 @@ TestRun: Execute
 		--DoBaselineCutAA true --DoBaselineCutPP false \
 		--JEC "$(JECBase)/$(JECTag)/$(JECTag)_L2Relative_AK1PF.txt","$(JECBase)/$(JECTag)/$(JECTag)_L2L3Residual_AK1PF.txt"
 
+ProcessAll: Execute
+	bash Run.sh
+
 TestFit: ExecuteFit
 	./ExecuteFit --Input Result_R1_Centrality0to10.root --Output Plots_R1_Centrality0to10.pdf \
 		--DHFile GlobalSettingTest.dh --State PbPbTriggerTurnOn --KeyPrefix R1_Centrality0to10
