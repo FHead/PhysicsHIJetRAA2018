@@ -16,7 +16,8 @@ do
    for C in $Centrality
    do
       ./Execute --Input $Location/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
-         --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}.root
+         --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
+         --MCPrior false
    done
 done
 
