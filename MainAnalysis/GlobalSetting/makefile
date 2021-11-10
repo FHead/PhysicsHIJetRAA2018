@@ -12,6 +12,24 @@ DefaultSettings:
 	DHSet GlobalSetting.dh "Binning" "RecoPT" string "20,25,30,35,40,45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1100,1200,1300,1400,1500"
 	DHSet GlobalSetting.dh "Binning" "PTUnderflow" int 13
 	DHSet GlobalSetting.dh "Binning" "PTOverflow" int 0
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR1" int 13
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR2" int 13
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR3" int 13
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR4" int 13
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR5" int 13
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR6" int 13
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR7" int 13
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR8" int 13
+	DHSet GlobalSetting.dh "Binning" "PTUnderflowR9" int 13
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR1" int 0
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR2" int 0
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR3" int 0
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR4" int 0
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR5" int 0
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR6" int 0
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR7" int 0
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR8" int 0
+	DHSet GlobalSetting.dh "Binning" "PTOverflowR9" int 0
 	DHSet GlobalSetting.dh "JetR" "1" float 0.15
 	DHSet GlobalSetting.dh "JetR" "2" float 0.20
 	DHSet GlobalSetting.dh "JetR" "3" float 0.30
