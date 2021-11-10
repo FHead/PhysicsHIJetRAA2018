@@ -1,6 +1,6 @@
-FJCONTRIB = /cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/fastjet-contrib/1.033-omkpbe
 FastJetConfig = /Users/yichen/Programs/FastJet/install/bin/fastjet-config
 FastJetConfig = /cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/fastjet/3.3.4-ghbfee/bin/fastjet-config
+FJContrib = /cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/fastjet-contrib/1.044-ghbfee/
 
 default: all
 
@@ -16,6 +16,6 @@ library/RhoCalculator.o: source/RhoCalculator.cpp include/RhoCalculator.h
 
 library/JetProducer.o: source/JetProducer.cpp include/JetProducer.h
 	g++ source/JetProducer.cpp -I. -c -o library/JetProducer.o -std=c++17 \
-		`$(FastJetConfig) --cxxflags` -I$(FJCONTRIB)/include \
+		`$(FastJetConfig) --cxxflags` -I$(FJContrib)/include \
 		-I$(RootMacrosBase) \
 		`root-config --cflags` -std=c++17
