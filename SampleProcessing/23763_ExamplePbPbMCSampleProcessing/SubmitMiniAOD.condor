@@ -1,0 +1,76 @@
+Universe              = vanilla
+Executable            = /afs/cern.ch/user/c/chenyi/work/PhysicsWorkspace/HIJetRAA2018/SampleProcessing/23763_ExamplePbPbMCSampleProcessing/RunMiniAOD.sh
+should_transfer_files = NO
++JobFlavour           = "workday"
+
+File0 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/cf467a58-1013-44e9-8bf0-70b0d472420a.root
+File1 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/1270af0b-32e2-4006-a2e7-4124a27d70fa.root
+File2 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/14088892-7df7-4cf2-9730-47980d8ec56e.root
+File3 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/15cfe996-f2e2-4984-87a0-f8380c43475f.root
+File4 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/948e9033-dad8-44cd-bf09-18d8b69d3e0f.root
+File5 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/3163faa0-9c72-4607-8cf2-8c809d163965.root
+File6 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/71231b84-49e7-4c1f-88d0-d1a55cf9624d.root
+File7 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/9bd7558c-9679-4f45-ba0e-d104f1e7b4e2.root
+File8 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/0faf8e1f-6096-4ac6-a30c-c7e4c1ba52cb.root
+File9 = /store/himc/HINPbPbSpring21MiniAOD/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/MINIAODSIM/FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/250000/9d0206aa-0edd-4e1d-a08c-49d2ce491bc6.root
+
+Arguments = $(File0) Output0.root
+Output    = Log/MiniAOD0.out
+Error     = Log/MiniAOD0.err
+Log       = Log/MiniAOD0.log
+Queue
+
+Arguments = $(File1) Output1.root
+Output    = Log/MiniAOD1.out
+Error     = Log/MiniAOD1.err
+Log       = Log/MiniAOD1.log
+Queue
+
+Arguments = $(File2) Output2.root
+Output    = Log/MiniAOD2.out
+Error     = Log/MiniAOD2.err
+Log       = Log/MiniAOD2.log
+Queue
+
+Arguments = $(File3) Output3.root
+Output    = Log/MiniAOD3.out
+Error     = Log/MiniAOD3.err
+Log       = Log/MiniAOD3.log
+Queue
+
+Arguments = $(File4) Output4.root
+Output    = Log/MiniAOD4.out
+Error     = Log/MiniAOD4.err
+Log       = Log/MiniAOD4.log
+Queue
+
+Arguments = $(File5) Output5.root
+Output    = Log/MiniAOD5.out
+Error     = Log/MiniAOD5.err
+Log       = Log/MiniAOD5.log
+Queue
+
+Arguments = $(File6) Output6.root
+Output    = Log/MiniAOD6.out
+Error     = Log/MiniAOD6.err
+Log       = Log/MiniAOD6.log
+Queue
+
+Arguments = $(File7) Output7.root
+Output    = Log/MiniAOD7.out
+Error     = Log/MiniAOD7.err
+Log       = Log/MiniAOD7.log
+Queue
+
+Arguments = $(File8) Output8.root
+Output    = Log/MiniAOD8.out
+Error     = Log/MiniAOD8.err
+Log       = Log/MiniAOD8.log
+Queue
+
+Arguments = $(File9) Output9.root
+Output    = Log/MiniAOD9.out
+Error     = Log/MiniAOD9.err
+Log       = Log/MiniAOD9.log
+Queue
+
