@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <cmath>
 using namespace std;
@@ -14,6 +15,9 @@ using namespace std;
 #include "PlotHelper4.h"
 #include "SetStyle.h"
 
+int main(int argc, char *argv[]);
+vector<double> ParseList(string List);
+
 int main(int argc, char *argv[])
 {
    SetThesisStyle();
@@ -21,14 +25,15 @@ int main(int argc, char *argv[])
 
    CommandLine CL(argc, argv);
 
-   string FileName    = CL.Get("Input");
-   string PassName    = CL.Get("Pass", "HTrigger");
-   string AllName     = CL.Get("All", "HAll");
-   string Output      = CL.Get("Output");
-   string DHFileName  = CL.Get("DHFile", "GlobalSetting.dh");
-   string State       = CL.Get("State", "TriggerTurnOn");
-   string KeyPrefix   = CL.Get("KeyPrefix", "Fit");
-   int FunctionChoice = CL.GetInt("FunctionChoice", 0);
+   string FileName      = CL.Get("Input");
+   string PassName      = CL.Get("Pass", "HTrigger");
+   string AllName       = CL.Get("All", "HAll");
+   string Output        = CL.Get("Output");
+   string DHFileName    = CL.Get("DHFile", "GlobalSetting.dh");
+   string State         = CL.Get("State", "TriggerTurnOn");
+   string KeyPrefix     = CL.Get("KeyPrefix", "Fit");
+   int FunctionChoice   = CL.GetInt("FunctionChoice", 0);
+   double CutPercentage = CL.GetDouble("CutPercentage", 0.99);
    
    PdfFileHelper PdfFile(Output);
    PdfFile.AddTextPage("Trigger fit");
@@ -66,6 +71,8 @@ int main(int argc, char *argv[])
    double P2 = F.GetParameter(2);
 
    DataHelper DHFile(DHFileName);
+   
+   double CutLocation = 0;
 
    DHFile[State][KeyPrefix+"_FunctionChoice"] = FunctionChoice;
    DHFile[State][KeyPrefix+"_Formula"] = Function;
@@ -81,6 +88,7 @@ int main(int argc, char *argv[])
       DHFile[State][KeyPrefix+"_X98"]   = TMath::ErfInverse(1 + (0.98 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X99"]   = TMath::ErfInverse(1 + (0.99 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X99.9"] = TMath::ErfInverse(1 + (0.999 - 1) / P0) * P2 + P1;
+      CutLocation                       = TMath::ErfInverse(1 + (CutPercentage - 1) / P0) * P2 + P1;
    }
    else
    {
@@ -88,7 +96,18 @@ int main(int argc, char *argv[])
       DHFile[State][KeyPrefix+"_X98"]   = atanh(1 + (0.98 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X99"]   = atanh(1 + (0.99 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X99.9"] = atanh(1 + (0.999 - 1) / P0) * P2 + P1;
+      CutLocation                       = atanh(1 + (CutPercentage - 1) / P0) * P2 + P1;
    }
+
+   DHFile[State][KeyPrefix+"_Cut"] = CutLocation;
+
+   vector<double> RecoBins = ParseList(DHFile["Binning"]["GenPT"].GetString());
+   int NumberSmaller = 0;
+   for(double Value : RecoBins)
+      if(Value < CutLocation)
+         NumberSmaller = NumberSmaller + 1;
+   DHFile["Binning"]["PTUnderflow_"+KeyPrefix] = NumberSmaller;
+   DHFile["Binning"]["PTOverflow_"+KeyPrefix] = 0;
 
    DHFile.SaveToFile();
 
@@ -100,6 +119,26 @@ int main(int argc, char *argv[])
    return 0;
 }
 
+vector<double> ParseList(string List)
+{
+   vector<double> Result;
+
+   for(char &c : List)
+      if(c == ',')
+         c = ' ';
+
+   stringstream str(List);
+
+   while(str)
+   {
+      double Temp = -1;
+      str >> Temp;
+      if(Temp > 0)
+         Result.push_back(Temp);
+   }
+   
+   return Result;
+}
 
 
 
