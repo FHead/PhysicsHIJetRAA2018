@@ -36,3 +36,10 @@ TestRun: Execute
 TestFit: ExecuteFit
 	./ExecuteFit --Input Result_R1_Centrality0to10.root --Output Plots_R1_Centrality0to10.pdf \
 		--DHFile GlobalSettingTest.dh --State PbPbTriggerTurnOn --KeyPrefix R1_Centrality0to10
+
+ExecuteSummary: PlotPercentage.cpp
+	CompileRootMacro PlotPercentage.cpp ExecuteSummary
+
+Harvest: ExecuteSummary ExecuteFit
+	-bash RunFit.sh
+	./ExecuteSummary

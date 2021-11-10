@@ -21,13 +21,14 @@ int main(int argc, char *argv[])
 
    CommandLine CL(argc, argv);
 
-   string FileName   = CL.Get("Input");
-   string PassName   = CL.Get("Pass", "HTrigger");
-   string AllName    = CL.Get("All", "HAll");
-   string Output     = CL.Get("Output");
-   string DHFileName = CL.Get("DHFile", "GlobalSetting.dh");
-   string State      = CL.Get("State", "TriggerTurnOn");
-   string KeyPrefix  = CL.Get("KeyPrefix", "Fit");
+   string FileName    = CL.Get("Input");
+   string PassName    = CL.Get("Pass", "HTrigger");
+   string AllName     = CL.Get("All", "HAll");
+   string Output      = CL.Get("Output");
+   string DHFileName  = CL.Get("DHFile", "GlobalSetting.dh");
+   string State       = CL.Get("State", "TriggerTurnOn");
+   string KeyPrefix   = CL.Get("KeyPrefix", "Fit");
+   int FunctionChoice = CL.GetInt("FunctionChoice", 0);
    
    PdfFileHelper PdfFile(Output);
    PdfFile.AddTextPage("Trigger fit");
@@ -41,10 +42,13 @@ int main(int argc, char *argv[])
    G.Divide(HPass, HAll);
 
    string Function = "1+[0]*(tanh((x-[1])/[2])-1)";
+   if(FunctionChoice == 1)
+      Function = "1+[0]*(TMath::Erf((x-[1])/[2])-1)";
 
-   TF1 F("F", Function.c_str(), 0, 300);
+   TF1 F("F", Function.c_str(), 0, 500);
    F.SetParameters(0.5, 80, 20);
 
+   G.Fit(&F, "w");
    G.Fit(&F);
 
    HAll->SetLineColor(Colors[0]);
@@ -63,6 +67,7 @@ int main(int argc, char *argv[])
 
    DataHelper DHFile(DHFileName);
 
+   DHFile[State][KeyPrefix+"_FunctionChoice"] = FunctionChoice;
    DHFile[State][KeyPrefix+"_Formula"] = Function;
    DHFile[State][KeyPrefix+"_P0"] = F.GetParameter(0);
    DHFile[State][KeyPrefix+"_P1"] = F.GetParameter(1);
@@ -70,10 +75,20 @@ int main(int argc, char *argv[])
    DHFile[State][KeyPrefix+"_E0"] = F.GetParError(0);
    DHFile[State][KeyPrefix+"_E1"] = F.GetParError(1);
    DHFile[State][KeyPrefix+"_E2"] = F.GetParError(2);
-   DHFile[State][KeyPrefix+"_X90"] = atanh(1 + (0.90 - 1) / P0) * P2 + P1;
-   DHFile[State][KeyPrefix+"_X98"] = atanh(1 + (0.98 - 1) / P0) * P2 + P1;
-   DHFile[State][KeyPrefix+"_X99"] = atanh(1 + (0.99 - 1) / P0) * P2 + P1;
-   DHFile[State][KeyPrefix+"_X99.9"] = atanh(1 + (0.999 - 1) / P0) * P2 + P1;
+   if(FunctionChoice == 1)
+   {
+      DHFile[State][KeyPrefix+"_X90"]   = TMath::ErfInverse(1 + (0.90 - 1) / P0) * P2 + P1;
+      DHFile[State][KeyPrefix+"_X98"]   = TMath::ErfInverse(1 + (0.98 - 1) / P0) * P2 + P1;
+      DHFile[State][KeyPrefix+"_X99"]   = TMath::ErfInverse(1 + (0.99 - 1) / P0) * P2 + P1;
+      DHFile[State][KeyPrefix+"_X99.9"] = TMath::ErfInverse(1 + (0.999 - 1) / P0) * P2 + P1;
+   }
+   else
+   {
+      DHFile[State][KeyPrefix+"_X90"]   = atanh(1 + (0.90 - 1) / P0) * P2 + P1;
+      DHFile[State][KeyPrefix+"_X98"]   = atanh(1 + (0.98 - 1) / P0) * P2 + P1;
+      DHFile[State][KeyPrefix+"_X99"]   = atanh(1 + (0.99 - 1) / P0) * P2 + P1;
+      DHFile[State][KeyPrefix+"_X99.9"] = atanh(1 + (0.999 - 1) / P0) * P2 + P1;
+   }
 
    DHFile.SaveToFile();
 
