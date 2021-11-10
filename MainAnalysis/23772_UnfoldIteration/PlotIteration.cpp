@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 #include "TH1D.h"
@@ -13,6 +14,7 @@ using namespace std;
 
 int main(int argc, char *argv[]);
 double CalculateChi2(TH1D *H1, TH1D *H2, int IgnoreBin = 0, bool UseError = true);
+double CalculateE(TH1D *H, int IgnoreBin = 0, bool Relative = false, double Power = 1);
 
 int main(int argc, char *argv[])
 {
@@ -33,6 +35,11 @@ int main(int argc, char *argv[])
    TGraph Graph;
    TGraph GraphD;
    TGraph GraphWD;
+   TGraph GraphE;
+   TGraph GraphE2;
+   TGraph GraphRE;
+   TGraph GraphRE2;
+   TGraph GraphM;
 
    PdfFileHelper PdfFile(OutputFileName);
    PdfFile.AddTextPage("Iteration scan");
@@ -53,6 +60,7 @@ int main(int argc, char *argv[])
    double MaxD2 = -1, MinD2 = -1;
    double MaxWD2 = -1, MinWD2 = -1;
 
+   double BestMetric = -1;
    int BestIteration = -1;
 
    for(int i : Iteration)
@@ -76,6 +84,15 @@ int main(int argc, char *argv[])
          if(MinD2 < 0 || MinD2 > D2)   MinD2 = D2;
          GraphD.SetPoint(GraphD.GetN(), i, D2);
       }
+      
+      double E   = CalculateE(HUnfolded, PointsToIgnore, false, 1);
+      double E2  = CalculateE(HUnfolded, PointsToIgnore, false, 2);
+      double RE  = CalculateE(HUnfolded, PointsToIgnore, true, 1);
+      double RE2 = CalculateE(HUnfolded, PointsToIgnore, true, 2);
+      GraphE.SetPoint(GraphE.GetN(), i, E);
+      GraphE2.SetPoint(GraphE2.GetN(), i, E2);
+      GraphRE.SetPoint(GraphRE.GetN(), i, RE);
+      GraphRE2.SetPoint(GraphRE2.GetN(), i, RE2);
 
       TCanvas Canvas;
       HMCTruth->SetTitle(Form("Iteration %d", i));
@@ -111,8 +128,19 @@ int main(int argc, char *argv[])
       if(WD2 > 0 && isinf(WD2) == false)
       {
          if(MaxWD2 < 0 || MaxWD2 < WD2)   MaxWD2 = WD2;
-         if(MinWD2 < 0 || MinWD2 > WD2)   MinWD2 = WD2, BestIteration = i;
+         if(MinWD2 < 0 || MinWD2 > WD2)   MinWD2 = WD2;
          GraphWD.SetPoint(GraphWD.GetN(), i, WD2);
+      }
+
+      double Metric = Chi2 + E;
+      if(Metric > 0 && isinf(Metric) == false)
+      {
+         if(BestMetric < 0 || BestMetric > Metric)
+         {
+            BestMetric = Metric;
+            BestIteration = i;
+         }
+         GraphM.SetPoint(GraphM.GetN(), i, Metric);
       }
    }
 
@@ -138,14 +166,29 @@ int main(int argc, char *argv[])
 
    Graph.SetNameTitle("GChi2", "");
    GraphD.SetNameTitle("GD2", "");
+   GraphE.SetNameTitle("GE", "");
+   GraphE2.SetNameTitle("GE2", "");
+   GraphRE.SetNameTitle("GRE", "");
+   GraphRE2.SetNameTitle("GRE2", "");
    GraphWD.SetNameTitle("GWD2", "");
+   GraphM.SetNameTitle("GM", "");
 
    Graph.GetXaxis()->SetTitle("Number of iterations");
-   Graph.GetYaxis()->SetTitle("#chi^{2}");
+   Graph.GetYaxis()->SetTitle("#sum #chi^{2}");
    GraphD.GetXaxis()->SetTitle("Number of iterations");
-   GraphD.GetYaxis()->SetTitle("Distance^{2}");
+   GraphD.GetYaxis()->SetTitle("#sum Distance^{2}");
+   GraphE.GetXaxis()->SetTitle("Number of iterations");
+   GraphE.GetYaxis()->SetTitle("#sum Error");
+   GraphE2.GetXaxis()->SetTitle("Number of iterations");
+   GraphE2.GetYaxis()->SetTitle("#sum Error^{2}");
+   GraphRE.GetXaxis()->SetTitle("Number of iterations");
+   GraphRE.GetYaxis()->SetTitle("#sum Relative error");
+   GraphRE2.GetXaxis()->SetTitle("Number of iterations");
+   GraphRE2.GetYaxis()->SetTitle("#sum Relative error^{2}");
    GraphWD.GetXaxis()->SetTitle("Number of iterations");
-   GraphWD.GetYaxis()->SetTitle("Weighted distance^{2}");
+   GraphWD.GetYaxis()->SetTitle("#sum Weighted distance^{2}");
+   GraphM.GetXaxis()->SetTitle("Number of iterations");
+   GraphM.GetYaxis()->SetTitle("Chosen metric");
 
    Graph.GetYaxis()->SetRangeUser(MinChi2, MaxChi2);
    GraphD.GetYaxis()->SetRangeUser(MinD2, MaxD2);
@@ -160,9 +203,24 @@ int main(int argc, char *argv[])
    PdfFile.AddPlot(GraphD, "apl");
    PdfFile.AddPlot(GraphD, "apl", false, false, true, true);
    PdfFile.AddPlot(GraphD, "apl", true, false, true, true);
+   PdfFile.AddPlot(GraphE, "apl");
+   PdfFile.AddPlot(GraphE, "apl", false, false, true, true);
+   PdfFile.AddPlot(GraphE, "apl", true, false, true, true);
+   PdfFile.AddPlot(GraphE2, "apl");
+   PdfFile.AddPlot(GraphE2, "apl", false, false, true, true);
+   PdfFile.AddPlot(GraphE2, "apl", true, false, true, true);
+   PdfFile.AddPlot(GraphRE, "apl");
+   PdfFile.AddPlot(GraphRE, "apl", false, false, true, true);
+   PdfFile.AddPlot(GraphRE, "apl", true, false, true, true);
+   PdfFile.AddPlot(GraphRE2, "apl");
+   PdfFile.AddPlot(GraphRE2, "apl", false, false, true, true);
+   PdfFile.AddPlot(GraphRE2, "apl", true, false, true, true);
    PdfFile.AddPlot(GraphWD, "apl");
    PdfFile.AddPlot(GraphWD, "apl", false, false, true, true);
    PdfFile.AddPlot(GraphWD, "apl", true, false, true, true);
+   PdfFile.AddPlot(GraphM, "apl");
+   PdfFile.AddPlot(GraphM, "apl", false, false, true, true);
+   PdfFile.AddPlot(GraphM, "apl", true, false, true, true);
 
    PdfFile.AddTimeStampPage();
    PdfFile.Close();
@@ -205,6 +263,35 @@ double CalculateChi2(TH1D *H1, TH1D *H2, int IgnoreBin, bool UseError)
    return Chi2;
 }
 
+double CalculateE(TH1D *H, int IgnoreBin, bool Relative, double Power)
+{
+   if(H == nullptr)
+      return 0;
+
+   int N = H->GetNbinsX();
+
+   double SumE = 0;
+
+   for(int i = IgnoreBin + 1; i <= N; i++)
+   {
+      double V = H->GetBinContent(i);
+      double E = H->GetBinError(i);
+
+      if(Relative == true)
+      {
+         if(V == 0)
+            E = 0;
+         else
+            E = E / V;
+      }
+
+      E = pow(E, Power);
+      SumE = SumE + E;
+   }
+
+   return SumE;
+
+}
 
 
 
