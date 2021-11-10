@@ -10,8 +10,15 @@ TestRunPart1:
 	(cd 23762_UnfoldPreparation && make Prepare TestRun)
 	(cd 24112_BrilCalc          && make Prepare RunPP RunAA)
 	(cd 24121_MBCounting        && make Prepare MergeMB RunAA)
+	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Prepare ProcessAll)
 
 TestRunPart2:
+	# Copy over the following from lxplus
+	#    1. trigger output files
+	#    2. unfold preparation output files
+	#    3. GlobalSetting.dh
+	sleep 5
+	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Harvest)
 	(cd 23762_PerfectRecoGeneration && make Prepare TestRun)
 	(cd 23762_FakeData              && make Prepare TestRun)
 	(cd 23762_ActualUnfold          && make Prepare TestRun TestRunPP)

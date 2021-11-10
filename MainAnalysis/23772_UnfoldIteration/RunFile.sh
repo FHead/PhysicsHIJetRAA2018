@@ -14,7 +14,7 @@ for R in $JetR
 do
    for C in $Centrality
    do
-      Ignore=`DHQuery GlobalSetting.dh Binning PTUnderflowR${R}C${C}`
+      Ignore=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
 
 	   ./Execute --Input Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}.pdf \

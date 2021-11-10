@@ -18,8 +18,8 @@ for R in $JetR
 do
    for C in $Centrality
    do
-      Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflowR${R}C${C}`
-      Overflow=`DHQuery GlobalSetting.dh Binning PTOverflowR${R}C${C}`
+      Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
+      Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow_R${R}_Centrality${C}`
    
       ./Execute \
          --MC Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
