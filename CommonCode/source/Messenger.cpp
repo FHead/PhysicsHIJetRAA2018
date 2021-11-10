@@ -174,16 +174,16 @@ bool GGTreeMessenger::GetEntry(int iEntry)
    return true;
 }
 
-RhoTreeMessenger::RhoTreeMessenger(TFile &File)
+RhoTreeMessenger::RhoTreeMessenger(TFile &File, std::string TreeName)
 {
-   Tree = (TTree *)File.Get("hiFJRhoAnalyzer/t");
+   Tree = (TTree *)File.Get(TreeName.c_str());
    Initialize();
 }
 
-RhoTreeMessenger::RhoTreeMessenger(TFile *File)
+RhoTreeMessenger::RhoTreeMessenger(TFile *File, std::string TreeName)
 {
    if(File != nullptr)
-      Tree = (TTree *)File->Get("hiFJRhoAnalyzer/t");
+      Tree = (TTree *)File->Get(TreeName.c_str());
    else
       Tree = nullptr;
    Initialize();
@@ -205,10 +205,13 @@ bool RhoTreeMessenger::Initialize()
    if(Tree == nullptr)
       return false;
 
+   EtaMin = nullptr;
    EtaMax = nullptr;
    Rho = nullptr;
    RhoM = nullptr;
 
+   if(Tree->GetBranch("etaMin")) Tree->SetBranchAddress("etaMin", &EtaMin);
+   else                          EtaMin = &EmptyVectors::EmptyVectorDouble;
    if(Tree->GetBranch("etaMax")) Tree->SetBranchAddress("etaMax", &EtaMax);
    else                          EtaMax = &EmptyVectors::EmptyVectorDouble;
    if(Tree->GetBranch("rho"))    Tree->SetBranchAddress("rho", &Rho);
@@ -269,8 +272,14 @@ bool SkimTreeMessenger::Initialize()
       HBHENoiseRun2Loose = 1;
    if(Tree->GetBranch("pprimaryVertexFilter"))
       Tree->SetBranchAddress("pprimaryVertexFilter", &PVFilter);
+   else if(Tree->GetBranch("pPAprimaryVertexFilter"))
+      Tree->SetBranchAddress("pPAprimaryVertexFilter", &PVFilter);
    else
       PVFilter = 1;
+   if(Tree->GetBranch("pBeamScrapingFilter"))
+      Tree->SetBranchAddress("pBeamScrapingFilter", &BeamScrapingFilter);
+   else
+      BeamScrapingFilter = 1;
    if(Tree->GetBranch("pclusterCompatibilityFilter"))
       Tree->SetBranchAddress("pclusterCompatibilityFilter", &ClusterCompatibilityFilter);
    else
@@ -610,17 +619,21 @@ bool PFTreeMessenger::Initialize()
    E = nullptr;
    Eta = nullptr;
    Phi = nullptr;
+   M = nullptr;
 
    if(Tree->GetBranch("pfId"))     Tree->SetBranchAddress("pfId", &ID);
    else                            ID = &EmptyVectors::EmptyVectorInt;
    if(Tree->GetBranch("pfPt"))     Tree->SetBranchAddress("pfPt", &PT);
    else                            PT = &EmptyVectors::EmptyVectorFloat;
    if(Tree->GetBranch("pfEnergy")) Tree->SetBranchAddress("pfEnergy", &E);
+   else if(Tree->GetBranch("pfE")) Tree->SetBranchAddress("pfE", &E);
    else                            E = &EmptyVectors::EmptyVectorFloat;
    if(Tree->GetBranch("pfEta"))    Tree->SetBranchAddress("pfEta", &Eta);
    else                            Eta = &EmptyVectors::EmptyVectorFloat;
    if(Tree->GetBranch("pfPhi"))    Tree->SetBranchAddress("pfPhi", &Phi);
    else                            Phi = &EmptyVectors::EmptyVectorFloat;
+   if(Tree->GetBranch("pfM"))      Tree->SetBranchAddress("pfM", &M);
+   else                            M = &EmptyVectors::EmptyVectorFloat;
 
    return true;
 }
@@ -778,6 +791,11 @@ void TriggerTreeMessenger::FillTriggerNames()
 
    // pp trigger
    Name.push_back("HLT_AK4PFJet80_Eta5p1_v1");
+   Name.push_back("HLT_HIAK4PFJet40_v1");
+   Name.push_back("HLT_HIAK4PFJet60_v1");
+   Name.push_back("HLT_HIAK4PFJet80_v1");
+   Name.push_back("HLT_HIAK4PFJet100_v1");
+   Name.push_back("HLT_HIAK4PFJet120_v1");
 
    // L1 pass through
    Name.push_back("HLT_L1SingleJet8_v1_BptxAND_v1");

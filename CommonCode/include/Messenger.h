@@ -4,8 +4,8 @@
 #include "TTree.h"
 #include "TFile.h"
 
-#define JETCOUNTMAX 200
-#define GENCOUNTMAX 100
+#define JETCOUNTMAX 500
+#define GENCOUNTMAX 250
 #define VERTEXCOUNTMAX 200
 #define PLANEMAX 200
 
@@ -78,12 +78,13 @@ class RhoTreeMessenger
 {
 public:
    TTree *Tree;
+   std::vector<double> *EtaMin;
    std::vector<double> *EtaMax;
    std::vector<double> *Rho;
    std::vector<double> *RhoM;
 public:
-   RhoTreeMessenger(TFile &File);
-   RhoTreeMessenger(TFile *File);
+   RhoTreeMessenger(TFile &File, std::string TreeName = "hiFJRhoAnalyzer/t");
+   RhoTreeMessenger(TFile *File, std::string TreeName = "hiFJRhoAnalyzer/t");
    RhoTreeMessenger(TTree *RhoTree);
    bool Initialize(TTree *RhoTree);
    bool Initialize();
@@ -98,6 +99,7 @@ public:
    int HBHENoiseRun2Loose;
    int PVFilter;
    int ClusterCompatibilityFilter;
+   int BeamScrapingFilter;
    int HFCoincidenceFilter;
    int HFCoincidenceFilter2Th4;
    int CollisionEventSelection;
@@ -219,6 +221,7 @@ public:
    std::vector<float> *E;
    std::vector<float> *Eta;
    std::vector<float> *Phi;
+   std::vector<float> *M;
 public:
    PFTreeMessenger(TFile &File, std::string TreeName = "pfcandAnalyzer/pfTree");
    PFTreeMessenger(TFile *File, std::string TreeName = "pfcandAnalyzer/pfTree");
