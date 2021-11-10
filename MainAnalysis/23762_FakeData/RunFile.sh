@@ -14,13 +14,13 @@ if [[ "$IsPP" == "1" ]]; then
    Centrality="Inclusive"
 fi
 
-Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow`
-Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow`
-
 for R in $JetR
 do
    for C in $Centrality
    do
+      Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflowR${R}C${C}`
+      Overflow=`DHQuery GlobalSetting.dh Binning PTOverflowR${R}C${C}`
+   
       ./Execute \
          --MC Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Shape PerfectInput/${Prefix}_R${R}_Centrality${C}_${Suffix}_PerfectReco.root \

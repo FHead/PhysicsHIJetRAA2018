@@ -10,12 +10,12 @@ if [[ "$IsPP" == "1" ]]; then
    Centrality="Inclusive"
 fi
 
-Ignore=`DHQuery GlobalSetting.dh Binning PTUnderflow`
-
 for R in $JetR
 do
    for C in $Centrality
    do
+      Ignore=`DHQuery GlobalSetting.dh Binning PTUnderflowR${R}C${C}`
+
 	   ./Execute --Input Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}.pdf \
          --Ignore ${Ignore} --Reference HMCTruth \
