@@ -1,5 +1,5 @@
 
-default: TestRunFit
+default: FitAll #TestRunMatch TestRunFit
 
 Prepare:
 	rm -f GlobalSetting.dh Input
@@ -15,7 +15,7 @@ TestRunMatch: ExecuteMatch
 	./ExecuteMatch --Input root/Output_R1_Centrality50to90.root \
 		--Output pdf/Output_R1_Centrality50to90.pdf \
 		--RootOutput graph/Output_R1_Centrality50to90.root \
-		--BinCount 100 --BinMagnification 20 --SkipFinalBin true
+		--BinCount 100 --BinMagnification 25 --SkipFinalBin true
 
 Execute: StripTree.cpp
 	CompileRootMacro StripTree.cpp Execute
@@ -32,8 +32,9 @@ ExecuteFit: FitRatio.cpp
 TestRunFit: ExecuteFit
 	./ExecuteFit --Input graph/Output_R1_Centrality50to90.root \
 		--Output pdf/Fit_R1_Centrality50to90.pdf \
-		--DHFile GlobalSetting.dh --Key R1_Centrality50to90 --Order1 3 --Order2 4
+		--DHFile GlobalSetting.dh --Key R1_Centrality50to90 --Order1 8 --Order2 0
 
-FitAll: ExecuteFit
-	bash RunFit.sh
+FitAll: ExecuteMatch ExecuteFit
+	bash BinFile.sh
+	bash FitFile.sh
 

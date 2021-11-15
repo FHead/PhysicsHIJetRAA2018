@@ -218,7 +218,7 @@ TGraphAsymmErrors BuildRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2, bool 
       // if(SkipFinalBin == true && i == G1.GetN() - 1)
       //    break;
       if(SkipFinalBin == true && i == 0)
-         break;
+         continue;
 
       double X1, Y1;
       double X2, Y2;
@@ -228,10 +228,12 @@ TGraphAsymmErrors BuildRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2, bool 
 
       double Y = Y1 / Y2;
 
+      int N = G.GetN();
+      
       if(Log == false)
-         G.SetPoint(i, X1, Y);
+         G.SetPoint(N, X1, Y);
       else
-         G.SetPoint(i, X1, log(Y));
+         G.SetPoint(N, X1, log(Y));
       
       double EXL1 = G1.GetErrorXlow(i);
       double EXH1 = G1.GetErrorXhigh(i);
@@ -244,9 +246,9 @@ TGraphAsymmErrors BuildRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2, bool 
       double EYH = sqrt(EYH1 * EYH1 + EYH2 * EYH2) * Y;
 
       if(Log == false)
-         G.SetPointError(i, EXL1, EXH1, EYL, EYH);
+         G.SetPointError(N, EXL1, EXH1, EYL, EYH);
       else
-         G.SetPointError(i, EXL1, EXH1, log(Y) - log(Y - EYL), log(Y + EYH) - log(Y));
+         G.SetPointError(N, EXL1, EXH1, log(Y) - log(Y - EYL), log(Y + EYH) - log(Y));
    }
 
    return G;

@@ -40,6 +40,19 @@ int main(int argc, char *argv[])
    if(GRatioLog == nullptr)
       return -1;
 
+   {
+      int N = GRatioLog->GetN();
+      double X = GRatioLog->GetPointX(N - 1);
+      double Y = GRatioLog->GetPointY(N - 1);
+      GRatioLog->SetPoint(N, X * 0.9, Y - 5);
+   }
+   {
+      int N = GRatioLog->GetN();
+      double X = GRatioLog->GetPointX(0);
+      double Y = GRatioLog->GetPointY(0);
+      GRatioLog->SetPoint(N, X * 1.1, Y - 5);
+   }
+
    string Formula = "([0]";
    for(int i = 1; i <= Order1; i++)
    {
