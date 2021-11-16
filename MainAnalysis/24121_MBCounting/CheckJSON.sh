@@ -2,7 +2,7 @@
 
 JSON=$1
 
-# example: Input/TestRunData_R7_Centrality50to90_Nominal_JSON.txt
+# example: Input/PbPbData_R7_Centrality50to90_Nominal_JSON.txt
 
 Tag=`basename $JSON | sed "s/_Nominal_JSON.txt//g"`
 

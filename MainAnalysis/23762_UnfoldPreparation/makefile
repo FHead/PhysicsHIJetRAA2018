@@ -1,8 +1,8 @@
 
-MCFraction = 0.1
+MCFraction = 1.0
 DataFraction = 1.0
 
-default: TestRunPP
+default: RunAA
 
 Prepare:
 	ln -sf ../23752_CopyJetFromForest/Output Input
@@ -20,91 +20,109 @@ Debug:
 	echo $$GenBins; \
 	DHQuery GlobalSetting.dh Binning GenPT
 
-TestRun: Execute ExecutePreset
-	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunMC \
-		--Prefix TestRunMC --Suffix Nominal --GlobalSetting GlobalSetting.dh \
+RunAA: Execute ExecutePreset
+	eval `./ExecutePreset --MCTag Input/PbPbMCRho --DataTag Input/PbPbMCRho \
+		--Prefix PbPbMCRho --Suffix Nominal --GlobalSetting GlobalSetting.dh \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(MCFraction) \
 		| grep ^time`
-	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
-		--Prefix TestRunData --Suffix Nominal --GlobalSetting GlobalSetting.dh \
+	eval `./ExecutePreset --MCTag Input/PbPbMCRho --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix Nominal --GlobalSetting GlobalSetting.dh \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`
-	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
-		--Prefix TestRunData --Suffix JECUp --GlobalSetting GlobalSetting.dh \
+	eval `./ExecutePreset --MCTag Input/PbPbMCRho --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix JECUp --GlobalSetting GlobalSetting.dh \
 		--Shift 1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`
-	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
-		--Prefix TestRunData --Suffix JECDown --GlobalSetting GlobalSetting.dh \
+	eval `./ExecutePreset --MCTag Input/PbPbMCRho --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix JECDown --GlobalSetting GlobalSetting.dh \
 		--Shift -1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`
 
-TestRunExternal: Execute ExecutePreset
+RunAAMCCentrality: Execute ExecutePreset
+	eval `./ExecutePreset --MCTag Input/PbPbMC --DataTag Input/PbPbMC \
+		--Prefix PbPbMC --Suffix Nominal --GlobalSetting GlobalSetting.dh \
+		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(MCFraction) \
+		| grep ^time`
+	eval `./ExecutePreset --MCTag Input/PbPbMC --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix Nominal --GlobalSetting GlobalSetting.dh \
+		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
+		| grep ^time`
+	eval `./ExecutePreset --MCTag Input/PbPbMC --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix JECUp --GlobalSetting GlobalSetting.dh \
+		--Shift 1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
+		| grep ^time`
+	eval `./ExecutePreset --MCTag Input/PbPbMC --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix JECDown --GlobalSetting GlobalSetting.dh \
+		--Shift -1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
+		| grep ^time`
+
+RunAAExternal: Execute ExecutePreset
 	GenBins=`DHQuery GlobalSetting.dh Binning GenPT`; \
 	RecoBins=`DHQuery GlobalSetting.dh Binning RecoPT`; \
-	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunMC \
-		--Prefix TestRunMC --Suffix Nominal --GenBins $$GenBins --RecoBins $$RecoBins \
+	eval `./ExecutePreset --MCTag Input/PbPbMC --DataTag Input/PbPbMC \
+		--Prefix PbPbMC --Suffix Nominal --GenBins $$GenBins --RecoBins $$RecoBins \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(MCFraction) \
 		| grep ^time`; \
-	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
-		--Prefix TestRunData --Suffix Nominal --GenBins $$GenBins --RecoBins $$RecoBins \
+	eval `./ExecutePreset --MCTag Input/PbPbMC --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix Nominal --GenBins $$GenBins --RecoBins $$RecoBins \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`; \
-	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
-		--Prefix TestRunData --Suffix JECUp --GenBins $$GenBins --RecoBins $$RecoBins \
+	eval `./ExecutePreset --MCTag Input/PbPbMC --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix JECUp --GenBins $$GenBins --RecoBins $$RecoBins \
 		--Shift 1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`; \
-	eval `./ExecutePreset --MCTag Input/TestRunMC --DataTag Input/TestRunData \
-		--Prefix TestRunData --Suffix JECDown --GenBins $$GenBins --RecoBins $$RecoBins \
+	eval `./ExecutePreset --MCTag Input/PbPbMC --DataTag Input/PbPbData \
+		--Prefix PbPbData --Suffix JECDown --GenBins $$GenBins --RecoBins $$RecoBins \
 		--Shift -1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`;
 	
-TestRunPP: Execute ExecutePreset
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPMC \
-		--Prefix TestRunPPMC --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
+RunPP: Execute ExecutePreset
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPMC \
+		--Prefix PPMC --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(MCFraction) \
 		| grep ^time`
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPData \
-		--Prefix TestRunPPData --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPData \
+		--Prefix PPData --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPData \
-		--Prefix TestRunPPData --Suffix JECUp --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPData \
+		--Prefix PPData --Suffix JECUp --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
 		--Shift 1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPData \
-		--Prefix TestRunPPData --Suffix JECDown --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh  \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPData \
+		--Prefix PPData --Suffix JECDown --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh  \
 		--Shift -1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`
 
 DebugRun: Execute ExecutePreset
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPMC \
-		--Prefix TestRunPPMC --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPMC \
+		--Prefix PPMC --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(MCFraction) \
 		--JetR 1,2 \
 		| grep ^time`
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPData \
-		--Prefix TestRunPPData --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPData \
+		--Prefix PPData --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		--JetR 1,2 \
 		| grep ^time`
 
-TestRunPPExternal: Execute ExecutePreset
+RunPPExternal: Execute ExecutePreset
 	GenBins=`DHQuery GlobalSetting.dh Binning GenPT`; \
 	RecoBins=`DHQuery GlobalSetting.dh Binning RecoPT`; \
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPMC \
-		--Prefix TestRunPPMC --Suffix Nominal --Centrality "Inclusive" --GenBins $$GenBins --RecoBins $$RecoBins \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPMC \
+		--Prefix PPMC --Suffix Nominal --Centrality "Inclusive" --GenBins $$GenBins --RecoBins $$RecoBins \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(MCFraction) \
 		| grep ^time`; \
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPData \
-		--Prefix TestRunPPData --Suffix Nominal --Centrality "Inclusive" --GenBins $$GenBins --RecoBins $$RecoBins  \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPData \
+		--Prefix PPData --Suffix Nominal --Centrality "Inclusive" --GenBins $$GenBins --RecoBins $$RecoBins  \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`; \
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPData \
-		--Prefix TestRunPPData --Suffix JECUp --Centrality "Inclusive" --GenBins $$GenBins --RecoBins $$RecoBins  \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPData \
+		--Prefix PPData --Suffix JECUp --Centrality "Inclusive" --GenBins $$GenBins --RecoBins $$RecoBins  \
 		--Shift 1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`; \
-	eval `./ExecutePreset --MCTag Input/TestRunPPMC --DataTag Input/TestRunPPData \
-		--Prefix TestRunPPData --Suffix JECDown --Centrality "Inclusive" --GenBins $$GenBins --RecoBins $$RecoBins  \
+	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPData \
+		--Prefix PPData --Suffix JECDown --Centrality "Inclusive" --GenBins $$GenBins --RecoBins $$RecoBins  \
 		--Shift -1.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \
 		| grep ^time`;
 

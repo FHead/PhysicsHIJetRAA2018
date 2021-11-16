@@ -34,10 +34,12 @@ private:
    vector<float>         *RecoJetMass;
    vector<float>         *RecoJetJEC;
    vector<float>         *RecoJetJEU;
+   vector<float>         *RecoJetWeight;
    vector<float>         *GenJetPT;
    vector<float>         *GenJetEta;
    vector<float>         *GenJetPhi;
    vector<float>         *GenJetMass;
+   vector<float>         *GenJetWeight;
    vector<float>         *MatchedJetPT;
    vector<float>         *MatchedJetEta;
    vector<float>         *MatchedJetPhi;
@@ -45,6 +47,7 @@ private:
    vector<float>         *MatchedJetJEC;
    vector<float>         *MatchedJetJEU;
    vector<float>         *MatchedJetAngle;
+   vector<float>         *MatchedJetWeight;
    double                 MaxMatchedJetAngle;
 public:
    Messenger()              { Initialize(nullptr); }
@@ -67,10 +70,12 @@ public:
       RecoJetMass = nullptr;
       RecoJetJEC = nullptr;
       RecoJetJEU = nullptr;
+      RecoJetWeight = nullptr;
       GenJetPT = nullptr;
       GenJetEta = nullptr;
       GenJetPhi = nullptr;
       GenJetMass = nullptr;
+      GenJetWeight = nullptr;
       MatchedJetPT = nullptr;
       MatchedJetEta = nullptr;
       MatchedJetPhi = nullptr;
@@ -78,6 +83,7 @@ public:
       MatchedJetJEC = nullptr;
       MatchedJetJEU = nullptr;
       MatchedJetAngle = nullptr;
+      MatchedJetWeight = nullptr;
       MaxMatchedJetAngle = -1;
 
       Tree = InputTree;
@@ -94,10 +100,12 @@ public:
       Tree->SetBranchAddress("RecoJetMass", &RecoJetMass);
       Tree->SetBranchAddress("RecoJetJEC", &RecoJetJEC);
       Tree->SetBranchAddress("RecoJetJEU", &RecoJetJEU);
+      Tree->SetBranchAddress("RecoJetWeight", &RecoJetWeight);
       Tree->SetBranchAddress("GenJetPT", &GenJetPT);
       Tree->SetBranchAddress("GenJetEta", &GenJetEta);
       Tree->SetBranchAddress("GenJetPhi", &GenJetPhi);
       Tree->SetBranchAddress("GenJetMass", &GenJetMass);
+      Tree->SetBranchAddress("GenJetWeight", &GenJetWeight);
       Tree->SetBranchAddress("MatchedJetPT", &MatchedJetPT);
       Tree->SetBranchAddress("MatchedJetEta", &MatchedJetEta);
       Tree->SetBranchAddress("MatchedJetPhi", &MatchedJetPhi);
@@ -105,6 +113,7 @@ public:
       Tree->SetBranchAddress("MatchedJetJEC", &MatchedJetJEC);
       Tree->SetBranchAddress("MatchedJetJEU", &MatchedJetJEU);
       Tree->SetBranchAddress("MatchedJetAngle", &MatchedJetAngle);
+      Tree->SetBranchAddress("MatchedJetWeight", &MatchedJetWeight);
    }
    void SetMaxMatchedJetAngle(double Value = -1) { MaxMatchedJetAngle = Value; }
    void GetEntry(int Entry)
@@ -214,6 +223,16 @@ public:
    {
       return EventWeight;
    }
+   double GetJetWeight(ObservableStep Step, int Index)
+   {
+      if(Step == Gen)
+         return (GenJetWeight != nullptr && GenJetWeight->size() > Index) ? (*GenJetWeight)[Index] : 1;
+      if(Step == Reco)
+         return (RecoJetWeight != nullptr && RecoJetWeight->size() > Index) ? (*RecoJetWeight)[Index] : 1;
+      if(Step == Matched)
+         return (MatchedJetWeight != nullptr && MatchedJetWeight->size() > Index) ? (*MatchedJetWeight)[Index] : 1;
+      return 1;
+   }
 };
 
 int main(int argc, char *argv[])
@@ -301,6 +320,7 @@ int main(int argc, char *argv[])
    TH1D HMCMatchedGenBin("HMCMatchedGenBin", ";Matched (Gen)", GenBinCount, 0, GenBinCount);
    TH1D HMCReco("HMCReco", ";Reco", RecoBinCount, 0, RecoBinCount);
    TH1D HMCRecoGenBin("HMCRecoGenBin", ";Reco (Gen)", GenBinCount, 0, GenBinCount);
+   TH2D HResponseNoWeight("HResponseNoWeight", ";Matched;Gen", MatchedBinCount, 0, MatchedBinCount, GenBinCount, 0, GenBinCount);
    TH2D HResponse("HResponse", ";Matched;Gen", MatchedBinCount, 0, MatchedBinCount, GenBinCount, 0, GenBinCount);
    TH1D HDataReco("HDataReco", ";Reco", RecoBinCount, 0, RecoBinCount);
 
@@ -346,7 +366,7 @@ int main(int argc, char *argv[])
          int GenBin = MMC.GetCompositeBin(Gen,
             PrimaryType, PrimaryIndex, iJ, PrimaryGenBins, 0, 1, 1, PrimaryGenMin, PrimaryGenMax,
             BinningType, BinningIndex, iJ, BinningGenBins, 0, 1, 1, BinningGenMin, BinningGenMax);
-         HMCGen.Fill(GenBin, MMC.GetEventWeight());
+         HMCGen.Fill(GenBin, MMC.GetEventWeight() * MMC.GetJetWeight(Gen, iJ));
       }
 
       ObservableType PrimaryMatrixType = PrimaryType;
@@ -374,11 +394,11 @@ int main(int argc, char *argv[])
             BinningMatrixType, BinningIndex, iJ, BinningGenBins, BinningUncertaintyShift, BinningUncertaintySmear, 1,
                BinningGenMin, BinningGenMax);
 
-         HMCMatched.Fill(MatchedBin, MMC.GetEventWeight());
-         // HResponse.Fill(MatchedBin, GenBin, MMC.GetEventWeight());
-         HResponse.Fill(MatchedBin, GenBin);
+         HMCMatched.Fill(MatchedBin, MMC.GetEventWeight() * MMC.GetJetWeight(Matched, iJ));
+         HResponseNoWeight.Fill(MatchedBin, GenBin, MMC.GetEventWeight());
+         HResponse.Fill(MatchedBin, GenBin, MMC.GetJetWeight(Matched, iJ));
 
-         HMCMatchedGenBin.Fill(MatchedGenBin, MMC.GetEventWeight());
+         HMCMatchedGenBin.Fill(MatchedGenBin, MMC.GetEventWeight() * MMC.GetJetWeight(Matched, iJ));
       }
 
       NJet = MMC.GetItemCount(Reco, PrimaryType);
@@ -387,12 +407,12 @@ int main(int argc, char *argv[])
          int RecoBin = MMC.GetCompositeBin(Reco,
             PrimaryType, PrimaryIndex, iJ, PrimaryRecoBins, 0, 1, 1, PrimaryRecoMin, PrimaryRecoMax,
             BinningType, BinningIndex, iJ, BinningRecoBins, 0, 1, 1, BinningRecoMin, BinningRecoMax);
-         HMCReco.Fill(RecoBin, MMC.GetEventWeight());
+         HMCReco.Fill(RecoBin, MMC.GetEventWeight() * MMC.GetJetWeight(Reco, iJ));
          
          int RecoGenBin = MMC.GetCompositeBin(Reco,
             PrimaryType, PrimaryIndex, iJ, PrimaryGenBins, 0, 1, 1, PrimaryGenMin, PrimaryGenMax,
             BinningType, BinningIndex, iJ, BinningGenBins, 0, 1, 1, BinningGenMin, BinningGenMax);
-         HMCRecoGenBin.Fill(RecoGenBin, MMC.GetEventWeight());
+         HMCRecoGenBin.Fill(RecoGenBin, MMC.GetEventWeight() * MMC.GetJetWeight(Reco, iJ));
       }
    }
 
@@ -402,6 +422,10 @@ int main(int argc, char *argv[])
 
    if(DoFlooring == true)
    {
+      for(int i = 1; i <= HResponseNoWeight.GetNbinsX(); i++)
+         for(int j = 1; j <= HResponseNoWeight.GetNbinsY(); j++)
+            if(HResponseNoWeight.GetBinContent(i, j) == 0)
+               HResponseNoWeight.SetBinContent(i, j, 0.5);
       for(int i = 1; i <= HResponse.GetNbinsX(); i++)
          for(int j = 1; j <= HResponse.GetNbinsY(); j++)
             if(HResponse.GetBinContent(i, j) == 0)
@@ -440,7 +464,7 @@ int main(int argc, char *argv[])
          int RecoBin = MData.GetCompositeBin(Reco,
             PrimaryType, PrimaryIndex, iJ, PrimaryRecoBins, 0, 1, 1, PrimaryRecoMin, PrimaryRecoMax,
             BinningType, BinningIndex, iJ, BinningRecoBins, 0, 1, 1, BinningRecoMin, BinningRecoMax);
-         HDataReco.Fill(RecoBin, MData.GetEventWeight());
+         HDataReco.Fill(RecoBin, MData.GetEventWeight() * MData.GetJetWeight(Reco, iJ));
       }
    }
    
@@ -490,6 +514,7 @@ int main(int argc, char *argv[])
    HMCMatchedGenBin.Write();
    HMCReco.Write();
    HMCRecoGenBin.Write();
+   HResponseNoWeight.Write();
    HResponse.Write();
    HDataReco.Write();
    HGenPrimaryBinMin.Write();
@@ -542,6 +567,7 @@ void FillMinMax(TH1D &HMin1, TH1D &HMax1, TH1D &HMin2, TH1D &HMax2, vector<doubl
       }
    }
 }
+
 
 
 
