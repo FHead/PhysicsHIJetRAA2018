@@ -13,17 +13,28 @@ Recluster=$6
 RTag=$7
 DoPhiResidual=$8
 DoExclusion=$9
+Centrality=${10}
 
-echo $InputFile $Tag $Trigger $IsMC $IsPP $Recluster $RTag $DoPhiResidual $DoExclusion
+echo $InputFile $Tag $Trigger $IsMC $IsPP $Recluster $RTag $DoPhiResidual $DoExclusion $Centrality
 
 Fraction=1
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 
-if [[ "$IsPP" == "1" ]]; then
-   Centrality="Inclusive"
-else
-   Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
+DoRhoWeight=0
+if [[ "$Centrality" == "default" ]]; then
+   if [[ "$IsPP" == "1" ]]; then
+      Centrality="Inclusive"
+   else
+      Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
+   fi
+elif [[ "$Centrality" == "rho" ]]; then
+   if [[ "$IsPP" == "1" ]]; then
+      Centrality="Inclusive"
+   else
+      Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
+   fi
+   DoRhoWeight=1
 fi
 
 RValue=`DHQuery GlobalSetting.dh JetR $RTag`
@@ -52,7 +63,7 @@ elif [[ "$IsMC" == "0" ]] && [[ "$DoPhiResidual" == 0 ]]; then
    JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt","$JECBase/$JECTag/${JECTag}_L2L3Residual_AK${RTag}PF.txt"
 fi
 
-Exclusion="-0.5,1.5,0,1,-2,-1,-1.8,-0.9"
+Exclusion=`DHQuery GlobalSetting.dh Binning JetExclusion`
 if [[ "$DoExclusion" == 0 ]]; then
    Exclusion="99,100,99,100"
 fi
@@ -81,23 +92,26 @@ do
       CheckCentrality=false
    fi
 
+   RhoKey="none"
+   if [[ "$DoRhoWeight" == 1 ]]; then
+      RhoKey="R${RTag}_Centrality${CTag}"
+      CheckCentrality=false
+   fi
+
    echo "Running R = $RValue, Centrality = $CTag"
 
-   if [[ "$Recluster" != "1" ]]; then
-      ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
-         --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
-         --Fraction $Fraction --Exclusion "$Exclusion" \
-         --UseStoredGen true --UseStoredReco true --DoRecoSubtraction false --Trigger $Trigger \
-         --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-         --PTMin 15 --GenPTMin 10 --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA
-   else
-      ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
-         --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
-         --Fraction $Fraction --Exclusion "$Exclusion" \
-         --UseStoredGen false --UseStoredReco false --DoRecoSubtraction false --Trigger $Trigger \
-         --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-         --PTMin 15 --GenPTMin 10 --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA
+   Stored=true
+   if [[ "$Recluster" == "1" ]]; then
+      Stored=false
    fi
+
+   ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
+      --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
+      --Fraction $Fraction --Exclusion "$Exclusion" \
+      --UseStoredGen $Stored --UseStoredReco $Stored --DoRecoSubtraction false --Trigger $Trigger \
+      --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
+      --PTMin 15 --GenPTMin 10 --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
+      --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey
 done
 
 

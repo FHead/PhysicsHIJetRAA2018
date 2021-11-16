@@ -8,11 +8,13 @@ using namespace fastjet;
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TF1.h"
 
 #include "ProgressBar.h"
 #include "CommandLine.h"
 #include "CustomAssert.h"
 #include "Code/TauHelperFunctions3.h"
+#include "DataHelper.h"
 
 #include "Messenger.h"
 #include "JetCorrector.h"
@@ -22,6 +24,8 @@ int main(int argc, char *argv[]);
 bool IsExcluded(double Eta, double Phi, vector<double> &Exclusion);
 double GetRhoAtCenter(RhoTreeMessenger &M, double Eta);
 double GetUE(RhoTreeMessenger &M, double Eta, double R);
+double JetPhiWeight(double Eta, vector<double> &JetExclusion);
+double GetRhoWeight(DataHelper &DHFile, string &Key, double UE);
 
 int main(int argc, char *argv[])
 {
@@ -29,6 +33,10 @@ int main(int argc, char *argv[])
 
    vector<string> InputFileNames = CL.GetStringVector("Input", vector<string>{"SampleExample/HiForestAOD.root"});
    string OutputFileName         = CL.Get("Output", "Output/JetTreeAOD.root");
+
+   string DHFileName             = CL.Get("DHFile", "GlobalSetting.dh");
+   string DHKeyBase              = CL.Get("RhoKeyBase", "none");
+   // bool CutUE                    = CL.GetBool("CutUE", false);
 
    double Fraction               = CL.GetDouble("Fraction", 1.00);
 
@@ -61,6 +69,9 @@ int main(int argc, char *argv[])
 
    Assert(JetExclusion.size() % 4 == 0, "Exclusion zone format: (eta min, eta max, phi min, phi max)");
 
+   DataHelper DHFile(DHFileName);
+   GetRhoWeight(DHFile, DHKeyBase, 0);   // Initialize rho weight function
+
    JetCorrector JEC(JECFile);
    JetUncertainty JEU(JEUFile);
 
@@ -83,11 +94,16 @@ int main(int argc, char *argv[])
    vector<float> RecoJetJEU;
    vector<float> RecoJetRho;
    vector<float> RecoJetUE;
+   vector<float> RecoJetWeight;
+   vector<float> RecoJetRhoWeight;
+   vector<float> RecoJetPhiWeight;
    int NGenJets = 0;
    vector<float> GenJetPT;
    vector<float> GenJetEta;
    vector<float> GenJetPhi;
    vector<float> GenJetMass;
+   vector<float> GenJetWeight;
+   vector<float> GenJetPhiWeight;
    vector<float> MatchedJetPT;
    vector<float> MatchedJetEta;
    vector<float> MatchedJetPhi;
@@ -97,36 +113,47 @@ int main(int argc, char *argv[])
    vector<float> MatchedJetJEU;
    vector<float> MatchedJetRho;
    vector<float> MatchedJetUE;
+   vector<float> MatchedJetWeight;
+   vector<float> MatchedJetRhoWeight;
+   vector<float> MatchedJetPhiWeight;
 
-   OutputTree.Branch("EventWeight",     &EventWeight,    "EventWeight/D");
-   OutputTree.Branch("PTHat",           &PTHat,          "PTHat/D");
-   OutputTree.Branch("Run",             &Run,            "Run/I");
-   OutputTree.Branch("Lumi",            &Lumi,           "Lumi/I");
-   OutputTree.Branch("Event",           &Event,          "Event/L");
-   OutputTree.Branch("Centrality",      &Centrality,     "Centrality/D");
-   OutputTree.Branch("NRecoJets",       &NRecoJets,      "NRecoJets/I");
-   OutputTree.Branch("RecoJetPT",       &RecoJetPT);
-   OutputTree.Branch("RecoJetEta",      &RecoJetEta);
-   OutputTree.Branch("RecoJetPhi",      &RecoJetPhi);
-   OutputTree.Branch("RecoJetMass",     &RecoJetMass);
-   OutputTree.Branch("RecoJetJEC",      &RecoJetJEC);
-   OutputTree.Branch("RecoJetJEU",      &RecoJetJEU);
-   OutputTree.Branch("RecoJetRho",      &RecoJetRho);
-   OutputTree.Branch("RecoJetUE",       &RecoJetUE);
-   OutputTree.Branch("NGenJets",        &NGenJets,       "NGenJets/I");
-   OutputTree.Branch("GenJetPT",        &GenJetPT);
-   OutputTree.Branch("GenJetEta",       &GenJetEta);
-   OutputTree.Branch("GenJetPhi",       &GenJetPhi);
-   OutputTree.Branch("GenJetMass",      &GenJetMass);
-   OutputTree.Branch("MatchedJetPT",    &MatchedJetPT);
-   OutputTree.Branch("MatchedJetEta",   &MatchedJetEta);
-   OutputTree.Branch("MatchedJetPhi",   &MatchedJetPhi);
-   OutputTree.Branch("MatchedJetMass",  &MatchedJetMass);
-   OutputTree.Branch("MatchedJetAngle", &MatchedJetAngle);
-   OutputTree.Branch("MatchedJetJEC",   &MatchedJetJEC);
-   OutputTree.Branch("MatchedJetJEU",   &MatchedJetJEU);
-   OutputTree.Branch("MatchedJetRho",   &MatchedJetRho);
-   OutputTree.Branch("MatchedJetUE",    &MatchedJetUE);
+   OutputTree.Branch("EventWeight",         &EventWeight,    "EventWeight/D");
+   OutputTree.Branch("PTHat",               &PTHat,          "PTHat/D");
+   OutputTree.Branch("Run",                 &Run,            "Run/I");
+   OutputTree.Branch("Lumi",                &Lumi,           "Lumi/I");
+   OutputTree.Branch("Event",               &Event,          "Event/L");
+   OutputTree.Branch("Centrality",          &Centrality,     "Centrality/D");
+   OutputTree.Branch("NRecoJets",           &NRecoJets,      "NRecoJets/I");
+   OutputTree.Branch("RecoJetPT",           &RecoJetPT);
+   OutputTree.Branch("RecoJetEta",          &RecoJetEta);
+   OutputTree.Branch("RecoJetPhi",          &RecoJetPhi);
+   OutputTree.Branch("RecoJetMass",         &RecoJetMass);
+   OutputTree.Branch("RecoJetJEC",          &RecoJetJEC);
+   OutputTree.Branch("RecoJetJEU",          &RecoJetJEU);
+   OutputTree.Branch("RecoJetRho",          &RecoJetRho);
+   OutputTree.Branch("RecoJetUE",           &RecoJetUE);
+   OutputTree.Branch("RecoJetWeight",       &RecoJetWeight);
+   OutputTree.Branch("RecoJetPhiWeight",    &RecoJetPhiWeight);
+   OutputTree.Branch("RecoJetRhoWeight",    &RecoJetRhoWeight);
+   OutputTree.Branch("NGenJets",            &NGenJets,       "NGenJets/I");
+   OutputTree.Branch("GenJetPT",            &GenJetPT);
+   OutputTree.Branch("GenJetEta",           &GenJetEta);
+   OutputTree.Branch("GenJetPhi",           &GenJetPhi);
+   OutputTree.Branch("GenJetMass",          &GenJetMass);
+   OutputTree.Branch("GenJetWeight",        &GenJetWeight);
+   OutputTree.Branch("GenJetPhiWeight",     &GenJetPhiWeight);
+   OutputTree.Branch("MatchedJetPT",        &MatchedJetPT);
+   OutputTree.Branch("MatchedJetEta",       &MatchedJetEta);
+   OutputTree.Branch("MatchedJetPhi",       &MatchedJetPhi);
+   OutputTree.Branch("MatchedJetMass",      &MatchedJetMass);
+   OutputTree.Branch("MatchedJetAngle",     &MatchedJetAngle);
+   OutputTree.Branch("MatchedJetJEC",       &MatchedJetJEC);
+   OutputTree.Branch("MatchedJetJEU",       &MatchedJetJEU);
+   OutputTree.Branch("MatchedJetRho",       &MatchedJetRho);
+   OutputTree.Branch("MatchedJetUE",        &MatchedJetUE);
+   OutputTree.Branch("MatchedJetWeight",    &MatchedJetWeight);
+   OutputTree.Branch("MatchedJetPhiWeight", &MatchedJetPhiWeight);
+   OutputTree.Branch("MatchedJetRhoWeight", &MatchedJetRhoWeight);
 
    for(string InputFileName : InputFileNames)
    {
@@ -342,12 +369,17 @@ int main(int argc, char *argv[])
          GenJetEta.resize(NGenJets);
          GenJetPhi.resize(NGenJets);
          GenJetMass.resize(NGenJets);
+         GenJetWeight.resize(NGenJets);
+         GenJetPhiWeight.resize(NGenJets);
          for(int iG = 0; iG < NGenJets; iG++)
          {
-            GenJetPT[iG]   = GenJets[iG].first.GetPT();
-            GenJetEta[iG]  = GenJets[iG].first.GetEta();
-            GenJetPhi[iG]  = GenJets[iG].first.GetPhi();
-            GenJetMass[iG] = GenJets[iG].first.GetMass();
+            GenJetPT[iG]        = GenJets[iG].first.GetPT();
+            GenJetEta[iG]       = GenJets[iG].first.GetEta();
+            GenJetPhi[iG]       = GenJets[iG].first.GetPhi();
+            GenJetMass[iG]      = GenJets[iG].first.GetMass();
+            
+            GenJetPhiWeight[iG] = JetPhiWeight(GenJetEta[iG], JetExclusion);
+            GenJetWeight[iG]    = GenJetPhiWeight[iG];
          }
 
          // Export reco jets
@@ -359,20 +391,27 @@ int main(int argc, char *argv[])
          RecoJetJEU.resize(NRecoJets);
          RecoJetRho.resize(NRecoJets);
          RecoJetUE.resize(NRecoJets);
+         RecoJetWeight.resize(NRecoJets);
+         RecoJetPhiWeight.resize(NRecoJets);
+         RecoJetRhoWeight.resize(NRecoJets);
          for(int iR = 0; iR < NRecoJets; iR++)
          {
-            RecoJetPT[iR]   = RecoJets[iR].first.GetPT();
-            RecoJetEta[iR]  = RecoJets[iR].first.GetEta();
-            RecoJetPhi[iR]  = RecoJets[iR].first.GetPhi();
-            RecoJetMass[iR] = RecoJets[iR].first.GetMass();
+            RecoJetPT[iR]        = RecoJets[iR].first.GetPT();
+            RecoJetEta[iR]       = RecoJets[iR].first.GetEta();
+            RecoJetPhi[iR]       = RecoJets[iR].first.GetPhi();
+            RecoJetMass[iR]      = RecoJets[iR].first.GetMass();
 
             JEU.SetJetPT(RecoJetPT[iR]);
             JEU.SetJetEta(RecoJetEta[iR]);
             JEU.SetJetPhi(RecoJetPhi[iR]);
-            RecoJetJEU[iR]  = JEU.GetUncertainty().first;
+            RecoJetJEU[iR]       = JEU.GetUncertainty().first;
 
-            RecoJetRho[iR]  = GetRhoAtCenter(MRho, RecoJetEta[iR]);
-            RecoJetUE[iR]   = GetUE(MRho, RecoJetEta[iR], JetR);
+            RecoJetRho[iR]       = GetRhoAtCenter(MRho, RecoJetEta[iR]);
+            RecoJetUE[iR]        = GetUE(MRho, RecoJetEta[iR], JetR);
+
+            RecoJetPhiWeight[iR] = JetPhiWeight(RecoJetEta[iR], JetExclusion);
+            RecoJetRhoWeight[iR] = GetRhoWeight(DHFile, DHKeyBase, RecoJetUE[iR]);
+            RecoJetWeight[iR]    = RecoJetPhiWeight[iR] * RecoJetRhoWeight[iR];
          }
 
          // For each gen jet, find the best reco jet
@@ -385,6 +424,9 @@ int main(int argc, char *argv[])
          MatchedJetJEU.resize(NGenJets);
          MatchedJetRho.resize(NGenJets);
          MatchedJetUE.resize(NGenJets);
+         MatchedJetWeight.resize(NGenJets);
+         MatchedJetPhiWeight.resize(NGenJets);
+         MatchedJetRhoWeight.resize(NGenJets);
          for(int iG = 0; iG < NGenJets; iG++)
          {
             MatchedJetAngle[iG] = -1;
@@ -404,15 +446,18 @@ int main(int argc, char *argv[])
             if(BestIndex < 0)   // not found for some reason
                continue;
 
-            MatchedJetPT[iG]    = RecoJets[BestIndex].first.GetPT();
-            MatchedJetEta[iG]   = RecoJets[BestIndex].first.GetEta();
-            MatchedJetPhi[iG]   = RecoJets[BestIndex].first.GetPhi();
-            MatchedJetMass[iG]  = RecoJets[BestIndex].first.GetMass();
-            MatchedJetJEC[iG]   = RecoJetJEC[BestIndex];
-            MatchedJetJEU[iG]   = RecoJetJEU[BestIndex];
-            MatchedJetRho[iG]   = RecoJetRho[BestIndex];
-            MatchedJetUE[iG]    = RecoJetUE[BestIndex];
-            MatchedJetAngle[iG] = BestAngle;
+            MatchedJetPT[iG]        = RecoJets[BestIndex].first.GetPT();
+            MatchedJetEta[iG]       = RecoJets[BestIndex].first.GetEta();
+            MatchedJetPhi[iG]       = RecoJets[BestIndex].first.GetPhi();
+            MatchedJetMass[iG]      = RecoJets[BestIndex].first.GetMass();
+            MatchedJetJEC[iG]       = RecoJetJEC[BestIndex];
+            MatchedJetJEU[iG]       = RecoJetJEU[BestIndex];
+            MatchedJetRho[iG]       = RecoJetRho[BestIndex];
+            MatchedJetUE[iG]        = RecoJetUE[BestIndex];
+            MatchedJetAngle[iG]     = BestAngle;
+            MatchedJetPhiWeight[iG] = RecoJetPhiWeight[BestIndex];
+            MatchedJetRhoWeight[iG] = RecoJetRhoWeight[BestIndex];
+            MatchedJetWeight[iG]    = RecoJetWeight[BestIndex];
          }
 
          OutputTree.Fill();
@@ -478,6 +523,9 @@ double GetUE(RhoTreeMessenger &M, double Eta, double R)
 {
    double Result = 0;
 
+   if(M.EtaMin == nullptr)
+      return -1;
+
    int NBin = M.EtaMin->size();
    if(NBin == 0)
       return -1;
@@ -504,6 +552,111 @@ double GetUE(RhoTreeMessenger &M, double Eta, double R)
    }
 
    return Result;
+}
+
+double JetPhiWeight(double Eta, vector<double> &JetExclusion)
+{
+   vector<pair<double, double>> PhiRanges;
+
+   for(int i = 0; i + 4 <= (int)JetExclusion.size(); i = i + 4)
+   {
+      if(Eta < JetExclusion[i] || Eta > JetExclusion[i+1])
+         continue;
+
+      double PhiMin = JetExclusion[i+2];
+      double PhiMax = JetExclusion[i+3];
+      if(PhiMax < PhiMin)   // goes over the +-pi boundary
+         PhiMax = PhiMax + 2 * M_PI;
+
+      PhiRanges.push_back(pair<double, double>(PhiMin, PhiMax));
+   }
+
+   bool Change = true;
+   while(Change == true)
+   {
+      Change = false;
+
+      int N = PhiRanges.size();
+      for(int i = 0; i < N && Change == false; i++)
+      {
+         for(int j = i + 1; j < N && Change == false; j++)
+         {
+            double Min1 = PhiRanges[i].first;
+            double Max1 = PhiRanges[i].second;
+            double Min2 = PhiRanges[j].first;
+            double Max2 = PhiRanges[j].second;
+            // The criteria for intersection is one of the end points is enclosed by the other range
+            // This checks the case where shifting by 2pi is not needed
+            if((Min1 > Min2 && Min1 < Max2) || (Max1 > Min2 && Max1 < Max2)
+                  || (Min2 > Min1 && Min2 < Max1) || (Max2 > Min1 && Max2 < Max1))
+            {
+               Change = true;
+               PhiRanges[i].first = min(Min1, Min2);
+               PhiRanges[i].second = min(Max1, Max2);
+               PhiRanges.erase(PhiRanges.begin() + j);
+               break;
+            }
+
+            // Shift the lower one up by 2 * pi, since the lower bound is always within [-pi, +pi]
+            // So this is sufficient and we don't need further cases
+            if(Min1 < Min2) { Min1 = Min1 + 2 * M_PI; Max1 = Max1 + 2 * M_PI; }
+            else            { Min2 = Min2 + 2 * M_PI; Max2 = Max2 + 2 * M_PI; }
+
+            // Again checking if any endpoints are inside other ranges
+            if((Min1 > Min2 && Min1 < Max2) || (Max1 > Min2 && Max1 < Max2)
+                  || (Min2 > Min1 && Min2 < Max1) || (Max2 > Min1 && Max2 < Max1))
+            {
+               Change = true;
+               PhiRanges[i].first = min(Min1, Min2);
+               PhiRanges[i].second = min(Max1, Max2);
+               PhiRanges.erase(PhiRanges.begin() + j);
+               break;
+            }
+         }
+      }
+   }
+
+   double ExcludedPhi = 0;
+   for(pair<double, double> R : PhiRanges)
+      ExcludedPhi = ExcludedPhi + (R.second - R.first);
+   if(ExcludedPhi > 2 * M_PI)   // all excluded
+      return 0;
+
+   return (2 * M_PI) / (2 * M_PI - ExcludedPhi);
+}
+
+double GetRhoWeight(DataHelper &DHFile, string &Key, double UE)
+{
+   static bool First = true;
+   static bool NoWeight = false;
+
+   if(First == true)
+   {
+      if(DHFile["RhoWeight"].Exist(Key+"_Formula") == false)
+         NoWeight = true;
+   }
+   if(NoWeight == true)
+      return 1;
+
+   static TF1 Function("Function", DHFile["RhoWeight"][Key+"_Formula"].GetString().c_str(), 0, 1500);
+
+   if(First == true)
+   {
+      cout << "Rho weighting formula = " << DHFile["RhoWeight"][Key+"_Formula"].GetString() << endl;
+
+      int N = DHFile["RhoWeight"][Key+"_NPar"].GetInteger();
+
+      First = false;
+      for(int i = 0; i < N; i++)
+         Function.SetParameter(i, DHFile["RhoWeight"][Key+"_P"+to_string(i)].GetDouble());
+
+      Function.Print("v");
+   }
+   
+   if(UE > DHFile["RhoWeight"][Key+"_MaxUE"].GetDouble())
+      return 0;
+
+   return Function.Eval(UE);
 }
 
 
