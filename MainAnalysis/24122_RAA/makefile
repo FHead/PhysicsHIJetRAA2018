@@ -1,7 +1,7 @@
 
 
 
-default: TestRun
+default: Run
 
 Prepare:
 	rm -f SpectraRoot
@@ -9,7 +9,7 @@ Prepare:
 	ln -sf ../GlobalSetting/GlobalSetting.dh .
 	mkdir -p Plots
 
-TestRun: Execute
+Run: Execute
 	bash RunFile.sh
 
 Execute: PlotRAA.cpp

@@ -22,9 +22,9 @@ do
 
       RValue=`DHQuery GlobalSetting.dh JetR $R`
 
-      State=TestRunData
+      State=PbPbData
       if [[ "$IsPP" == "1" ]]; then
-         State=TestRunPPData
+         State=PPData
       fi
 
       System="PbPb"

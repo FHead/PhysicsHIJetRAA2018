@@ -33,20 +33,20 @@ TestRunPart2:
 	#    1. unfold preparation output files
 	#    2. GlobalSetting.dh
 	sleep 10
-	(cd 23762_PerfectRecoGeneration && make Prepare TestRun)
-	(cd 23762_FakeData              && make Prepare TestRun)
-	(cd 23762_ActualUnfold          && make Prepare TestRun TestRunPP)
-	(cd 23772_UnfoldIteration       && make Prepare TestRun)
-	(cd 23762_PerfectRecoGeneration && make Prepare TestRunData)
-	(cd 23762_FakeData              && make Prepare TestRunData)
-	(cd 23762_ActualUnfold          && make Prepare TestRunDataToy)
-	(cd 23772_UnfoldIteration       && make Prepare TestRunData)
-	(cd 23763_Systematics           && make Prepare RunTestRunData)
+	(cd 23762_PerfectRecoGeneration && make Prepare RunMC)
+	(cd 23762_FakeData              && make Prepare RunMC)
+	(cd 23762_ActualUnfold          && make Prepare RunAA RunPP)
+	(cd 23772_UnfoldIteration       && make Prepare RunMC)
+	(cd 23762_PerfectRecoGeneration && make Prepare RunData)
+	(cd 23762_FakeData              && make Prepare RunData)
+	(cd 23762_ActualUnfold          && make Prepare RunDataToy)
+	(cd 23772_UnfoldIteration       && make Prepare RunData)
+	(cd 23763_Systematics           && make Prepare RunData)
 	(cd 24113_HEPData               && make default)
-	(cd 23763_BeautifulPlots        && make Prepare RunTestRunJetPT RunTestRunJetPTClosure)
-	(cd 23763_BeautifulMatrix       && make Prepare TestRunPP TestRun)
+	(cd 23763_BeautifulPlots        && make Prepare RunJetPT RunJetPTClosure)
+	(cd 23763_BeautifulMatrix       && make Prepare RunPP RunAA)
 	(cd 24114_PPRatioHEPData        && make default)
-	(cd 24114_BeautifulPPRatioPlots && make RunTestRunJetPT)
-	(cd 24122_RAA                   && make Prepare TestRun)
+	(cd 24114_BeautifulPPRatioPlots && make RunJetPT)
+	(cd 24122_RAA                   && make Prepare Run)
 
 

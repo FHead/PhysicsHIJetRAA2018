@@ -1,4 +1,4 @@
-default: Prepare TestRunPP
+default: Prepare RunPP
 
 Prepare:
 	rm -f Input
@@ -10,11 +10,11 @@ Deploy:
 	mkdir -p ../FinalResult/SmearingMatrix
 	cp Plots/*png ../FinalResult/SmearingMatrix
 
-TestRunPP: Execute
-	bash RunFile.sh TestRunPPData "" 1
+RunPP: Execute
+	bash RunFile.sh PPData "" 1
 
-TestRun: Execute
-	bash RunFile.sh TestRunData "" 0
+RunAA: Execute
+	bash RunFile.sh PbPbData "" 0
 
 TestRunOld: Execute
 	./Execute --Input Input/TestRunData.root \

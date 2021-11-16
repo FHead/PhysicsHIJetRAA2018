@@ -7,9 +7,9 @@ Prepare:
 	ln -sf ../GlobalSetting/GlobalSetting.dh
 	mkdir -p Output Plot
 
-RunTestRunData: Execute
-	bash RunFile.sh TestRunData 0
-	bash RunFile.sh TestRunPPData 1
+RunData: Execute
+	bash RunFile.sh PbPbData 0
+	bash RunFile.sh PPData 1
 
 Execute: Harvest.cpp
 	CompileRootMacro Harvest.cpp Execute

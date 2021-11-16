@@ -1,4 +1,4 @@
-default: RunTestRunJetPT RunTestRunJetPTClosure
+default: RunJetPT RunJetPTClosure
 
 Prepare:
 	rm -f OriginalInput Input Systematics HEPData
@@ -13,13 +13,13 @@ Deploy:
 	mkdir -p ../FinalResult/Unfolded/
 	cp Plots/*.pdf ../FinalResult/Unfolded/
 
-RunTestRunJetPT: Execute
-	bash RunFile.sh TestRunData "" 0
-	bash RunFile.sh TestRunPPData "" 1
+RunJetPT: Execute
+	bash RunFile.sh PbPbData "" 0
+	bash RunFile.sh PPData "" 1
 
-RunTestRunJetPTClosure: Execute
-	bash RunFile.sh TestRunMC Toy 0
-	bash RunFile.sh TestRunPPMC Toy 1
+RunJetPTClosure: Execute
+	bash RunFile.sh PbPbMCRho Toy 0
+	bash RunFile.sh PPMC Toy 1
 
 Execute: MakePaperPlot.cpp
 	CompileRootMacro MakePaperPlot.cpp Execute

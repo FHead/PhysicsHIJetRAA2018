@@ -8,13 +8,13 @@ Prepare:
 	ln -sf ../23762_ActualUnfold/Output UnfoldedInput
 	ln -sf ../GlobalSetting/GlobalSetting.dh
 
-TestRun: Execute
-	bash RunFile.sh TestRunMC Nominal 0
-	bash RunFile.sh TestRunPPMC Nominal 1
+RunMC: Execute
+	bash RunFile.sh PbPbMCRho Nominal 0
+	bash RunFile.sh PPMC Nominal 1
 
-TestRunData: Execute
-	bash RunFile.sh TestRunData Nominal 0 TestRunMC
-	bash RunFile.sh TestRunPPData Nominal 1 TestRunPPMC
+RunData: Execute
+	bash RunFile.sh PbPbData Nominal 0 PbPbMCRho
+	bash RunFile.sh PPData Nominal 1 PPMC
 
 Execute: GeneratePerfectData.cpp
 	CompileRootMacro GeneratePerfectData.cpp Execute

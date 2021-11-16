@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 
    // Get base spectrum
    int BaseIteration
-      = DHFile["TestRunPPData"][Form("BestIteration_R%s_CentralityInclusive",BaseRLabel.c_str())].GetInteger();
+      = DHFile["PPData"][Form("BestIteration_R%s_CentralityInclusive",BaseRLabel.c_str())].GetInteger();
    TH1D *HBase = (TH1D *)BaseFile.Get(Form("HUnfoldedBayes%d", BaseIteration));
    vector<TGraphAsymmErrors> GBase = Transcribe(HBase, GenBins1, GenBins2, nullptr);
 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
       TFile File(FileName[i].c_str());
 
       int Iteration
-         = DHFile["TestRunPPData"][Form("BestIteration_R%s_CentralityInclusive",RLabel[i].c_str())].GetInteger();
+         = DHFile["PPData"][Form("BestIteration_R%s_CentralityInclusive",RLabel[i].c_str())].GetInteger();
       TH1D *H = (TH1D *)File.Get(Form("HUnfoldedBayes%d", Iteration));
       GSpectra[i] = Transcribe(H, GenBins1, GenBins2, nullptr);
 
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
          GRatio[i].push_back(CalculateRatio(GSpectra[i][j], GBase[j]));
 
    string LuminosityString
-      = DHFile["Lumi"][Form("TestRunPPData_R%s_CentralityInclusive_BRIL",BaseRLabel.c_str())].GetString();
+      = DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",BaseRLabel.c_str())].GetString();
    double Luminosity = stof(LuminosityString) / 1000 / 1000;
    string LuminosityUnit = "pb^{-1}";
 

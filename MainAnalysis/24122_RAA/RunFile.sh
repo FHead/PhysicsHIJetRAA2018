@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PPState=TestRunPPData
-AAState=TestRunData
+PPState=PPData
+AAState=PbPbData
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`

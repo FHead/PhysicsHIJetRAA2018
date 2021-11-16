@@ -8,13 +8,13 @@ Prepare:
 	ln -sf ../GlobalSetting/GlobalSetting.dh
 	mkdir -p Output
 
-TestRun: Execute
-	bash RunFile.sh TestRunMC Nominal TestRunData Nominal 1.00 0
-	bash RunFile.sh TestRunPPMC Nominal TestRunPPData Nominal 1.00 1
+RunMC: Execute
+	bash RunFile.sh PbPbMCRho Nominal PbPbData Nominal 1.00 0
+	bash RunFile.sh PPMC Nominal PPData Nominal 1.00 1
 
-TestRunData: Execute
-	bash RunFile.sh TestRunData Nominal TestRunData Nominal 1.00 0
-	bash RunFile.sh TestRunPPData Nominal TestRunPPData Nominal 1.00 1
+RunData: Execute
+	bash RunFile.sh PbPbData Nominal PbPbData Nominal 1.00 0
+	bash RunFile.sh PPData Nominal PPData Nominal 1.00 1
 
 Execute: GenerateFakeData.cpp
 	CXXFLAGS="-mmacosx-version-min=11.2" CompileRootMacro GenerateFakeData.cpp Execute 
