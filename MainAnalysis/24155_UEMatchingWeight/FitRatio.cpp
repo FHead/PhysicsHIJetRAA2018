@@ -28,6 +28,8 @@ int main(int argc, char *argv[])
    string KeyBase        = CL.Get("Key");
    int Order1            = CL.GetInteger("Order1", 8);
    int Order2            = CL.GetInteger("Order2", 0);
+   bool PinSmall         = CL.GetBool("PinSmall", false);
+   bool PinLarge         = CL.GetBool("PinLarge", true);
 
    PdfFileHelper PdfFile(OutputFileName);
    PdfFile.AddTextPage("Fit");
@@ -40,15 +42,17 @@ int main(int argc, char *argv[])
    if(GRatioLog == nullptr)
       return -1;
 
+   if(PinSmall == true)
    {
       int N = GRatioLog->GetN();
-      double X = GRatioLog->GetPointX(N - 1);
+      double X = GRatioLog->GetPointX(N - 1); // - GRatioLog->GetErrorXlow(N - 1);
       double Y = GRatioLog->GetPointY(N - 1);
-      GRatioLog->SetPoint(N, X * 0.9, Y - 5);
+      GRatioLog->SetPoint(N, X * 0.7, Y - 5);
    }
+   if(PinLarge == true)
    {
       int N = GRatioLog->GetN();
-      double X = GRatioLog->GetPointX(0);
+      double X = GRatioLog->GetPointX(0); // + GRatioLog->GetErrorXhigh(0);
       double Y = GRatioLog->GetPointY(0);
       GRatioLog->SetPoint(N, X * 1.1, Y - 5);
    }
@@ -72,7 +76,7 @@ int main(int argc, char *argv[])
    pair<double, double> MinMax = GetMinMax(GRatio);
 
    TF1 FLog("FLog", Formula.c_str(), 0, 1500);
-   for(int i = 0; i < 5; i++)
+   for(int i = 0; i < 10; i++)
       GRatioLog->Fit(&FLog, "W");
 
    TF1 F("F", Form("exp(%s)", Formula.c_str()), 0, 1500);
@@ -113,7 +117,15 @@ int main(int argc, char *argv[])
    Canvas.SetLogy(true);
    PdfFile.AddCanvas(Canvas);
 
-   F.Draw();
+   TGraph GF;
+   for(double X = 0; X < 1500; X = X + 0.1)
+   {
+      double Y = F.Eval(X);
+      if(Y != Y || Y > 1000)
+         Y = 1000;
+      GF.SetPoint(GF.GetN(), X, Y);
+   }
+   GF.Draw("ap");
    Canvas.SetLogy(false);
    PdfFile.AddCanvas(Canvas);
 
