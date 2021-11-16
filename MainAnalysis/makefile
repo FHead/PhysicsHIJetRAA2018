@@ -14,9 +14,12 @@ TestRunPart1A:
 	SleepUntilDone.sh
 
 TestRunPart1B:
+	(cd 23752_CopyJetFromForest && make Prepare DeleteAndMerge)
+	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Prepare ProcessAll)
+	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Harvest)
 	# (cd 23775_CentralityWeights && make Prepare TestRun)
 	(cd 24155_UEMatchingWeight  && make Prepare RunAll FitAll)
-	(cd 23752_CopyJetFromForest && make Prepare DeleteAndMerge SubmitAfterRho)
+	(cd 23752_CopyJetFromForest && make Prepare SubmitAfterRho)
 	SleepUntilDone.sh
 
 TestRunPart1C:
@@ -24,15 +27,12 @@ TestRunPart1C:
 	(cd 23762_UnfoldPreparation && make Prepare RunPP RunAA)
 	(cd 24112_BrilCalc          && make Prepare RunPP RunAA)
 	(cd 24121_MBCounting        && make Prepare MergeMB RunAA)
-	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Prepare ProcessAll)
 
 TestRunPart2:
 	# Make sure to copy over the following from lxplus before continuing...
-	#    1. trigger output files
-	#    2. unfold preparation output files
-	#    3. GlobalSetting.dh
+	#    1. unfold preparation output files
+	#    2. GlobalSetting.dh
 	sleep 10
-	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Harvest)
 	(cd 23762_PerfectRecoGeneration && make Prepare TestRun)
 	(cd 23762_FakeData              && make Prepare TestRun)
 	(cd 23762_ActualUnfold          && make Prepare TestRun TestRunPP)
