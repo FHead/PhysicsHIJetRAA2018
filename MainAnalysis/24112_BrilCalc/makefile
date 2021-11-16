@@ -6,10 +6,10 @@ Prepare:
 	ln -sf ../GlobalSetting/GlobalSetting.dh
 
 RunPP:
-	for i in Input/TestRunPPData_R*Nominal_JSON.txt; do bash CheckJSON.sh $$i; done
+	for i in Input/PPData_R*Nominal_JSON.txt; do bash CheckJSON.sh $$i; done
 
 RunAA:
-	for i in Input/TestRunData_R*Nominal_JSON.txt; do bash CheckJSON.sh $$i; done
+	for i in Input/PbPbData_R*Nominal_JSON.txt; do bash CheckJSON.sh $$i; done
 
 
 
