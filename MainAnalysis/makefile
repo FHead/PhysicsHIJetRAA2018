@@ -13,11 +13,11 @@ TestRunPart1:
 	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Prepare ProcessAll)
 
 TestRunPart2:
-	# Copy over the following from lxplus
+	# Make sure to copy over the following from lxplus before continuing...
 	#    1. trigger output files
 	#    2. unfold preparation output files
 	#    3. GlobalSetting.dh
-	sleep 5
+	sleep 10
 	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Harvest)
 	(cd 23762_PerfectRecoGeneration && make Prepare TestRun)
 	(cd 23762_FakeData              && make Prepare TestRun)
