@@ -22,6 +22,7 @@ int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true);
 TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2);
+TGraph ToGraph(TH1D *H);
 
 int main(int argc, char *argv[])
 {
@@ -106,6 +107,8 @@ int main(int argc, char *argv[])
    HWorld.Draw("axis");
 
    vector<TGraph> HIN18014(5);
+   vector<TGraph> HIN18014P6(5);
+   vector<TGraph> HIN18014P8(5);
    if(AddHIN18014 == true)
    {
       TFile File("HEPData/HIN18014PPRatio.root");
@@ -123,6 +126,35 @@ int main(int argc, char *argv[])
          HIN18014[i].SetLineColor(Colors[i]);
          HIN18014[i].SetLineWidth(2);
          HIN18014[i].Draw("l");
+      }
+      
+      TFile FilePythia("SpectraRatio_Smooth_RedStat.root");
+
+      HIN18014P6[0] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT6_1"));
+      HIN18014P6[1] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT6_2"));
+      HIN18014P6[2] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT6_3"));
+      HIN18014P6[3] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT6_4"));
+      HIN18014P6[4] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT6_5"));
+      
+      HIN18014P8[0] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT8_1"));
+      HIN18014P8[1] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT8_2"));
+      HIN18014P8[2] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT8_3"));
+      HIN18014P8[3] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT8_4"));
+      HIN18014P8[4] = ToGraph((TH1D *)FilePythia.Get("theoryCompPYT8_5"));
+
+      FilePythia.Close();
+      
+      for(int i = 0; i < 5; i++)
+      {
+         HIN18014P6[i].SetLineColor(Colors[i]);
+         HIN18014P6[i].SetLineWidth(2);
+         HIN18014P6[i].SetLineStyle(kDashed);
+         HIN18014P6[i].Draw("l");
+         
+         HIN18014P8[i].SetLineColor(Colors[i]);
+         HIN18014P8[i].SetLineWidth(2);
+         HIN18014P8[i].SetLineStyle(kDotted);
+         HIN18014P8[i].Draw("l");
       }
    }
 
@@ -146,6 +178,28 @@ int main(int argc, char *argv[])
    for(int i = 0; i < FileCount; i++)
       Legend.AddEntry(&GRatio[i][0], Form("R = %.1f", DHFile["JetR"][RLabel[i]].GetDouble()), "lp");
    Legend.Draw();
+   
+   TGraph GExampleData, GExampleHIN18014, GExampleHIN18014P6, GExampleHIN18014P8;
+   GExampleData.SetLineWidth(2);
+   GExampleData.SetMarkerStyle(20);
+   GExampleData.SetMarkerSize(2);
+   GExampleHIN18014.SetLineWidth(2);
+   GExampleHIN18014P6.SetLineWidth(2);
+   GExampleHIN18014P6.SetLineStyle(kDashed);
+   GExampleHIN18014P8.SetLineWidth(2);
+   GExampleHIN18014P8.SetLineStyle(kDotted);
+
+   TLegend Legend2(0.35, 0.12, 0.50, 0.32);
+   Legend2.SetTextSize(0.035);
+   Legend2.SetFillStyle(0);
+   Legend2.SetBorderSize(0);
+   Legend2.AddEntry("", "Styles", "");
+   Legend2.AddEntry(&GExampleData, "Data", "pl");
+   Legend2.AddEntry(&GExampleHIN18014, "HIN-18-014 Central Value", "l");
+   Legend2.AddEntry(&GExampleHIN18014P6, "Pythia6", "l");
+   Legend2.AddEntry(&GExampleHIN18014P8, "Pythia8", "l");
+   if(AddHIN18014 == true)
+      Legend2.Draw();
 
    TGraph GLine;
    GLine.SetPoint(0, 0, 1);
@@ -165,11 +219,11 @@ int main(int argc, char *argv[])
    Latex.SetTextAlign(12);
    Latex.DrawLatex(0.12, 0.87, "Statistical only");
    
-   if(AddHIN18014 == true)
-   {
-      Latex.SetTextAlign(12);
-      Latex.DrawLatex(0.12, 0.82, "Line = HIN-18-014 Central value");
-   }
+   // if(AddHIN18014 == true)
+   // {
+   //    Latex.SetTextAlign(12);
+   //    Latex.DrawLatex(0.12, 0.82, "Line = HIN-18-014 Central value");
+   // }
 
    Canvas.SaveAs(OutputFileName.c_str());
 
@@ -315,4 +369,16 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
    return G;
 }
 
+TGraph ToGraph(TH1D *H)
+{
+   if(H == nullptr)
+      return TGraph();
+
+   TGraph Result;
+
+   for(int i = 1; i <= H->GetNbinsX(); i++)
+      Result.SetPoint(i - 1, H->GetBinCenter(i), H->GetBinContent(i));
+
+   return Result;
+}
 
