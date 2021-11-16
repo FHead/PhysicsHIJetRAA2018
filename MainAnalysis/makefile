@@ -4,10 +4,24 @@ default: Prepare TestRunPart2
 Prepare:
 	(cd GlobalSetting && make)
 
-TestRunPart1:
-	(cd 23752_CopyJetFromForest && make Prepare TestRun)
-	(cd 23775_CentralityWeights && make Prepare TestRun)
-	(cd 23762_UnfoldPreparation && make Prepare TestRun)
+Sleep:
+	SleepUntilDone.sh
+
+TestRunPart1: TestRunPart1A TestRunPart1B TestRunPart1C
+
+TestRunPart1A:
+	(cd 23752_CopyJetFromForest && make Prepare SubmitBeforeRho)
+	SleepUntilDone.sh
+
+TestRunPart1B:
+	# (cd 23775_CentralityWeights && make Prepare TestRun)
+	(cd 24155_UEMatchingWeight  && make Prepare RunAll FitAll)
+	(cd 23752_CopyJetFromForest && make Prepare DeleteAndMerge SubmitAfterRho)
+	SleepUntilDone.sh
+
+TestRunPart1C:
+	(cd 23752_CopyJetFromForest && make Prepare DeleteAndMerge)
+	(cd 23762_UnfoldPreparation && make Prepare RunPP RunAA)
 	(cd 24112_BrilCalc          && make Prepare RunPP RunAA)
 	(cd 24121_MBCounting        && make Prepare MergeMB RunAA)
 	(cd $(ProjectBase)/DataPerformance/24131_RelativeTriggerTurnOn && make Prepare ProcessAll)
