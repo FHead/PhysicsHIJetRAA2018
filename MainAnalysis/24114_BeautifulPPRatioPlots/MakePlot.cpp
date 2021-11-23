@@ -20,8 +20,9 @@ using namespace std;
 
 int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
-vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true);
+vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true, double ExtraScale = 1);
 TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2);
+TGraphAsymmErrors BuildSystematics(TGraphAsymmErrors &G, string FileName);
 TGraph ToGraph(TH1D *H);
 
 int main(int argc, char *argv[])
@@ -36,6 +37,7 @@ int main(int argc, char *argv[])
    string BaseRLabel         = CL.Get("BaseRLabel");
    vector<string> FileName   = CL.GetStringVector("FileName", vector<string>{});
    vector<string> RLabel     = CL.GetStringVector("RLabel", vector<string>{});
+   vector<string> SysName    = CL.GetStringVector("Systematics", vector<string>{});
    vector<int> Color         = CL.GetIntVector("Color", vector<int>{1, 2, 3, 4, 5, 6, 7});
 
    double XMin               = CL.GetDouble("XMin", 100);
@@ -49,6 +51,7 @@ int main(int argc, char *argv[])
 
    Assert(FileCount > 0, "Please specify at least one curve to plot");
    Assert(FileCount == RLabel.size(), "Please specify the radius labels for the input files");
+   Assert(FileCount == SysName.size(), "We need systematics for all the files.  Put \"none\" to bypass for given curve");
 
    // Get the global setting DH file
    string GlobalSettingFile  = CL.Get("GlobalSetting", "GlobalSetting.dh");
@@ -66,7 +69,11 @@ int main(int argc, char *argv[])
    int BaseIteration
       = DHFile["PPData"][Form("BestIteration_R%s_CentralityInclusive",BaseRLabel.c_str())].GetInteger();
    TH1D *HBase = (TH1D *)BaseFile.Get(Form("HUnfoldedBayes%d", BaseIteration));
-   vector<TGraphAsymmErrors> GBase = Transcribe(HBase, GenBins1, GenBins2, nullptr);
+   double LumiBase = stof(DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",BaseRLabel.c_str())].GetString());
+   double PUBugBase = DHFile["PUBugCorrection"][Form("PPData_R%s_CentralityInclusive",BaseRLabel.c_str())].GetDouble();
+   vector<TGraphAsymmErrors> GBase = Transcribe(HBase, GenBins1, GenBins2, nullptr, true, PUBugBase / LumiBase);
+   
+   cout << PUBugBase << " " << LumiBase << " " << DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",BaseRLabel.c_str())].GetString() << endl;
 
    // Get the spectra
    vector<vector<TGraphAsymmErrors>> GSpectra(FileCount);
@@ -77,7 +84,9 @@ int main(int argc, char *argv[])
       int Iteration
          = DHFile["PPData"][Form("BestIteration_R%s_CentralityInclusive",RLabel[i].c_str())].GetInteger();
       TH1D *H = (TH1D *)File.Get(Form("HUnfoldedBayes%d", Iteration));
-      GSpectra[i] = Transcribe(H, GenBins1, GenBins2, nullptr);
+      double PUBug = DHFile["PUBugCorrection"][Form("PPData_R%s_CentralityInclusive",RLabel[i].c_str())].GetDouble();
+      double Lumi = stof(DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",RLabel[i].c_str())].GetString());
+      GSpectra[i] = Transcribe(H, GenBins1, GenBins2, nullptr, true, PUBug / Lumi);
 
       File.Close();
    }
@@ -87,6 +96,12 @@ int main(int argc, char *argv[])
    for(int i = 0; i < FileCount; i++)
       for(int j = 0; j < GSpectra[i].size(); j++)
          GRatio[i].push_back(CalculateRatio(GSpectra[i][j], GBase[j]));
+   
+   // Build systematics
+   vector<vector<TGraphAsymmErrors>> GSys(FileCount);
+   for(int i = 0; i < FileCount; i++)
+      for(int j = 0; j < GSpectra[i].size(); j++)
+         GSys[i].push_back(BuildSystematics(GRatio[i][j], SysName[i]));
 
    string LuminosityString
       = DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",BaseRLabel.c_str())].GetString();
@@ -99,7 +114,7 @@ int main(int argc, char *argv[])
    TCanvas Canvas;
    Canvas.SetLogx();
 
-   TH2D HWorld("HWorld", Form(";Jet p_{T} (GeV);(R = X) / (R = %.1f)", DHFile["JetR"][BaseRLabel].GetDouble()),
+   TH2D HWorld("HWorld", Form(";Jet p_{T} (GeV);#sigma(R = X) / #sigma(R = %.1f)", DHFile["JetR"][BaseRLabel].GetDouble()),
       100, XMin, XMax, 100, 0, 1.2);
    HWorld.SetStats(0);
    HWorld.GetXaxis()->SetMoreLogLabels();
@@ -162,6 +177,14 @@ int main(int argc, char *argv[])
    {
       for(int j = 0; j < GRatio[i].size(); j++)
       {
+         GSys[i][j].SetLineColor(Colors[Color[i]]);
+         GSys[i][j].SetFillColorAlpha(Colors[Color[i]], 0.25);
+         GSys[i][j].SetLineWidth(2);
+         GSys[i][j].SetMarkerColor(Colors[Color[i]]);
+         GSys[i][j].SetMarkerStyle(20);
+         GSys[i][j].SetMarkerSize(2);
+         GSys[i][j].Draw("2");
+         
          GRatio[i][j].SetLineColor(Colors[Color[i]]);
          GRatio[i][j].SetLineWidth(2);
          GRatio[i][j].SetMarkerColor(Colors[Color[i]]);
@@ -171,13 +194,26 @@ int main(int argc, char *argv[])
       }
    }
 
-   TLegend Legend(0.15, 0.12, 0.30, 0.32);
+   TLegend Legend(0.15, 0.12, 0.30, 0.12 + 0.035 * (FileCount > 5 ? 5 : FileCount));
    Legend.SetTextSize(0.035);
    Legend.SetFillStyle(0);
    Legend.SetBorderSize(0);
+   
+   TLegend Legend2(0.35, 0.12, 0.50, 0.12 + 0.035 * (FileCount > 5 ? FileCount - 5: 1));
+   Legend2.SetTextSize(0.035);
+   Legend2.SetFillStyle(0);
+   Legend2.SetBorderSize(0);
+   
    for(int i = 0; i < FileCount; i++)
-      Legend.AddEntry(&GRatio[i][0], Form("R = %.1f", DHFile["JetR"][RLabel[i]].GetDouble()), "lp");
+   {
+      if(i < 5)
+         Legend.AddEntry(&GSys[i][0], Form("R = %.2f", DHFile["JetR"][RLabel[i]].GetDouble()), "lpf");
+      else
+         Legend2.AddEntry(&GSys[i][0], Form("R = %.2f", DHFile["JetR"][RLabel[i]].GetDouble()), "lpf");
+   }
    Legend.Draw();
+   if(FileCount > 5)
+      Legend2.Draw();
    
    TGraph GExampleData, GExampleHIN18014, GExampleHIN18014P6, GExampleHIN18014P8;
    GExampleData.SetLineWidth(2);
@@ -189,17 +225,17 @@ int main(int argc, char *argv[])
    GExampleHIN18014P8.SetLineWidth(2);
    GExampleHIN18014P8.SetLineStyle(kDotted);
 
-   TLegend Legend2(0.35, 0.12, 0.50, 0.32);
-   Legend2.SetTextSize(0.035);
-   Legend2.SetFillStyle(0);
-   Legend2.SetBorderSize(0);
-   Legend2.AddEntry("", "Styles", "");
-   Legend2.AddEntry(&GExampleData, "Data", "pl");
-   Legend2.AddEntry(&GExampleHIN18014, "HIN-18-014 Central Value", "l");
-   Legend2.AddEntry(&GExampleHIN18014P6, "Pythia6", "l");
-   Legend2.AddEntry(&GExampleHIN18014P8, "Pythia8", "l");
+   TLegend LegendS(0.35, 0.12, 0.50, 0.12 + 0.035 * FileCount);
+   LegendS.SetTextSize(0.035);
+   LegendS.SetFillStyle(0);
+   LegendS.SetBorderSize(0);
+   LegendS.AddEntry("", "Styles", "");
+   LegendS.AddEntry(&GExampleData, "Data", "pl");
+   LegendS.AddEntry(&GExampleHIN18014, "HIN-18-014 Central Value", "l");
+   LegendS.AddEntry(&GExampleHIN18014P6, "Pythia6", "l");
+   LegendS.AddEntry(&GExampleHIN18014P8, "Pythia8", "l");
    if(AddHIN18014 == true)
-      Legend2.Draw();
+      LegendS.Draw();
 
    TGraph GLine;
    GLine.SetPoint(0, 0, 1);
@@ -216,8 +252,8 @@ int main(int argc, char *argv[])
    Latex.SetTextAlign(32);
    Latex.DrawLatex(0.85, 0.92, Form("pp 5.02 TeV %.2f %s", Luminosity, LuminosityUnit.c_str()));
    
-   Latex.SetTextAlign(12);
-   Latex.DrawLatex(0.12, 0.87, "Statistical only");
+   // Latex.SetTextAlign(12);
+   // Latex.DrawLatex(0.12, 0.87, "Statistical only");
    
    // if(AddHIN18014 == true)
    // {
@@ -263,8 +299,10 @@ vector<double> DetectBins(TH1D *HMin, TH1D *HMax)
    return Result;
 }
 
-vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2, bool Normalize)
+vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2, bool Normalize, double ExtraScale)
 {
+   cout << ExtraScale << endl;
+
    int BinningCount = Bins2.size() - 1;
    if(BinningCount <= 0)
       BinningCount = 1;
@@ -296,13 +334,13 @@ vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<doubl
 
          if(H2 == nullptr)
          {
-            Y = H->GetBinContent(i + iB * PrimaryBinCount + 1);
-            DY = H->GetBinError(i + iB * PrimaryBinCount + 1);
+            Y = H->GetBinContent(i + iB * PrimaryBinCount + 1) * ExtraScale;
+            DY = H->GetBinError(i + iB * PrimaryBinCount + 1) * ExtraScale;
          }
          else
          {
-            double YUp = H->GetBinContent(i + iB * PrimaryBinCount + 1);
-            double YDown = H2->GetBinContent(i + iB * PrimaryBinCount + 1);
+            double YUp = H->GetBinContent(i + iB * PrimaryBinCount + 1) * ExtraScale;
+            double YDown = H2->GetBinContent(i + iB * PrimaryBinCount + 1) * ExtraScale;
 
             // cout << iB << " " << i << " " << YUp << " " << YDown << endl;
 
@@ -367,6 +405,63 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
    }
 
    return G;
+}
+
+TGraphAsymmErrors BuildSystematics(TGraphAsymmErrors &G, string FileName)
+{
+   int N = G.GetN();
+   TGraphAsymmErrors Result(N);
+
+   TFile File(FileName.c_str());
+
+   TH1D *HMin = (TH1D *)File.Get("HGenPrimaryBinMin");
+   TH1D *HMax = (TH1D *)File.Get("HGenPrimaryBinMax");
+
+   TH1D *HPlus = (TH1D *)File.Get("HTotalPlus");
+   TH1D *HMinus = (TH1D *)File.Get("HTotalMinus");
+
+   bool FileOK = true;
+   if(HMin == nullptr)     FileOK = false;
+   if(HMax == nullptr)     FileOK = false;
+   if(HPlus == nullptr)    FileOK = false;
+   if(HMinus == nullptr)   FileOK = false;
+
+   if(FileOK == false && FileName != "none")
+   {
+      cout << "Systematic file \"" << FileName << "\" not good!" << endl;
+      cout << "Proceed without uncertainty..." << endl;
+   }
+
+   for(int i = 0; i < N; i++)
+   {
+      double X = G.GetPointX(i);
+      double Y = G.GetPointY(i);
+      double EXL = G.GetErrorXlow(i);
+      double EXH = G.GetErrorXhigh(i);
+
+      double EYL = 0;
+      double EYH = 0;
+
+      if(FileOK == true)
+      {
+         for(int j = 1; j <= HMin->GetNbinsX(); j++)
+         {
+            if(X >= HMin->GetBinContent(j) && X < HMax->GetBinContent(j))
+            {
+               EYL = HPlus->GetBinContent(j) * Y;
+               EYH = -HMinus->GetBinContent(j) * Y;
+               break;
+            }
+         }
+      }
+
+      Result.SetPoint(i, X, Y);
+      Result.SetPointError(i, EXL, EXH, EYL, EYH);
+   }
+
+   File.Close();
+
+   return Result;
 }
 
 TGraph ToGraph(TH1D *H)
