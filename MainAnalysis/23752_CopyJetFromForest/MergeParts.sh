@@ -3,7 +3,7 @@
 TempFolder=Output/Parts/
 mkdir -p $TempFolder
 
-mv Output/*Part*root $TempFolder
+# mv Output/*Part*root $TempFolder
 
 for Type in `ls $TempFolder | cut -d '_' -f 2 | sort | uniq`
 do

@@ -105,13 +105,23 @@ do
       Stored=false
    fi
 
-   ./Execute --Input $InputFile --Output Output/${Tag}_R${RTag}_Centrality${CTag}.root \
+   PTMin=15
+   GenPTMin=10
+   if [[ "$IsPP" == 0 ]] && [[ "$DoPhiResidual" == 0 ]] && [[ "$IsMC" == 1 ]]; then
+      PTMin=0
+      GenPTMin=0
+   fi
+
+   mkdir -p /tmp/chenyi/
+   ./Execute --Input $InputFile --Output /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root \
       --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
       --Fraction $Fraction --Exclusion "$Exclusion" \
       --UseStoredGen $Stored --UseStoredReco $Stored --DoRecoSubtraction false --Trigger $Trigger \
       --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-      --PTMin 15 --GenPTMin 10 --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
+      --PTMin $PTMin --GenPTMin $GenPTMin \
+      --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
       --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey
+   mv /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root Output/${Tag}_R${RTag}_Centrality${CTag}.root
 done
 
 
