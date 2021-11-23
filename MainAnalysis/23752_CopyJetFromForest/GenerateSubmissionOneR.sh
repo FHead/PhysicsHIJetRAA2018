@@ -3,15 +3,16 @@
 File=Submit.condor
 rm -f ${File}
 
+ToRunList="$1"
+ToRunR="$2"
+
 # Available arguments: PbPbMC PbPbData PPMC PPData PbPbMCJEC PbPbMCInclusive PbPbMCRho
 # PbPbMCJEC       = don't apply phi correction
 # PbPbMCInclusive = don't split centrality
 # PbPbMCRho       = don't split centrality, but use rho to weight to data
-# ToRunList="PbPbData"
-# ToRunR="6 7"
-
-ToRunList="$1"
-ToRunR="$2"
+ToRunList="PbPbData"
+ToRunR="6 7"
+Group=10
 
 echo "Setting up submission to run on the following list"
 echo "$ToRunList"
@@ -44,7 +45,7 @@ do
 
       LocationBase=`DHQuery GlobalSetting.dh Sample ${LocationKey}${RTag} | tr -d '"'`
 
-      for j in `find "${LocationBase}/" | grep root$ | Reformat 25 | tr ' ' ',' | sed "s/[ ,]*$//g"`
+      for j in `find "${LocationBase}/" | grep root$ | Reformat $Group | tr ' ' ',' | sed "s/[ ,]*$//g"`
       do
          # echo $j
          Count=`echo $Count | AddConst 1`
