@@ -18,7 +18,7 @@ RunTest: Execute
 	./Execute --Input Systematics/PPData_R4_CentralityInclusive.root \
 		--Output Plots/PPData_R4_CentralityInclusive.pdf \
 		--FinalOutput FinalPlots/PPData_R4_CentralityInclusive.pdf \
-		--GenPrimaryMin -0.015 --GenPrimaryMax 0.75 \
+		--GenPrimaryMin 0 --GenPrimaryMax 1600 \
 		--WorldXMin 100 --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
 		--XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
 		--LegendX 0.12 --LegendY 0.5 --LegendSize 0.05 \

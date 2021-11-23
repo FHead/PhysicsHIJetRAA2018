@@ -29,7 +29,7 @@ void SetPad(TPad *P);
 void SetAxis(TGaxis &A);
 void SetWorld(TH2D *H);
 TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2);
-double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -999);
+double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -9999);
 
 int main(int argc, char *argv[])
 {
@@ -41,10 +41,10 @@ int main(int argc, char *argv[])
    string InputFileName           = CL.Get("Input");
    string OutputFileName          = CL.Get("Output");
    string FinalOutputFileName     = CL.Get("FinalOutput", "Meow.pdf");
-   double GenPrimaryMinOverwrite  = CL.GetDouble("GenPrimaryMin", -999);
-   double GenPrimaryMaxOverwrite  = CL.GetDouble("GenPrimaryMax", 999);
-   double RecoPrimaryMinOverwrite = CL.GetDouble("RecoPrimaryMin", -999);
-   double RecoPrimaryMaxOverwrite = CL.GetDouble("RecoPrimaryMax", 999);
+   double GenPrimaryMinOverwrite  = CL.GetDouble("GenPrimaryMin", -9999);
+   double GenPrimaryMaxOverwrite  = CL.GetDouble("GenPrimaryMax", 9999);
+   double RecoPrimaryMinOverwrite = CL.GetDouble("RecoPrimaryMin", -9999);
+   double RecoPrimaryMaxOverwrite = CL.GetDouble("RecoPrimaryMax", 9999);
 
    vector<string> Variations      = CL.GetStringVector("Variations");
    vector<int> SystematicGroups   = CL.GetIntVector("SystematicGroups");
@@ -87,8 +87,6 @@ int main(int argc, char *argv[])
    GenBins1[0] = GenPrimaryMinOverwrite;
    GenBins1[GenBins1.size()-1] = GenPrimaryMaxOverwrite;
 
-   cout << GenBins1.size() << endl;
-
    map<string, TH1D *> H1;
    for(string Name : Variations)
    {
@@ -121,8 +119,6 @@ int main(int argc, char *argv[])
          H1[HName]->SetBinContent(j, V);
       }
    }
-
-   // cout << "SVD 28 " << H1["HSVDRatio"]->GetBinContent(28) << endl;
 
    H1["HSystematicsRatioPlus"] = (TH1D *)InputFile.Get("HTotalPlus");
    H1["HSystematicsRatioMinus"] = (TH1D *)InputFile.Get("HTotalMinus");
@@ -204,8 +200,6 @@ int main(int argc, char *argv[])
       int R = i / Column;
       int C = i % Column;
 
-      cout << i << " " << R << " " << C << endl;
-
       double XMin = PadX0 + PadDX * C;
       double XMax = PadX0 + PadDX * (C + 1);
       double YMin = PadY0 + PadDY * R;
@@ -266,8 +260,6 @@ int main(int argc, char *argv[])
    {
       int Index = i;
 
-      cout << Index << endl;
-      
       Pads[Index]->cd();
       HWorld.emplace_back(new TH2D(Form("HWorld%d", i), "", 100, WorldXMin, WorldXMax, 100, WorldYMin, WorldYMax));
       SetWorld(HWorld[Index]);
@@ -284,10 +276,10 @@ int main(int argc, char *argv[])
          Pads[Index]->cd();
 
          string BinLabel = "";
-         if(GenBins2[Group[i]] > -999)
+         if(GenBins2[Group[i]] > -9999)
             BinLabel = BinLabel + Form("%.1f < ", GenBins2[Group[i]]);
          BinLabel = BinLabel + BinningLabel;
-         if(GenBins2[Group[i]+1] < 999)
+         if(GenBins2[Group[i]+1] < 9999)
             BinLabel = BinLabel + Form(" < %.1f", GenBins2[Group[i]+1]);
 
          Latex.SetTextFont(42);
@@ -337,8 +329,6 @@ int main(int argc, char *argv[])
          if(PadIndex != Index)
             continue;
 
-         cout << X << " " << Y << " " << Text << endl;
-
          Latex.SetNDC();
          Latex.SetTextFont(42);
          Latex.SetTextSize(InsideTextSize);
@@ -361,8 +351,6 @@ int main(int argc, char *argv[])
 
       if(PadIndex != -1)
          continue;
-
-      cout << X << " " << Y << " " << Text << endl;
 
       Latex.SetNDC();
       Latex.SetTextFont(42);
@@ -479,9 +467,9 @@ vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<doubl
       PrimaryBins[i] = Bins1[i];
    double Delta = PrimaryBins[PrimaryBinCount-1] - PrimaryBins[1];
 
-   if(PrimaryBins[0] < -998)
+   if(PrimaryBins[0] < -99998)
       PrimaryBins[0] = PrimaryBins[1] - Delta * 0.05;
-   if(PrimaryBins[PrimaryBinCount] > 998)
+   if(PrimaryBins[PrimaryBinCount] > 99998)
       PrimaryBins[PrimaryBinCount] = PrimaryBins[PrimaryBinCount-1] + Delta * 0.05;
    // if(PrimaryBins[0] < 0 && PrimaryBins[1] > 0)
    //    PrimaryBins[0] = 0;
