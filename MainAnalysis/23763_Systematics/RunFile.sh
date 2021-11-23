@@ -17,15 +17,18 @@ do
       PRC="${Prefix}_${RC}"
       PRCN="Input/${PRC}_Nominal.root"
 
+      NominalIteration=`DHQuery GlobalSetting.dh ${Prefix} BestIteration_R${R}_Centrality${C}`
+      HNominal=HUnfoldedBayes${NominalIteration}
+
       ./Execute \
-         --BaseInput ${PRCN},${PRCN} \
-         --Input Input/${PRC}_JECUp.root,Input/${PRC}_JECDown.root \
-         --BaseHistogram HUnfoldedBayes30,HUnfoldedBayes30 \
-         --Histogram HUnfoldedBayes30,HUnfoldedBayes30 \
-         --Label JECUp,JECDown \
-         --Group 1,1 \
-         --Bridging 0,0 \
-         --ExtraScaling 1,1 \
+         --BaseInput ${PRCN},${PRCN},${PRCN},${PRCN} \
+         --Input Input/${PRC}_JECUp.root,Input/${PRC}_JECDown.root,Input/${PRC}_JERUp.root,Input/${PRC}_JERDown.root \
+         --BaseHistogram ${HNominal},${HNominal},${HNominal},${HNominal} \
+         --Histogram ${HNominal},${HNominal},${HNominal},${HNominal} \
+         --Label JECUp,JECDown,JERUp,JERDown \
+         --Group 1,1,1,1 \
+         --Bridging 0,0,0,0 \
+         --ExtraScaling 1,1,1,1 \
          --BinMapping BinMapping/${PRC}_Nominal.root \
          --DoSelfNormalize false \
          --Output Output/${PRC}.root
