@@ -32,21 +32,24 @@ TestRunPart2:
 	# Make sure to copy over the following from lxplus before continuing...
 	#    1. unfold preparation output files
 	#    2. GlobalSetting.dh
+	# Also make sure that the ProjectBase is set correctly!
 	sleep 10
-	(cd 23762_PerfectRecoGeneration && make Prepare RunMC)
-	(cd 23762_FakeData              && make Prepare RunMC)
-	(cd 23762_ActualUnfold          && make Prepare RunAA RunPP)
-	(cd 23772_UnfoldIteration       && make Prepare RunMC)
-	(cd 23762_PerfectRecoGeneration && make Prepare RunData)
-	(cd 23762_FakeData              && make Prepare RunData)
-	(cd 23762_ActualUnfold          && make Prepare RunDataToy)
-	(cd 23772_UnfoldIteration       && make Prepare RunData)
-	(cd 23763_Systematics           && make Prepare RunData)
-	(cd 24113_HEPData               && make default)
-	(cd 23763_BeautifulPlots        && make Prepare RunJetPT RunJetPTClosure)
-	(cd 23763_BeautifulMatrix       && make Prepare RunPP RunAA)
-	(cd 24114_PPRatioHEPData        && make default)
-	(cd 24114_BeautifulPPRatioPlots && make RunJetPT)
-	(cd 24122_RAA                   && make Prepare Run)
+	(cd 24165_PUBugCorrection        && make Prepare PlaceHolder)
+	(cd 23762_PerfectRecoGeneration  && make Prepare RunMC)
+	(cd 23762_FakeData               && make Prepare RunMC)
+	(cd 23762_ActualUnfold           && make Prepare RunAA RunPP)
+	(cd 23772_UnfoldIteration        && make Prepare RunMC)
+	(cd 23762_PerfectRecoGeneration  && make Prepare RunData)
+	(cd 23762_FakeData               && make Prepare RunData)
+	(cd 23762_ActualUnfold           && make Prepare RunDataToy)
+	(cd 23772_UnfoldIteration        && make Prepare RunData)
+	(cd 23763_Systematics            && make Prepare RunData)
+	(cd 24165_SystematicsCombination && make Prepare SetDHFile RunAll)
+	(cd 24113_HEPData                && make default)
+	(cd 23763_BeautifulPlots         && make Prepare RunJetPT RunJetPTClosure)
+	(cd 23763_BeautifulMatrix        && make Prepare RunPP RunAA)
+	(cd 24114_PPRatioHEPData         && make default)
+	(cd 24114_BeautifulPPRatioPlots  && make RunJetPT)
+	(cd 24122_RAA                    && make Prepare Run)
 
 
