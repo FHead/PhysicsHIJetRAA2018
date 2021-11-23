@@ -55,23 +55,25 @@ int main(int argc, char *argv[])
    TProfile2D P4("P4", "Jet eta = [-2.0, -1.5];JetPT;JetPhi", JetPTBin, JetPTBins, 50, -M_PI, M_PI);
    TProfile2D P5("P5", ";JetPT;JetEta", JetPTBin, JetPTBins2, 25, -2, 2);
    TProfile2D P6("P6", "Jet PT > 200;JetPhi;JetEta", 50, -M_PI, M_PI, 25, -2, 2);
+   TProfile2D P24("P24", "Jet PT > 50;JetPhi;JetEta", 50, -M_PI, M_PI, 25, -2, 2);
 
-   TProfile P7("P7", "Jet eta = [-2.0, -1.5];JetPT;<R>", JetPTBin, JetPTBins, "S");
-   TProfile P8("P8", "Jet eta = [-1.5, -1.0];JetPT;<R>", JetPTBin, JetPTBins, "S");
-   TProfile P9("P9", "Jet eta = [-1.0, -0.5];JetPT;<R>", JetPTBin, JetPTBins, "S");
-   TProfile P10("P10", "Jet eta = [-0.5, 0.0];JetPT;<R>", JetPTBin, JetPTBins, "S");
-   TProfile P11("P11", "Jet eta = [0.0, 0.5];JetPT;<R>", JetPTBin, JetPTBins, "S");
-   TProfile P12("P12", "Jet eta = [0.5, 1.0];JetPT;<R>", JetPTBin, JetPTBins, "S");
-   TProfile P14("P14", "Jet eta = [1.0, 1.5];JetPT;<R>", JetPTBin, JetPTBins, "S");
-   TProfile P15("P15", "Jet eta = [1.5, 2.0];JetPT;<R>", JetPTBin, JetPTBins, "S");
-   TProfile P16("P16", "Jet eta = [-2.0, -1.5];JetPT;<R>", JetPTBin, JetPTBins2, "S");
-   TProfile P17("P17", "Jet eta = [-1.5, -1.0];JetPT;<R>", JetPTBin, JetPTBins2, "S");
-   TProfile P18("P18", "Jet eta = [-1.0, -0.5];JetPT;<R>", JetPTBin, JetPTBins2, "S");
-   TProfile P19("P19", "Jet eta = [-0.5, 0.0];JetPT;<R>", JetPTBin, JetPTBins2, "S");
-   TProfile P20("P20", "Jet eta = [0.0, 0.5];JetPT;<R>", JetPTBin, JetPTBins2, "S");
-   TProfile P21("P21", "Jet eta = [0.5, 1.0];JetPT;<R>", JetPTBin, JetPTBins2, "S");
-   TProfile P22("P22", "Jet eta = [1.0, 1.5];JetPT;<R>", JetPTBin, JetPTBins2, "S");
-   TProfile P23("P23", "Jet eta = [1.5, 2.0];JetPT;<R>", JetPTBin, JetPTBins2, "S");
+   string Option = "";
+   TProfile P7("P7",   "Jet eta = [-2.0, -1.5];JetPT;<R>", JetPTBin, JetPTBins,  Option.c_str());
+   TProfile P8("P8",   "Jet eta = [-1.5, -1.0];JetPT;<R>", JetPTBin, JetPTBins,  Option.c_str());
+   TProfile P9("P9",   "Jet eta = [-1.0, -0.5];JetPT;<R>", JetPTBin, JetPTBins,  Option.c_str());
+   TProfile P10("P10", "Jet eta = [-0.5, 0.0];JetPT;<R>",  JetPTBin, JetPTBins,  Option.c_str());
+   TProfile P11("P11", "Jet eta = [0.0, 0.5];JetPT;<R>",   JetPTBin, JetPTBins,  Option.c_str());
+   TProfile P12("P12", "Jet eta = [0.5, 1.0];JetPT;<R>",   JetPTBin, JetPTBins,  Option.c_str());
+   TProfile P14("P14", "Jet eta = [1.0, 1.5];JetPT;<R>",   JetPTBin, JetPTBins,  Option.c_str());
+   TProfile P15("P15", "Jet eta = [1.5, 2.0];JetPT;<R>",   JetPTBin, JetPTBins,  Option.c_str());
+   TProfile P16("P16", "Jet eta = [-2.0, -1.5];JetPT;<R>", JetPTBin, JetPTBins2, Option.c_str());
+   TProfile P17("P17", "Jet eta = [-1.5, -1.0];JetPT;<R>", JetPTBin, JetPTBins2, Option.c_str());
+   TProfile P18("P18", "Jet eta = [-1.0, -0.5];JetPT;<R>", JetPTBin, JetPTBins2, Option.c_str());
+   TProfile P19("P19", "Jet eta = [-0.5, 0.0];JetPT;<R>",  JetPTBin, JetPTBins2, Option.c_str());
+   TProfile P20("P20", "Jet eta = [0.0, 0.5];JetPT;<R>",   JetPTBin, JetPTBins2, Option.c_str());
+   TProfile P21("P21", "Jet eta = [0.5, 1.0];JetPT;<R>",   JetPTBin, JetPTBins2, Option.c_str());
+   TProfile P22("P22", "Jet eta = [1.0, 1.5];JetPT;<R>",   JetPTBin, JetPTBins2, Option.c_str());
+   TProfile P23("P23", "Jet eta = [1.5, 2.0];JetPT;<R>",   JetPTBin, JetPTBins2, Option.c_str());
 
    for(string FileName : InputFileNames)
    {
@@ -135,6 +137,8 @@ int main(int argc, char *argv[])
             }
 
             P1.Fill(GenJetPT->at(iJ), GenJetEta->at(iJ), MatchedJetPT->at(iJ) / GenJetPT->at(iJ));
+            if(GenJetPT->at(iJ) > 50)
+               P24.Fill(GenJetPhi->at(iJ), GenJetEta->at(iJ), MatchedJetPT->at(iJ) / GenJetPT->at(iJ));
             if(GenJetPT->at(iJ) > 100)
                P2.Fill(GenJetPhi->at(iJ), GenJetEta->at(iJ), MatchedJetPT->at(iJ) / GenJetPT->at(iJ));
             if(GenJetEta->at(iJ) > 0.5 && GenJetEta->at(iJ) <= 1.0)
@@ -206,11 +210,15 @@ int main(int argc, char *argv[])
    P6.SetMinimum(0.75);
    P6.SetMaximum(1.25);
    P6.SetStats(0);
+   P24.SetMinimum(0.75);
+   P24.SetMaximum(1.25);
+   P24.SetStats(0);
 
    PdfFileHelper PdfFile(Output);
    PdfFile.AddTextPage("Meooooow");
 
    PdfFile.AddPlot(P1, "colz", false, false, true, true);
+   PdfFile.AddPlot(P24, "colz", false, false, true, false);
    PdfFile.AddPlot(P2, "colz", false, false, true, false);
    PdfFile.AddPlot(P3, "colz", false, false, true, true);
    PdfFile.AddPlot(P4, "colz", false, false, true, true);
@@ -279,6 +287,8 @@ void PlotProfile1D(PdfFileHelper &PdfFile, TProfile &P)
 
    TCanvas Canvas;
    Canvas.SetLogx();
+   Canvas.SetGridx();
+   Canvas.SetGridy();
 
    P.Draw("");
    G.Draw("l");

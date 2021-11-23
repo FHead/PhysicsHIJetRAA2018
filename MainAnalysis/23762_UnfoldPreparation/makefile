@@ -77,10 +77,10 @@ RunAAExternal: Execute ExecutePreset
 		| grep ^time`;
 	
 RunPP: Execute ExecutePreset
-	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPMC \
-		--Prefix PPMC --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
-		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(MCFraction) \
-		| grep ^time`
+	# eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPMC \
+	# 	--Prefix PPMC --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
+	# 	--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(MCFraction) \
+	# 	| grep ^time`
 	eval `./ExecutePreset --MCTag Input/PPMC --DataTag Input/PPData \
 		--Prefix PPData --Suffix Nominal --Centrality "Inclusive" --GlobalSetting GlobalSetting.dh \
 		--Shift 0.0 --Smear 1.0 --Flooring false --MCFraction $(MCFraction) --DataFraction $(DataFraction) \

@@ -326,7 +326,7 @@ int main(int argc, char *argv[])
       Canvas.SetLogy();
 
       TH2D HWorld("HWorld", Form("Eta [%.1f, %.1f];p_{T};#bar{#rho}", EtaBinning[iEta], EtaBinning[iEta+1]),
-            100, 40, 1000, 100, 0.1, 275);
+            100, MinPT * 0.8, 1200, 100, 0.1, 300);
       HWorld.SetStats(0);
 
       HWorld.Draw("axis");

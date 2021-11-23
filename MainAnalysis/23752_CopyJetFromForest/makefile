@@ -12,6 +12,7 @@ Prepare:
 	# ln -sf $(ProjectBase)/Samples/Example SampleExample
 	# mkdir -p Output/
 
+PPData4=/eos/cms/store/group/phys_heavyions/chenyi/pp2017/Forest//HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/0000/
 PbPbData4=/eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest//HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit35WithRhoGenBugFix/211106_221601/0000/
 
 TestRun: Execute
@@ -21,7 +22,17 @@ TestRun: Execute
 	# bash RunFile.sh `ls PPMC/*.root | head -n3 | tr '\n' ','`   MeowTestRunPPMC   None             1 1 1
 	# bash RunFile.sh `ls PPData/*.root | head -n1 | tr '\n' ','` MeowTestRunPPData HLT_HIAK4PFJet80 0 1 1
 	# bash RunFileOneR.sh `ls ExamplePbPbMC/Output*.root | head -n10 | tr '\n' ','` MeowTestRunMC None 1 0 0 4 1 1 Inclusive
-	bash RunFileOneR.sh `ls $(PbPbData4)/*.root | head -n2 | tr '\n' ','` MeowTestRunMC None 1 0 0 4 1 1 rho
+	# bash RunFileOneR.sh `ls $(PbPbData4)/*.root | head -n2 | tr '\n' ','` MeowTestRunMC None 1 0 0 4 1 1 rho
+	bash RunFileOneR.sh `ls $(PPData4)/*.root | head -n2 | tr '\n' ','` MeowTestRunPPData HLT_HIAK4PFJet80 0 1 1 4 0 0 default
+
+ULTreeValidation: Execute
+	# ./Execute --Input HiForestMiniAOD.root --Output ULFromJet_R4.root --Jet "ak4PFJetAnalyzer/t" \
+	# 	--JetR 0.4 --CheckCentrality false --UseStoredGen false --UseStoredReco true \
+	# 	--DoRecoSubtraction false
+	# ./Execute --Input HiForestMiniAOD.root --Output ULFromPF_R4.root --Jet "ak4PFJetAnalyzer/t" \
+	# 	--JetR 0.4 --CheckCentrality false --UseStoredGen false --UseStoredReco false \
+	# 	--PF "particleFlowAnalyser/pftree"
+	bash RunULValidation.sh
 
 Execute: ProcessJets.cpp
 	CompileRootMacro ProcessJets.cpp Execute \

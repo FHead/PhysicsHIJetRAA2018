@@ -17,6 +17,9 @@ using namespace fastjet;
 #include "Messenger.h"
 #include "JetCorrector.h"
 
+int main(int argc, char *argv[]);
+double GetUE(RhoTreeMessenger &M, double Eta, double R);
+
 int main(int argc, char *argv[])
 {
    SetThesisStyle();
@@ -59,6 +62,7 @@ int main(int argc, char *argv[])
       TriggerTreeMessenger MTrigger(File, "hltanalysis/HltTree");
       SkimTreeMessenger MSkim(File);
       PFTreeMessenger MPF(File, "pfcandAnalyzer/pfTree");
+      RhoTreeMessenger MRho(File, "hiPuRhoAnalyzer/t");
 
       int EntryCount = MEvent.Tree->GetEntries();
       ProgressBar Bar(cout, EntryCount);
@@ -78,6 +82,7 @@ int main(int argc, char *argv[])
          MSkim.GetEntry(iE);
          if(Recluster == true)
             MPF.GetEntry(iE);
+         MRho.GetEntry(iE);
 
          double Centrality = MEvent.hiBin * 0.005;
          if(Centrality < CentralityMin)
@@ -117,9 +122,12 @@ int main(int argc, char *argv[])
             int LeadingJetIndex = 0;
             for(int iJ = 0; iJ < MJet.JetCount; iJ++)
             {
+               double UE = GetUE(MRho, MJet.JetEta[iJ], JetR);
+               
                JEC.SetJetPT(MJet.JetRawPT[iJ]);
                JEC.SetJetEta(MJet.JetEta[iJ]);
                JEC.SetJetPhi(MJet.JetPhi[iJ]);
+               JEC.SetRho(UE / (JetR * JetR * M_PI));
                MJet.JetPT[iJ] = JEC.GetCorrectedPT();
 
                if(MJet.JetPT[iJ] > MJet.JetPT[LeadingJetIndex])
@@ -152,9 +160,12 @@ int main(int argc, char *argv[])
                PseudoJet &J = FastJets[iR];
                FourVector P(J.e(), J.px(), J.py(), J.pz());
 
+               double UE = GetUE(MRho, P.GetEta(), JetR);
+
                JEC.SetJetPT(P.GetPT());
                JEC.SetJetEta(P.GetEta());
                JEC.SetJetPhi(P.GetPhi());
+               JEC.SetRho(UE / (JetR * JetR * M_PI));
                P = P * JEC.GetCorrection();
 
                if(P.GetPT() > LeadingJet.GetPT())
@@ -198,6 +209,40 @@ int main(int argc, char *argv[])
    return 0;
 }
 
+double GetUE(RhoTreeMessenger &M, double Eta, double R)
+{
+   double Result = 0;
+
+   if(M.EtaMin == nullptr)
+      return -1;
+
+   int NBin = M.EtaMin->size();
+   if(NBin == 0)
+      return -1;
+
+   for(int i = 0; i < NBin; i++)
+   {
+      if(M.EtaMax->at(i) < Eta - R)
+         continue;
+      if(M.EtaMin->at(i) > Eta + R)
+         continue;
+
+      double XMin = (max(M.EtaMin->at(i), Eta - R) - Eta) / R;
+      double XMax = (min(M.EtaMax->at(i), Eta + R) - Eta) / R;
+
+      if(XMin <= -1)
+         XMin = -0.99999;
+      if(XMax >= +1)
+         XMax = +0.99999;
+
+      double High = XMax * sqrt(1 - XMax * XMax) + asin(XMax);
+      double Low = XMin * sqrt(1 - XMin * XMin) + asin(XMin);
+
+      Result = Result + R * R * (High - Low) * M.Rho->at(i);
+   }
+
+   return Result;
+}
 
 
 
