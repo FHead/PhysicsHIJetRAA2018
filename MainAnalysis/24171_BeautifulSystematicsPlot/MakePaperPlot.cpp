@@ -58,7 +58,8 @@ int main(int argc, char *argv[])
    double WorldXMax               = CL.GetDouble("WorldXMax", 50);
    double WorldYMin               = CL.GetDouble("WorldYMin", 1000);
    double WorldYMax               = CL.GetDouble("WorldYMax", 5e5);
-   bool LogY                      = CL.GetBool("LogY", true);
+   bool LogX                      = CL.GetBool("LogX", true);
+   bool LogY                      = CL.GetBool("LogY", false);
 
    string XLabel                  = CL.Get("XLabel", "Jet P (GeV)");
    string YLabel                  = CL.Get("YLabel", "dN / d(Jet P)");
@@ -212,6 +213,8 @@ int main(int argc, char *argv[])
 
       Pads.emplace_back(new TPad(Form("P%d", i), "", XMin, YMin, XMax, YMax));
 
+      if(LogX == true)
+         Pads[i]->SetLogx();
       if(LogY == true)
          Pads[i]->SetLogy();
    }
@@ -223,7 +226,8 @@ int main(int argc, char *argv[])
    vector<TGaxis *> XAxis, YAxis;
    for(int i = 0; i < Column; i++)
    {
-      XAxis.emplace_back(new TGaxis(PadX0 + PadDX * i, PadY0, PadX0 + PadDX * (i + 1), PadY0, WorldXMin, WorldXMax, XAxisSpacing, ""));
+      string Option = (LogX ? "G" : "");
+      XAxis.emplace_back(new TGaxis(PadX0 + PadDX * i, PadY0, PadX0 + PadDX * (i + 1), PadY0, WorldXMin, WorldXMax, XAxisSpacing, Option.c_str()));
       SetAxis(*XAxis[i]);
       XAxis[i]->SetLabelSize(TextSize);
    }
@@ -254,7 +258,7 @@ int main(int argc, char *argv[])
    // Setup general information
    Latex.SetTextAngle(0);
    Latex.SetTextAlign(11);
-   Latex.DrawLatex(PadX0, PadY0 + PadDY * Row + 0.01, "ALEPH Archived Data 1994, e^{+}e^{-} #sqrt{s} = 91.2 GeV");
+   Latex.DrawLatex(PadX0, PadY0 + PadDY * Row + 0.01, "CMS #font[52]{Preliminary}");
 
    // Setup worlds
    vector<TH2D *> HWorld;
