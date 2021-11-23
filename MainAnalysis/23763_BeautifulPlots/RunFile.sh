@@ -44,6 +44,9 @@ do
          ExtraScale=`echo $ExtraScale | DivideConst $MBCount | DivideConst $TAA`
       fi
 
+      PUBugCorrection=`DHQuery GlobalSetting.dh PUBugCorrection ${State}_R${R}_Centrality${C}`
+      ExtraScale=`echo $ExtraScale | MultiplyConst $PUBugCorrection`
+
       System="PbPb"
       if [[ "$IsPP" == "1" ]]; then
          System="pp"
@@ -79,7 +82,7 @@ do
          --PrimaryName HUnfoldedBayes`DHQuery GlobalSetting.dh ${State} BestIteration_R${R}_Centrality${C}` \
          --DoSelfNormalize false \
          --ExtraScale $ExtraScale \
-         --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.0000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \
+         --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.00000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \
          --LogX true --LogY true \
          --XLabel "Jet p_{T} (GeV)" --YLabel ${YLabel} --Binning None \
          --LegendX 0.10 --LegendY 0.10 --LegendSize 0.04 \
