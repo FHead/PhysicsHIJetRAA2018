@@ -45,4 +45,4 @@ ExecuteSummary: PlotPercentage.cpp
 
 Harvest: ExecuteSummary ExecuteFit
 	-bash RunFit.sh
-	./ExecuteSummary
+	./ExecuteSummary --DHFile GlobalSetting.dh
