@@ -1,6 +1,6 @@
 OutputBase = '/store/group/phys_heavyions/chenyi/PbPb2018/MBCount/'
 DatasetName = '/HIMinimumBias0/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD'
-Tag = 'CountMB0_20211018'
+Tag = 'CountMB0_20211020'
 
 from WMCore.Configuration import Configuration
 config = Configuration()
@@ -20,7 +20,7 @@ config.Data.inputDataset = DatasetName
 config.Data.inputDBS = 'https://cmsweb.cern.ch/dbs/prod/global/DBSReader/'
 # config.Data.inputDBS = 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader/'
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 25
+config.Data.unitsPerJob = 5
 config.Data.publication = False
 config.Data.publishDBS = 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter/'
 config.Data.outputDatasetTag = Tag
