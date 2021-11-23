@@ -16,6 +16,7 @@ using namespace std;
 
 int main(int argc, char *argv[]);
 TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string Name);
+TGraphAsymmErrors BuildSystematics(TGraphAsymmErrors &G, string FileName);
 void SetPad(TPad &P);
 void SetAxis(TGaxis &A);
 void SetWorld(TH2D &H);
@@ -27,37 +28,39 @@ int main(int argc, char *argv[])
 
    CommandLine CL(argc, argv);
 
-   vector<string> PPInputFileName = CL.GetStringVector("PP");
-   vector<string> AAInputFileName = CL.GetStringVector("AA");
-   vector<string> Labels          = CL.GetStringVector("Labels");
+   vector<string> PPInputFileName     = CL.GetStringVector("PP");
+   vector<string> AAInputFileName     = CL.GetStringVector("AA");
+   vector<string> SystematicsFileName = CL.GetStringVector("Systematics");
+   vector<string> Labels              = CL.GetStringVector("Labels");
 
    int N = PPInputFileName.size();
-   Assert((int)AAInputFileName.size() == N, "Input file count mismatch");
-   Assert((int)Labels.size() == N,          "Label count mismatch");
+   Assert((int)AAInputFileName.size() == N,     "Input file count mismatch");
+   Assert((int)SystematicsFileName.size() == N, "Systematics file count mismatch");
+   Assert((int)Labels.size() == N,              "Label count mismatch");
 
-   string FinalOutputFileName     = CL.Get("FinalOutput", "RAA.pdf");
+   string FinalOutputFileName         = CL.Get("FinalOutput", "RAA.pdf");
 
-   double WorldXMin               = CL.GetDouble("WorldXMin", 150);
-   double WorldXMax               = CL.GetDouble("WorldXMax", 1500);
-   double WorldYMin               = CL.GetDouble("WorldYMin", 0.0);
-   double WorldYMax               = CL.GetDouble("WorldYMax", 1.2);
-   bool LogX                      = CL.GetBool("LogX", true);
-   bool LogY                      = CL.GetBool("LogY", false);
+   double WorldXMin                   = CL.GetDouble("WorldXMin", 150);
+   double WorldXMax                   = CL.GetDouble("WorldXMax", 1500);
+   double WorldYMin                   = CL.GetDouble("WorldYMin", 0.0);
+   double WorldYMax                   = CL.GetDouble("WorldYMax", 1.2);
+   bool LogX                          = CL.GetBool("LogX", true);
+   bool LogY                          = CL.GetBool("LogY", false);
 
-   string XLabel                  = CL.Get("XLabel", "Jet P (GeV)");
-   string YLabel                  = CL.Get("YLabel", "dN / d(Jet P)");
+   string XLabel                      = CL.Get("XLabel", "Jet P (GeV)");
+   string YLabel                      = CL.Get("YLabel", "dN / d(Jet P)");
 
-   int XAxisSpacing               = CL.GetInt("XAxis", 505);
-   int YAxisSpacing               = CL.GetInt("YAxis", 505);
+   int XAxisSpacing                   = CL.GetInt("XAxis", 505);
+   int YAxisSpacing                   = CL.GetInt("YAxis", 505);
 
-   double PPLumi                  = CL.GetDouble("PPLumi", 1);
-   double AALumi                  = CL.GetDouble("AALumi", 1);
-   string PPLumiUnit              = CL.Get("PPLumiUnit", "Bananas");
-   string AALumiUnit              = CL.Get("AALumiUnit", "Bananas");
+   double PPLumi                      = CL.GetDouble("PPLumi", 1);
+   double AALumi                      = CL.GetDouble("AALumi", 1);
+   string PPLumiUnit                  = CL.Get("PPLumiUnit", "Bananas");
+   string AALumiUnit                  = CL.Get("AALumiUnit", "Bananas");
 
-   double LegendX                 = CL.GetDouble("LegendX", 0.5);
-   double LegendY                 = CL.GetDouble("LegendY", 0.5);
-   double LegendSize              = CL.GetDouble("LegendSize", 0.075);
+   double LegendX                     = CL.GetDouble("LegendX", 0.5);
+   double LegendY                     = CL.GetDouble("LegendY", 0.5);
+   double LegendSize                  = CL.GetDouble("LegendSize", 0.075);
 
    int PadWidth     = 250;
    int PadHeight    = 250;
@@ -78,7 +81,10 @@ int main(int argc, char *argv[])
    for(int i = 0; i < N; i++)
    {
       GRAA[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], "Result0");
-      GSys[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], "FullSystematics0");
+      if(SystematicsFileName[i] == "none")
+         GSys[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], "FullSystematics0");
+      else
+         GSys[i] = BuildSystematics(GRAA[i], SystematicsFileName[i]);
    }
 
    TCanvas Canvas("Canvas", "", CanvasWidth, CanvasHeight);
@@ -220,6 +226,63 @@ TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string Name)
    FPP.Close();
 
    return G;
+}
+
+TGraphAsymmErrors BuildSystematics(TGraphAsymmErrors &G, string FileName)
+{
+   int N = G.GetN();
+   TGraphAsymmErrors Result(N);
+
+   TFile File(FileName.c_str());
+
+   TH1D *HMin = (TH1D *)File.Get("HGenPrimaryBinMin");
+   TH1D *HMax = (TH1D *)File.Get("HGenPrimaryBinMax");
+
+   TH1D *HPlus = (TH1D *)File.Get("HTotalPlus");
+   TH1D *HMinus = (TH1D *)File.Get("HTotalMinus");
+
+   bool FileOK = true;
+   if(HMin == nullptr)     FileOK = false;
+   if(HMax == nullptr)     FileOK = false;
+   if(HPlus == nullptr)    FileOK = false;
+   if(HMinus == nullptr)   FileOK = false;
+
+   if(FileOK == false)
+   {
+      cout << "Systematic file \"" << FileName << "\" not good!" << endl;
+      cout << "Proceed without uncertainty..." << endl;
+   }
+
+   for(int i = 0; i < N; i++)
+   {
+      double X = G.GetPointX(i);
+      double Y = G.GetPointY(i);
+      double EXL = G.GetErrorXlow(i);
+      double EXH = G.GetErrorXhigh(i);
+
+      double EYL = 0;
+      double EYH = 0;
+
+      if(FileOK == true)
+      {
+         for(int j = 1; j <= HMin->GetNbinsX(); j++)
+         {
+            if(X >= HMin->GetBinContent(j) && X < HMax->GetBinContent(j))
+            {
+               EYL = HPlus->GetBinContent(j) * Y;
+               EYH = -HMinus->GetBinContent(j) * Y;
+               break;
+            }
+         }
+      }
+
+      Result.SetPoint(i, X, Y);
+      Result.SetPointError(i, EXL, EXH, EYL, EYH);
+   }
+
+   File.Close();
+
+   return Result;
 }
 
 void SetPad(TPad &P)
