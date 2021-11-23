@@ -49,6 +49,8 @@ int main(int argc, char *argv[])
    string JEUFile                = CL.Get("JEU", "None");
    string Trigger                = CL.Get("Trigger", "NONE");
 
+   string PFName                 = CL.Get("PF", "pfcandAnalyzer/pfTree");
+
    double EtaMin                 = CL.GetDouble("EtaMin", -2.0);
    double EtaMax                 = CL.GetDouble("EtaMax", +2.0);
 
@@ -163,7 +165,7 @@ int main(int argc, char *argv[])
       GenParticleTreeMessenger MGen(InputFile);
       JetTreeMessenger MJet(InputFile, JetName);
       TriggerTreeMessenger MTrigger(InputFile, "hltanalysis/HltTree");
-      PFTreeMessenger MPF(InputFile, "pfcandAnalyzer/pfTree");
+      PFTreeMessenger MPF(InputFile, PFName);
       SkimTreeMessenger MSkim(InputFile);
       RhoTreeMessenger MRho(InputFile, "hiPuRhoAnalyzer/t");
 
@@ -305,7 +307,8 @@ int main(int argc, char *argv[])
                JEC.SetJetEta(MJet.JetEta[iR]);
                JEC.SetJetPhi(MJet.JetPhi[iR]);
                JEC.SetRho(AverageRho);
-               MJet.JetPT[iR] = JEC.GetCorrectedPT();
+               if(JEC.GetCorrection() > 0)
+                  MJet.JetPT[iR] = JEC.GetCorrectedPT();
 
                if(MJet.JetPT[iR] < PTMin && MJet.JetRawPT[iR] < PTMin)
                   continue;
@@ -502,6 +505,9 @@ bool IsExcluded(double Eta, double Phi, vector<double> &Exclusion)
 double GetRhoAtCenter(RhoTreeMessenger &M, double Eta)
 {
    double Result = 0;
+
+   if(M.EtaMin == nullptr)
+      return -1;
 
    int NBin = M.EtaMin->size();
    if(NBin == 0)
