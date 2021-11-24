@@ -25,6 +25,7 @@ TH1D *ConstructPriorCopyExternal(string FileName, string HistName);
 TH1D *ConstructPriorFlat(vector<double> GenBins);
 TH1D *ConstructPriorPower(vector<double> GenBins, double K);
 void DoProjection(TH2D *HResponse, TH1D **HGen, TH1D **HReco);
+TH1D *ForwardFold(TH1 *HGen, TH2D *HResponse);
 
 int main(int argc, char *argv[])
 {
@@ -32,13 +33,14 @@ int main(int argc, char *argv[])
 
    CommandLine CL(argc, argv);
 
-   string InputFileName    = CL.Get("Input",            "Input/DataJetPNominal.root");
-   string DataName         = CL.Get("InputName",        "HDataReco");
-   string ResponseName     = CL.Get("ResponseName",     "HResponse");
-   string ResponseTruth    = CL.Get("ResponseTruth",    "HMCGen");
-   string ResponseMeasured = CL.Get("ResponseMeasured", "HMCReco");
-   string Output           = CL.Get("Output",           "Unfolded.root");
-   string PriorChoice      = CL.Get("Prior",            "MC");
+   string InputFileName    = CL.Get("Input",             "Input/DataJetPNominal.root");
+   string DataName         = CL.Get("InputName",         "HDataReco");
+   string ResponseName     = CL.Get("ResponseName",      "HResponse");
+   string ResponseTruth    = CL.Get("ResponseTruth",     "HMCGen");
+   string ResponseMeasured = CL.Get("ResponseMeasured",  "HMCReco");
+   string Output           = CL.Get("Output",            "Unfolded.root");
+   string PriorChoice      = CL.Get("Prior",             "MC");
+   bool DoFoldNormalize    = CL.GetBool("FoldNormalize", false);
 
    TFile InputFile(InputFileName.c_str());
 
@@ -102,13 +104,13 @@ int main(int argc, char *argv[])
    {
       RooUnfoldBayes BayesUnfold(Response, HInput, I);
       BayesUnfold.SetVerbose(-1);
-      HUnfolded.push_back((TH1 *)(BayesUnfold.Hreco()->Clone(Form("HUnfoldedBayes%d", I))));
+      HUnfolded.push_back((TH1 *)(BayesUnfold.Hreco(RooUnfold::kCovToy)->Clone(Form("HUnfoldedBayes%d", I))));
       Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedBayes%d", I), BayesUnfold.Ereco()));
    }
 
    RooUnfoldInvert InvertUnfold(Response, HInput);
    InvertUnfold.SetVerbose(-1);
-   HUnfolded.push_back((TH1 *)(InvertUnfold.Hreco()->Clone("HUnfoldedInvert")));
+   HUnfolded.push_back((TH1 *)(InvertUnfold.Hreco(RooUnfold::kCovToy)->Clone("HUnfoldedInvert")));
    Covariance.insert(pair<string, TMatrixD>("MUnfoldedInvert", InvertUnfold.Ereco()));
    
    vector<double> SVDRegularization{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150};
@@ -119,11 +121,20 @@ int main(int argc, char *argv[])
 
       RooUnfoldSvd SVDUnfold(Response, HInput, D);
       SVDUnfold.SetVerbose(-1);
-      HUnfolded.push_back((TH1 *)(SVDUnfold.Hreco()->Clone(Form("HUnfoldedSVD%.1f", D))));
+      HUnfolded.push_back((TH1 *)(SVDUnfold.Hreco(RooUnfold::kCovToy)->Clone(Form("HUnfoldedSVD%.1f", D))));
       Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedSVD%.1f", D), SVDUnfold.Ereco()));
    }
 
-   // cout << HPrior << endl;
+   if(DoFoldNormalize == true)
+   {
+      int Ignore = CL.GetInt("Ignore", 10);
+      for(TH1 *H : HUnfolded)
+      {
+         TH1D *HFold = ForwardFold(H, HResponse);
+         double Scale = HInput->Integral(Ignore, -1) / HFold->Integral(Ignore, -1);
+         H->Scale(Scale);
+      }
+   }
 
    TFile OutputFile(Output.c_str(), "RECREATE");
    HMeasured->Clone("HMCMeasured")->Write();
@@ -236,7 +247,7 @@ void ReweightResponse(TH2D *HResponse, TH1D *HPrior)
    int NX = HResponse->GetNbinsX();
    int NY = HResponse->GetNbinsY();
 
-   vector<double> Total(HResponse->GetNbinsY());
+   vector<double> Total(NY, 0);
    for(int X = 1; X <= NX; X++)
       for(int Y = 1; Y <= NY; Y++)
          Total[Y-1] = Total[Y-1] + HResponse->GetBinContent(X, Y);
@@ -338,9 +349,39 @@ void DoProjection(TH2D *HResponse, TH1D **HGen, TH1D **HReco)
       for(int iY = 1; iY <= NY; iY++)
       {
          double V = HResponse->GetBinContent(iX, iY);
-         (*HGen)->Fill(iY, V);
-         (*HReco)->Fill(iX, V);
+         (*HGen)->AddBinContent(iY, V);
+         (*HReco)->AddBinContent(iX, V);
       }
    }
 }
+
+TH1D *ForwardFold(TH1 *HGen, TH2D *HResponse)
+{
+   if(HGen == nullptr || HResponse == nullptr)
+      return nullptr;
+
+   static int Count = 0;
+   Count = Count + 1;
+
+   int NGen = HResponse->GetNbinsY();
+   int NReco = HResponse->GetNbinsX();
+
+   TH1D *HResult = new TH1D(Form("HFold%d", Count), "", NReco, 0, NReco);
+
+   for(int iG = 1; iG <= NGen; iG++)
+   {
+      double N = 0;
+      for(int iR = 1; iR <= NReco; iR++)
+         N = N + HResponse->GetBinContent(iR, iG);
+
+      if(N == 0)
+         continue;
+
+      for(int iR = 1; iR <= NReco; iR++)
+         HResult->AddBinContent(iR, HResponse->GetBinContent(iR, iG) * HGen->GetBinContent(iG) / N);
+   }
+
+   return HResult;
+}
+
 

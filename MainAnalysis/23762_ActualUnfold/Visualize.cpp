@@ -78,6 +78,28 @@ int main(int argc, char *argv[])
       H->SetLineWidth(2);
       H->SetLineColor(Colors[1]);
 
+      TH1D *HFold = ForwardFold(H, HResponse);
+      HFold->SetMarkerStyle(20);
+      HFold->SetMarkerColor(Colors[1]);
+      HFold->SetLineWidth(2);
+      HFold->SetLineColor(Colors[1]);
+      
+      TH1D *HGenFold = ForwardFold(HMCTruth, HResponse);
+      HGenFold->SetMarkerStyle(20);
+      HGenFold->SetMarkerColor(Colors[2]);
+      HGenFold->SetLineWidth(2);
+      HGenFold->SetLineColor(Colors[2]);
+      
+      TH1D *HInputFold = ForwardFold(HInput, HResponse);
+      HInputFold->SetMarkerStyle(20);
+      HInputFold->SetMarkerColor(Colors[3]);
+      HInputFold->SetLineWidth(2);
+      HInputFold->SetLineColor(Colors[3]);
+      
+      // double Scale = HInput->Integral(Ignore, -1) / HFold->Integral(Ignore, -1);
+      // cout << "ScaleFold = " << HInput->Integral(Ignore, -1) / HFold->Integral(Ignore, -1) << endl;
+      // cout << "ScaleUnfold = " << H->Integral(Ignore, -1) / HMCTruth->Integral(Ignore, -1) << endl;
+
       HMCTruth->Scale(H->Integral(Ignore, -1) / HMCTruth->Integral(Ignore, -1));
       HMCTruth->SetTitle(Form("Bayes unfold with iteration = %s", Name.substr(14).c_str()));
 
@@ -110,27 +132,9 @@ int main(int argc, char *argv[])
       Canvas.SetLogy(false);
       PdfFile.AddCanvas(Canvas);
 
-      TH1D *HFold = ForwardFold(H, HResponse);
-      HFold->SetMarkerStyle(20);
-      HFold->SetMarkerColor(Colors[1]);
-      HFold->SetLineWidth(2);
-      HFold->SetLineColor(Colors[1]);
-      
-      TH1D *HGenFold = ForwardFold(HMCTruth, HResponse);
-      HGenFold->SetMarkerStyle(20);
-      HGenFold->SetMarkerColor(Colors[2]);
-      HGenFold->SetLineWidth(2);
-      HGenFold->SetLineColor(Colors[2]);
-      
-      TH1D *HInputFold = ForwardFold(HInput, HResponse);
-      HInputFold->SetMarkerStyle(20);
-      HInputFold->SetMarkerColor(Colors[3]);
-      HInputFold->SetLineWidth(2);
-      HInputFold->SetLineColor(Colors[3]);
-      
-      HFold->Scale(HInput->Integral(Ignore, -1) / HFold->Integral(Ignore, -1));
-      HGenFold->Scale(HInput->Integral(Ignore, -1) / HGenFold->Integral(Ignore, -1));
-      HInputFold->Scale(HInput->Integral(Ignore, -1) / HInputFold->Integral(Ignore, -1));
+      // HFold->Scale(HInput->Integral(Ignore, -1) / HFold->Integral(Ignore, -1));
+      // HGenFold->Scale(HInput->Integral(Ignore, -1) / HGenFold->Integral(Ignore, -1));
+      // HInputFold->Scale(HInput->Integral(Ignore, -1) / HInputFold->Integral(Ignore, -1));
 
       HInput->Draw("hist");
       HFold->Draw("hist same");
