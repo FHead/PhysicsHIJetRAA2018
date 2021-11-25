@@ -10,6 +10,9 @@ Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/23763_Systematics/Output Input
 	mkdir -p Output/
 
+Clean:
+	rm -f Output/*root
+
 TestRun: Execute
 	./Execute --File1 Input/PPData_R1_CentralityInclusive.root \
 		--File2 Input/PPData_R9_CentralityInclusive.root \

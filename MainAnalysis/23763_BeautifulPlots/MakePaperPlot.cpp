@@ -603,9 +603,9 @@ vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<doubl
       PrimaryBins[i] = Bins1[i];
    double Delta = PrimaryBins[PrimaryBinCount-1] - PrimaryBins[1];
 
-   if(PrimaryBins[0] < -998)
+   if(PrimaryBins[0] < -9998)
       PrimaryBins[0] = PrimaryBins[1] - Delta * 0.05;
-   if(PrimaryBins[PrimaryBinCount] > 998)
+   if(PrimaryBins[PrimaryBinCount] > 9998)
       PrimaryBins[PrimaryBinCount] = PrimaryBins[PrimaryBinCount-1] + Delta * 0.05;
    if(PrimaryBins[0] < 0 && PrimaryBins[1] > 0)
       PrimaryBins[0] = 0;

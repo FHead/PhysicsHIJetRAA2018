@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
    ShapeFile.Get("HMCGen")->Clone()->Write();
 
    TH1D *HShape = (TH1D *)ShapeFile.Get("HDataReco");
-   cout << HShape->Integral(1 + Underflow, HShape->GetNbinsX() - Overflow) << " " << HShape->Integral() << endl;
-   cout << ActualEvent << endl;
+   // cout << HShape->Integral(1 + Underflow, HShape->GetNbinsX() - Overflow) << " " << HShape->Integral() << endl;
+   // cout << ActualEvent << endl;
 
    TH1D *HNewData = (TH1D *)HShape->Clone();
    HNewData->Reset();

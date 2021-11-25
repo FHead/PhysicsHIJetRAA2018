@@ -3,9 +3,9 @@
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
-Variations="HJECUp,HJECDown,HJERUp,HJERDown"
-SystematicGroups="1,1,2,2"
-Labels="JEC,JER"
+Variations="HJECUp,HJECDown,HJERUp,HJERDown,HIterationUp,HIterationDown,HPrior"
+SystematicGroups="1,1,2,2,3,3,3"
+Labels="JEC,JER,Iteration"
 
 # Run pp spectrum
 for R in $JetR

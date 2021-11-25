@@ -10,6 +10,9 @@ Prepare:
 	ln -sf ../24165_SystematicsCombination/Output/ CombinedSystematics
 	mkdir -p Plots
 
+Clean:
+	rm -f Plots/*pdf
+
 Run: Execute
 	bash RunFile.sh
 

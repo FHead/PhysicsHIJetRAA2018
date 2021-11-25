@@ -12,6 +12,16 @@ do
 		--DHFile $DH --State PPDataRatio_R${R}R9_CentralityInclusive
 done
 
+# pp spectrum ratio
+echo Processing PPRatio plot with R = 1.0 as reference
+for R in 1 2 3 4 5 6 7 9
+do
+	./Execute --File1 Input/PPData_R${R}_CentralityInclusive.root \
+		--File2 Input/PPData_R8_CentralityInclusive.root \
+		--Output Output/PPDataRatio_R${R}R8_CentralityInclusive.root \
+		--DHFile $DH --State PPDataRatio_R${R}R8_CentralityInclusive
+done
+
 # RAA
 echo Processing RAA
 for R in 1 2 3 4 5 6 7 8 9

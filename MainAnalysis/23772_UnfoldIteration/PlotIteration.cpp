@@ -3,6 +3,7 @@
 using namespace std;
 
 #include "TH1D.h"
+#include "TH2D.h"
 #include "TFile.h"
 #include "TGraph.h"
 #include "TCanvas.h"
@@ -13,6 +14,7 @@ using namespace std;
 #include "SetStyle.h"
 
 int main(int argc, char *argv[]);
+TH1D *ForwardFold(TH1D *HGen, TH2D *HResponse);
 double CalculateChi2(TH1D *H1, TH1D *H2, int IgnoreBin = 0, bool UseError = true);
 double CalculateE(TH1D *H, int IgnoreBin = 0, bool Relative = false, double Power = 1);
 
@@ -56,6 +58,8 @@ int main(int argc, char *argv[])
    HMCTruth->SetLineColor(kBlack);
    HMCTruth->SetLineWidth(2);
 
+   TH2D *HResponse = (TH2D *)InputFile.Get("HMCResponse");
+
    double MaxChi2 = -1, MinChi2 = -1;
    double MaxD2 = -1, MinD2 = -1;
    double MaxWD2 = -1, MinWD2 = -1;
@@ -68,6 +72,11 @@ int main(int argc, char *argv[])
       TH1D *HUnfolded = (TH1D *)InputFile.Get(Form("HUnfoldedBayes%d", i));
       if(HUnfolded == nullptr)
          continue;
+
+      // TH1D *HFolded = ForwardFold(HUnfolded, HResponse);
+      // double Scale = HInput->Integral(PointsToIgnore, -1) / HFolded->Integral(PointsToIgnore, -1);
+      double Scale = HMCTruth->Integral(PointsToIgnore, -1) / HUnfolded->Integral(PointsToIgnore, -1);
+      // HUnfolded->Scale(Scale);
 
       double Chi2 = CalculateChi2(HMCTruth, HUnfolded, PointsToIgnore, true);
       double D2 = CalculateChi2(HMCTruth, HUnfolded, PointsToIgnore, false);
@@ -95,7 +104,7 @@ int main(int argc, char *argv[])
       GraphRE2.SetPoint(GraphRE2.GetN(), i, RE2);
 
       TCanvas Canvas;
-      HMCTruth->SetTitle(Form("Iteration %d", i));
+      HMCTruth->SetTitle(Form("Iteration %d [%.2f]", i, Scale));
       HMCTruth->Draw("hist");
       HUnfolded->SetMarkerStyle(20);
       HUnfolded->Draw("same");
@@ -226,6 +235,35 @@ int main(int argc, char *argv[])
    PdfFile.Close();
 
    return 0;
+}
+
+TH1D *ForwardFold(TH1D *HGen, TH2D *HResponse)
+{
+   if(HGen == nullptr || HResponse == nullptr)
+      return nullptr;
+
+   static int Count = 0;
+   Count = Count + 1;
+
+   int NGen = HResponse->GetNbinsY();
+   int NReco = HResponse->GetNbinsX();
+
+   TH1D *HResult = new TH1D(Form("HFold%d", Count), "", NReco, 0, NReco);
+
+   for(int iG = 1; iG <= NGen; iG++)
+   {
+      double N = 0;
+      for(int iR = 1; iR <= NReco; iR++)
+         N = N + HResponse->GetBinContent(iR, iG);
+
+      if(N == 0)
+         continue;
+
+      for(int iR = 1; iR <= NReco; iR++)
+         HResult->AddBinContent(iR, HResponse->GetBinContent(iR, iG) * HGen->GetBinContent(iG) / N);
+   }
+
+   return HResult;
 }
 
 double CalculateChi2(TH1D *H1, TH1D *H2, int IgnoreBin, bool UseError)

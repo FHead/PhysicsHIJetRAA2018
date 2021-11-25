@@ -1,4 +1,4 @@
-default: Prepare RunTestRunData
+default: Prepare TestIteration
 
 Prepare:
 	rm -f Input BinMapping OriginalInput
@@ -6,6 +6,10 @@ Prepare:
 	ln -sf ../23762_UnfoldPreparation/Output BinMapping
 	ln -sf ../GlobalSetting/GlobalSetting.dh
 	mkdir -p Output Plot
+
+Clean:
+	rm -f Output/*root
+	rm -f Plot/*pdf
 
 RunData: Execute
 	bash RunFile.sh PbPbData 0
@@ -17,7 +21,15 @@ Execute: Harvest.cpp
 ExecutePlot: MakeSystematicSummaryPlot.cpp
 	CompileRootMacro MakeSystematicSummaryPlot.cpp ExecutePlot
 
+ExecuteIteration: FindIteration.cpp
+	g++ FindIteration.cpp  -o ExecuteIteration \
+		`root-config --cflags --glibs` \
+		-I${RootMacrosBase}
 
-
+TestIteration: ExecuteIteration
+	./ExecuteIteration --Input Input/PPData_R4_CentralityInclusive_Nominal_Power50Prior.root \
+		--Mode Next --Iteration 11
+	./ExecuteIteration --Input Input/PPData_R4_CentralityInclusive_Nominal_Power50Prior.root \
+		--Mode Previous --Iteration 11
 
 

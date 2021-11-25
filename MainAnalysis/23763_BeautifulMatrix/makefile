@@ -10,6 +10,9 @@ Deploy:
 	mkdir -p ../FinalResult/SmearingMatrix
 	cp Plots/*png ../FinalResult/SmearingMatrix
 
+Clean:
+	rm -f Plots/*
+
 RunPP: Execute
 	bash RunFile.sh PPData "" 1
 

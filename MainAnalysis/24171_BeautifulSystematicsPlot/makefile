@@ -10,6 +10,10 @@ Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
 	mkdir -p Plots FinalPlots
 
+Clean:
+	rm -f Plots/*pdf
+	rm -f FinalPlots/*pdf
+
 Deploy:
 	mkdir -p ../FinalResult/SystematicsPartial
 	cp Plots/*png ../FinalResult/SystematicsPartial

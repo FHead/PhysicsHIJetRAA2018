@@ -67,13 +67,13 @@ int main(int argc, char *argv[])
 
    // Get base spectrum
    int BaseIteration
-      = DHFile["PPData"][Form("BestIteration_R%s_CentralityInclusive",BaseRLabel.c_str())].GetInteger();
+      = DHFile["Iterations"]["PPData_R"+BaseRLabel+"_CentralityInclusive_Nominal_Power50Prior"].GetInteger();
    TH1D *HBase = (TH1D *)BaseFile.Get(Form("HUnfoldedBayes%d", BaseIteration));
-   double LumiBase = stof(DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",BaseRLabel.c_str())].GetString());
-   double PUBugBase = DHFile["PUBugCorrection"][Form("PPData_R%s_CentralityInclusive",BaseRLabel.c_str())].GetDouble();
+   double LumiBase = stof(DHFile["Lumi"]["PPData_R"+BaseRLabel+"_CentralityInclusive_BRIL"].GetString());
+   double PUBugBase = DHFile["PUBugCorrection"]["PPData_R"+BaseRLabel+"_CentralityInclusive"].GetDouble();
    vector<TGraphAsymmErrors> GBase = Transcribe(HBase, GenBins1, GenBins2, nullptr, true, PUBugBase / LumiBase);
    
-   cout << PUBugBase << " " << LumiBase << " " << DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",BaseRLabel.c_str())].GetString() << endl;
+   // cout << PUBugBase << " " << LumiBase << " " << DHFile["Lumi"]["PPData_R"+BaseRLabel+"_CentralityInclusive_BRIL"].GetString() << endl;
 
    // Get the spectra
    vector<vector<TGraphAsymmErrors>> GSpectra(FileCount);
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
       TFile File(FileName[i].c_str());
 
       int Iteration
-         = DHFile["PPData"][Form("BestIteration_R%s_CentralityInclusive",RLabel[i].c_str())].GetInteger();
+         = DHFile["Iterations"][Form("PPData_R%s_CentralityInclusive_Nominal_Power50Prior",RLabel[i].c_str())].GetInteger();
       TH1D *H = (TH1D *)File.Get(Form("HUnfoldedBayes%d", Iteration));
       double PUBug = DHFile["PUBugCorrection"][Form("PPData_R%s_CentralityInclusive",RLabel[i].c_str())].GetDouble();
       double Lumi = stof(DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",RLabel[i].c_str())].GetString());
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
    double Luminosity = stof(LuminosityString) / 1000 / 1000;
    string LuminosityUnit = "pb^{-1}";
 
-   cout << LuminosityString << endl;
+   // cout << LuminosityString << endl;
 
    // Start to assemble the plot
    TCanvas Canvas;
@@ -301,7 +301,8 @@ vector<double> DetectBins(TH1D *HMin, TH1D *HMax)
 
 vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2, bool Normalize, double ExtraScale)
 {
-   cout << ExtraScale << endl;
+   // cout << ExtraScale << endl;
+   // cout << H << endl;
 
    int BinningCount = Bins2.size() - 1;
    if(BinningCount <= 0)
@@ -317,9 +318,9 @@ vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<doubl
       PrimaryBins[i] = Bins1[i];
    double Delta = PrimaryBins[PrimaryBinCount-1] - PrimaryBins[1];
 
-   if(PrimaryBins[0] < -998)
+   if(PrimaryBins[0] < -9998)
       PrimaryBins[0] = PrimaryBins[1] - Delta * 0.05;
-   if(PrimaryBins[PrimaryBinCount] > 998)
+   if(PrimaryBins[PrimaryBinCount] > 9998)
       PrimaryBins[PrimaryBinCount] = PrimaryBins[PrimaryBinCount-1] + Delta * 0.05;
    if(PrimaryBins[0] < 0 && PrimaryBins[1] > 0)
       PrimaryBins[0] = 0;
@@ -367,7 +368,7 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
    if(G1.GetN() != G2.GetN())
       return G;
 
-   cout << G1.GetN() << " " << G2.GetN() << endl;
+   // cout << G1.GetN() << " " << G2.GetN() << endl;
 
    int N = G2.GetN();
    for(int i = 0; i < N; i++)

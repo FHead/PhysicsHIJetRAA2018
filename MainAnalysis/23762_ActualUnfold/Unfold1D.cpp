@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
 {
    SilenceRoot();
 
+   RooUnfold::ErrorTreatment ErrorChoice = RooUnfold::kErrors;
+   // RooUnfold::ErrorTreatment ErrorChoice = RooUnfold::kCovToy;
+
    CommandLine CL(argc, argv);
 
    string InputFileName    = CL.Get("Input",             "Input/DataJetPNominal.root");
@@ -104,13 +107,13 @@ int main(int argc, char *argv[])
    {
       RooUnfoldBayes BayesUnfold(Response, HInput, I);
       BayesUnfold.SetVerbose(-1);
-      HUnfolded.push_back((TH1 *)(BayesUnfold.Hreco(RooUnfold::kCovToy)->Clone(Form("HUnfoldedBayes%d", I))));
+      HUnfolded.push_back((TH1 *)(BayesUnfold.Hreco(ErrorChoice)->Clone(Form("HUnfoldedBayes%d", I))));
       Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedBayes%d", I), BayesUnfold.Ereco()));
    }
 
    RooUnfoldInvert InvertUnfold(Response, HInput);
    InvertUnfold.SetVerbose(-1);
-   HUnfolded.push_back((TH1 *)(InvertUnfold.Hreco(RooUnfold::kCovToy)->Clone("HUnfoldedInvert")));
+   HUnfolded.push_back((TH1 *)(InvertUnfold.Hreco(ErrorChoice)->Clone("HUnfoldedInvert")));
    Covariance.insert(pair<string, TMatrixD>("MUnfoldedInvert", InvertUnfold.Ereco()));
    
    vector<double> SVDRegularization{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150};
@@ -121,7 +124,7 @@ int main(int argc, char *argv[])
 
       RooUnfoldSvd SVDUnfold(Response, HInput, D);
       SVDUnfold.SetVerbose(-1);
-      HUnfolded.push_back((TH1 *)(SVDUnfold.Hreco(RooUnfold::kCovToy)->Clone(Form("HUnfoldedSVD%.1f", D))));
+      HUnfolded.push_back((TH1 *)(SVDUnfold.Hreco(ErrorChoice)->Clone(Form("HUnfoldedSVD%.1f", D))));
       Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedSVD%.1f", D), SVDUnfold.Ereco()));
    }
 

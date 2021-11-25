@@ -17,9 +17,6 @@ for R in $JetR
 do
    for C in $Centrality
    do
-      PRC="${Prefix}_R${R}_Centrality${C}"
-      PRCN="${PRC}_Nominal${Suffix}.root"
-
       RValue=`DHQuery GlobalSetting.dh JetR $R`
 
       State=PbPbData
@@ -70,6 +67,10 @@ do
          YLabel="#frac{1}{<T_{AA}>}#frac{1}{N_{evt}}#frac{d^{2}N_{jet}}{dp_{T}d#eta}"
       fi
 
+      NP="`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`Prior"
+      PRC="${Prefix}_R${R}_Centrality${C}"
+      PRCN="${PRC}_Nominal${Suffix}_${NP}.root"
+
       ./Execute \
          --Input Input/${PRCN} \
          --Systematic Systematics/${PRC}.root \
@@ -79,7 +80,7 @@ do
          --MCHistogram "HMCTruth","GHEPData","GHEPData" \
          --MCLabel "MC (normalized to data)","CMS HIN-18-014 |#eta|<2.0 (pp)","ATLAS (2019) |y|<2.8 (pp)" \
          --NormalizeMCToData true,false,false \
-         --PrimaryName HUnfoldedBayes`DHQuery GlobalSetting.dh ${State} BestIteration_R${R}_Centrality${C}` \
+         --PrimaryName HUnfoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}` \
          --DoSelfNormalize false \
          --ExtraScale $ExtraScale \
          --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.00000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \

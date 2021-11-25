@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
    TH1D *HDataReco = (TH1D *)MCFile.Get("HDataReco")->Clone();
    HDataReco->Reset();
 
-   cout << HResponse->GetNbinsX() << " " << HMCTruth->GetNbinsX() << " " << HResponse->GetNbinsY() << endl;
+   // cout << HResponse->GetNbinsX() << " " << HMCTruth->GetNbinsX() << " " << HResponse->GetNbinsY() << endl;
 
    for(int iG = 1; iG <= HMCTruth->GetNbinsX(); iG++)
    {

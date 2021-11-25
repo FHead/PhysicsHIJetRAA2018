@@ -17,9 +17,6 @@ for R in $JetR
 do
    for C in $Centrality
    do
-      PRC="${Prefix}_R${R}_Centrality${C}"
-      PRCN="${PRC}_Nominal${Suffix}.root"
-
       RValue=`DHQuery GlobalSetting.dh JetR $R`
 
       State=PbPbData
@@ -42,6 +39,10 @@ do
          CentralityMax=`DHQuery GlobalSetting.dh CentralityMax ${C} | tr -d '"' | MultiplyConst 100`
          CentralityString="Centrality ${CentralityMin}%-${CentralityMax}%"
       fi
+
+      PRC="${Prefix}_R${R}_Centrality${C}"
+      NP="`DHQuery GlobalSetting.dh DefaultPrior ${PRC} | tr -d '"'`Prior"
+      PRCN="${PRC}_Nominal${Suffix}_${NP}.root"
 
       ./Execute \
          --Input Input/${PRCN} \
