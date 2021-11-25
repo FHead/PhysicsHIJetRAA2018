@@ -74,6 +74,6 @@ RunPart2:
 	(cd 24114_PPRatioHEPData           && make default)
 	(cd 24114_BeautifulPPRatioPlots    && make RunJetPT)
 	(cd 24171_BeautifulSystematicsPlot && make Prepare RunAll)
-	(cd 24122_RAA                      && make Prepare Run)
+	(cd 24122_RAA                      && make Prepare RunRAA RunRRAA)
 
 

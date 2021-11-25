@@ -15,7 +15,7 @@ using namespace std;
 #include "SetStyle.h"
 
 int main(int argc, char *argv[]);
-TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string Name);
+TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string PPName, string AAName);
 TGraphAsymmErrors BuildSystematics(TGraphAsymmErrors &G, string FileName);
 void SetPad(TPad &P);
 void SetAxis(TGaxis &A);
@@ -29,16 +29,24 @@ int main(int argc, char *argv[])
    CommandLine CL(argc, argv);
 
    vector<string> PPInputFileName     = CL.GetStringVector("PP");
+   vector<string> PPCurveName         = CL.GetStringVector("PPName");
    vector<string> AAInputFileName     = CL.GetStringVector("AA");
+   vector<string> AACurveName         = CL.GetStringVector("AAName");
    vector<string> SystematicsFileName = CL.GetStringVector("Systematics");
    vector<string> Labels              = CL.GetStringVector("Labels");
 
    int N = PPInputFileName.size();
    Assert((int)AAInputFileName.size() == N,     "Input file count mismatch");
+   Assert((int)PPCurveName.size() == N,         "Input pp curve count mismatch");
+   Assert((int)AACurveName.size() == N,         "Input AA curve count mismatch");
    Assert((int)SystematicsFileName.size() == N, "Systematics file count mismatch");
    Assert((int)Labels.size() == N,              "Label count mismatch");
 
    string FinalOutputFileName         = CL.Get("FinalOutput", "RAA.pdf");
+   string RootOutputFileName          = CL.Get("RootOutput", "RAA.root");
+   vector<string> CurveLabel          = CL.GetStringVector("CurveLabel", vector<string>{"0", "1", "2", "3"});
+
+   Assert((int)CurveLabel.size() == N,          "Curve label count (for graph names) mismatch");
 
    double WorldXMin                   = CL.GetDouble("WorldXMin", 150);
    double WorldXMax                   = CL.GetDouble("WorldXMax", 1500);
@@ -77,14 +85,24 @@ int main(int argc, char *argv[])
    double PadX0 = MarginLeft / CanvasWidth;
    double PadY0 = MarginBottom / CanvasHeight;
 
+   TFile OutputFile(RootOutputFileName.c_str(), "RECREATE");
+
    vector<TGraphAsymmErrors> GRAA(N), GSys(N);
    for(int i = 0; i < N; i++)
    {
-      GRAA[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], "Result0");
-      if(SystematicsFileName[i] == "none")
-         GSys[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], "FullSystematics0");
-      else
+      GRAA[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], PPCurveName[i], AACurveName[i]);
+      if(SystematicsFileName[i] != "none")
          GSys[i] = BuildSystematics(GRAA[i], SystematicsFileName[i]);
+      else
+         GSys[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], "FullSystematics0", "FullSystematics0");
+
+      OutputFile.cd();
+      
+      GRAA[i].SetName(Form("RAA_%s", CurveLabel[i].c_str()));
+      GSys[i].SetName(Form("Sys_%s", CurveLabel[i].c_str()));
+
+      GRAA[i].Write();
+      GSys[i].Write();
    }
 
    TCanvas Canvas("Canvas", "", CanvasWidth, CanvasHeight);
@@ -158,18 +176,20 @@ int main(int argc, char *argv[])
 
    Canvas.SaveAs(FinalOutputFileName.c_str());
 
+   OutputFile.Close();
+
    return 0;
 }
 
-TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string Name)
+TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string PPName, string AAName)
 {
    TGraphAsymmErrors G;
 
    TFile FPP(PPFileName.c_str());
    TFile FAA(AAFileName.c_str());
 
-   TGraphAsymmErrors *GPP = (TGraphAsymmErrors *)FPP.Get(Name.c_str());
-   TGraphAsymmErrors *GAA = (TGraphAsymmErrors *)FAA.Get(Name.c_str());
+   TGraphAsymmErrors *GPP = (TGraphAsymmErrors *)FPP.Get(PPName.c_str());
+   TGraphAsymmErrors *GAA = (TGraphAsymmErrors *)FAA.Get(AAName.c_str());
 
    if(GPP == nullptr || GAA == nullptr)
    {
