@@ -46,11 +46,11 @@ PhiTag="Phi_24151"
 if [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "0" ]]; then
    JECTag="Autumn18_HI_RAAV2_MC"
 elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "0" ]]; then
-   JECTag="Autumn18_HI_RAAV2_MC"
+   JECTag="Autumn18_HI_RAAV2_DATA"
 elif [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "1" ]]; then
    JECTag="Spring18_ppRef5TeV_RAAV2_MC"
 elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "1" ]]; then
-   JECTag="Spring18_ppRef5TeV_RAAV2_MC"
+   JECTag="Spring18_ppRef5TeV_RAAV2_DATA"
 fi
 
 if [[ "$IsMC" == "1" ]] && [[ "$DoPhiResidual" == 1 ]]; then
