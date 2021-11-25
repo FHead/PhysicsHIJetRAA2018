@@ -71,6 +71,45 @@ do
    done
 done
 
+# pp spectrum ratio, but based on R2
+echo Processing PPRatio plot with R = 0.20 as reference
+for R in 1 3 4 5 6 7 8 9
+do
+	./Execute --File1 Input/PPData_R${R}_CentralityInclusive.root \
+		--File2 Input/PPData_R2_CentralityInclusive.root \
+		--Output Output/PPDataRatio_R${R}R2_CentralityInclusive.root \
+		--DHFile $DH --State PPDataRatio_R${R}R2_CentralityInclusive
+done
+
+# PbPb spectrum ratio, based on R2
+echo Processing PbPbRatio plot with R = 0.2 as reference
+for R in 1 3 4 5 6 7 8 9
+do
+   for C in 0to10 10to30 30to50 50to90
+   do
+      ./Execute --File1 Input/PbPbData_R${R}_Centrality${C}.root \
+         --File2 Input/PbPbData_R2_Centrality${C}.root \
+         --Output Output/PbPbDataRatio_R${R}R2_Centrality${C}.root \
+         --DHFile $DH --State PbPbDataRatio_R${R}R2_Centrality${C}
+   done
+done
+
+# R-RAA, which is the ratio between the two spectrum ratios
+echo Processing RAA-ratio plot with R = 0.20 as reference
+for R in 1 3 4 5 6 7 8 9
+do
+   for C in 0to10 10to30 30to50 50to90
+   do
+      ./Execute --File1 Output/PbPbDataRatio_R${R}R2_Centrality${C}.root \
+         --File2 Output/PPDataRatio_R${R}R2_CentralityInclusive.root \
+         --Output Output/RRAA_R${R}R2_Centrality${C}.root \
+         --DHFile $DH --State RRAA_R${R}R2_Centrality${C}
+   done
+done
+
+
+
+
 
 
 

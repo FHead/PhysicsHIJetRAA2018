@@ -83,6 +83,48 @@ do
    done
 done
 
+# pp spectrum ratio, based on R2
+for R in 1 3 4 5 6 7 8 9
+do
+	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HJECUp_Correlation         float 0.95
+	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HJECDown_Correlation       float 0.95
+	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HJERUp_Correlation         float 0.90
+	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HJERDown_Correlation       float 0.90
+	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HIterationUp_Correlation   float 0.90
+	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HIterationDown_Correlation float 0.90
+	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HPrior_Correlation         float 0.00
+done
+
+# PbPb spectrum ratio, based on R2
+for R in 1 3 4 5 6 7 8 9
+do
+   for C in 0to10 10to30 30to50 50to90
+   do
+	   DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HJECUp_Correlation         float 0.95
+   	DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HJECDown_Correlation       float 0.95
+	   DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HJERUp_Correlation         float 0.90
+   	DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HJERDown_Correlation       float 0.90
+	   DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HIterationUp_Correlation   float 0.90
+   	DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HIterationDown_Correlation float 0.90
+	   DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HPrior_Correlation         float 0.00
+   done
+done
+
+# R-RAA, based on R2
+for R in 1 3 4 5 6 7 8 9
+do
+   for C in 0to10 10to30 30to50 50to90
+   do
+      DHSet $DH RRAA_R${R}R2_Centrality${C} HJECUp_Correlation         float 0.25
+      DHSet $DH RRAA_R${R}R2_Centrality${C} HJECDown_Correlation       float 0.25
+      DHSet $DH RRAA_R${R}R2_Centrality${C} HJERUp_Correlation         float 0.25
+      DHSet $DH RRAA_R${R}R2_Centrality${C} HJERDown_Correlation       float 0.25
+      DHSet $DH RRAA_R${R}R2_Centrality${C} HIterationUp_Correlation   float 0.25
+      DHSet $DH RRAA_R${R}R2_Centrality${C} HIterationDown_Correlation float 0.25
+      DHSet $DH RRAA_R${R}R2_Centrality${C} HPrior_Correlation         float 0.00
+   done
+done
+
 
 
 
