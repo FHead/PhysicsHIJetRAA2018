@@ -38,7 +38,7 @@ do
       AALumi=`DHQuery GlobalSetting.dh Lumi ${AAState}_R${R}_Centrality0to10_BRIL | tr -d '"'`
       AALumiUnit="#mub^{-1}"
 
-      RValue1=`DHQuery GlobalSetting.dh JetR 1`
+      RValue1=`DHQuery GlobalSetting.dh JetR $BaseR`
       RValue2=`DHQuery GlobalSetting.dh JetR $R`
       YLabel="R_{AA} Ratio: (R = $RValue2) / (R = $RValue1)"
 
