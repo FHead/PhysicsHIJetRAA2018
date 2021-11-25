@@ -17,7 +17,7 @@ RunRAA: Execute
 	bash RunFile.sh
 
 RunRRAA: Execute
-	bash RunFile.sh
+	bash RunRRAA.sh
 
 Execute: PlotRAA.cpp
 	CompileRootMacro PlotRAA.cpp Execute
