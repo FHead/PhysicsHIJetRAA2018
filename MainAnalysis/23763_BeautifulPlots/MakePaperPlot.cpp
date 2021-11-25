@@ -26,13 +26,9 @@ using namespace std;
 
 int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
-void HumanPlots(PdfFileHelper &PdfFile,
-   map<string, TH1D *> &H, vector<string> Names, vector<string> Labels, vector<int> Colors,
-   vector<double> Bins1, vector<double> Bins2,
-   string BinningObservable = "", string Title = "", string XTitle = "", string YTitle = "");
 void SelfNormalize(TH1D *H, vector<double> Bins1, vector<double> Bins2);
 TH1D *BuildSystematics(TH1D *HResult, TH1D *HVariation);
-vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true);
+vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true, int Underflow = 0);
 void SetPad(TPad *P);
 void SetAxis(TGaxis &A);
 void SetWorld(TH2D *H);
@@ -63,6 +59,7 @@ int main(int argc, char *argv[])
    bool DoSelfNormalize           = CL.GetBool("DoSelfNormalize", false);
    bool DoEventNormalize          = CL.GetBool("DoEventNormalize", false);
    double ExtraScale              = CL.GetDouble("ExtraScale", 1.00);
+   int Underflow                  = CL.GetInt("Underflow");
 
    vector<string> MCFileNames     = CL.GetStringVector("MCFile", vector<string>{InputFileName});
    vector<string> MCHistNames     = CL.GetStringVector("MCHistogram", vector<string>{"HMCTruth"});
@@ -181,8 +178,10 @@ int main(int argc, char *argv[])
    double PadY0 = MarginBottom / CanvasHeight;
    double PadDR = PadRHeight / CanvasHeight;
 
-   vector<TGraphAsymmErrors> GResult = Transcribe(H1[PrimaryName], GenBins1, GenBins2, nullptr);
-   vector<TGraphAsymmErrors> GSystematics = Transcribe(H1["HSystematicsPlus"], GenBins1, GenBins2, H1["HSystematicsMinus"]);
+   vector<TGraphAsymmErrors> GResult
+      = Transcribe(H1[PrimaryName], GenBins1, GenBins2, nullptr, true, Underflow);
+   vector<TGraphAsymmErrors> GSystematics
+      = Transcribe(H1["HSystematicsPlus"], GenBins1, GenBins2, H1["HSystematicsMinus"], true, Underflow);
    
    double PrimaryScale = AddUp(H1[PrimaryName], WorldXMin, WorldXMax, GenBins1);
    vector<vector<TGraphAsymmErrors>> GMC(MCCount);
@@ -191,8 +190,8 @@ int main(int argc, char *argv[])
          GenPrimaryMinOverwrite, GenPrimaryMaxOverwrite,
          WorldXMin, WorldXMax, DoSelfNormalize, (NormalizeMCToData[i] ? PrimaryScale : -1));
    
-   for(TGraphAsymmErrors G : GResult)
-      cout << "Total integral = " << CalculateIntegral(G, WorldXMin) << endl;
+   // for(TGraphAsymmErrors G : GResult)
+   //    cout << "Total integral = " << CalculateIntegral(G, WorldXMin) << endl;
 
    vector<TGraphAsymmErrors> GRResult, GRSystematics;
    vector<vector<TGraphAsymmErrors>> GRMC(MCCount);
@@ -587,7 +586,7 @@ TH1D *BuildSystematics(TH1D *HResult, TH1D *HVariation)
    return HSystematics;
 }
 
-vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2, bool Normalize)
+vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2, bool Normalize, int Underflow)
 {
    int BinningCount = Bins2.size() - 1;
    if(BinningCount <= 0)
@@ -612,7 +611,7 @@ vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<doubl
 
    for(int iB = 0; iB < BinningCount; iB++)
    {
-      for(int i = 0; i < PrimaryBinCount; i++)
+      for(int i = Underflow; i < PrimaryBinCount; i++)
       {
          double X = (PrimaryBins[i] + PrimaryBins[i+1]) / 2;
          double DX = (PrimaryBins[i+1] - PrimaryBins[i]) / 2;
@@ -638,8 +637,9 @@ vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<doubl
          if(Normalize == false)
             Width = 1;
 
-         Result[iB].SetPoint(i, X, Y / Width);
-         Result[iB].SetPointError(i, DX, DX, DY / Width, DY / Width);
+         int N = Result[iB].GetN();
+         Result[iB].SetPoint(N, X, Y / Width);
+         Result[iB].SetPointError(N, DX, DX, DY / Width, DY / Width);
       }
    }
 
@@ -684,7 +684,7 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
    if(G1.GetN() != G2.GetN())
       return G;
 
-   cout << G1.GetN() << " " << G2.GetN() << endl;
+   // cout << G1.GetN() << " " << G2.GetN() << endl;
 
    int N = G2.GetN();
    for(int i = 0; i < N; i++)
