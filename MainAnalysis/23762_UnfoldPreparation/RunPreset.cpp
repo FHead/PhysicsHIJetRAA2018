@@ -36,6 +36,9 @@ int main(int argc, char *argv[])
    Binnings["GenBins"]       = CL.Get("GenBins", DHFile["Binning"]["GenPT"].GetString());
    Binnings["RecoBins"]      = CL.Get("RecoBins", DHFile["Binning"]["RecoPT"].GetString());
 
+   double GenMin             = CL.GetDouble("GenMin", DHFile["Binning"]["GenMin"].GetDouble());
+   double RecoMin            = CL.GetDouble("RecoMin", DHFile["Binning"]["RecoMin"].GetDouble());
+
    for(string R : JetR)
    {
       double RValue = DHFile["JetR"][R].GetDouble();
@@ -54,6 +57,8 @@ int main(int argc, char *argv[])
             << " --Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1"
             << " --ObservableGenBins " << Binnings["GenBins"]
             << " --ObservableRecoBins " << Binnings["RecoBins"]
+            << " --ObservableGenMin " << GenMin
+            << " --ObservableRecoMin " << RecoMin
             << " --BinningGenBins 0,1 --BinningRecoBins 0,1"
             << " --ObservableUncertaintyShift " << JetShift
             << " --ObservableUncertaintySmear " << JetSmear
