@@ -225,6 +225,8 @@ public:
 public:
    PFTreeMessenger(TFile &File, std::string TreeName = "pfcandAnalyzer/pfTree");
    PFTreeMessenger(TFile *File, std::string TreeName = "pfcandAnalyzer/pfTree");
+   bool Initialize(TFile &File, std::string TreeName = "pfcandAnalyzer/pfTree");
+   bool Initialize(TFile *File, std::string TreeName = "pfcandAnalyzer/pfTree");
    PFTreeMessenger(TTree *PFTree);
    bool Initialize(TTree *PFTree);
    bool Initialize();

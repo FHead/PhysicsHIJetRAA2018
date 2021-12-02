@@ -585,22 +585,32 @@ bool GenParticleTreeMessenger::GetEntry(int iEntry)
 
 PFTreeMessenger::PFTreeMessenger(TFile &File, std::string TreeName)
 {
-   Tree = (TTree *)File.Get(TreeName.c_str());
-   Initialize();
+   Initialize(File, TreeName);
 }
 
 PFTreeMessenger::PFTreeMessenger(TFile *File, std::string TreeName)
 {
-   if(File != nullptr)
-      Tree = (TTree *)File->Get(TreeName.c_str());
-   else
-      Tree = nullptr;
-   Initialize();
+   Initialize(File, TreeName);
 }
 
 PFTreeMessenger::PFTreeMessenger(TTree *PFTree)
 {
    Initialize(PFTree);
+}
+
+bool PFTreeMessenger::Initialize(TFile &File, std::string TreeName)
+{
+   Tree = (TTree *)File.Get(TreeName.c_str());
+   return Initialize();
+}
+
+bool PFTreeMessenger::Initialize(TFile *File, std::string TreeName)
+{
+   if(File != nullptr)
+      Tree = (TTree *)File->Get(TreeName.c_str());
+   else
+      Tree = nullptr;
+   return Initialize();
 }
 
 bool PFTreeMessenger::Initialize(TTree *PFTree)
