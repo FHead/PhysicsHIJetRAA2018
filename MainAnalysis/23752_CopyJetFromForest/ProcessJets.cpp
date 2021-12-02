@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
    string Trigger                = CL.Get("Trigger", "NONE");
 
    string PFName                 = CL.Get("PF", "pfcandAnalyzer/pfTree");
+   string PFName2                = CL.Get("PF2", "particleFlowAnalyser/pftree");
 
    double EtaMin                 = CL.GetDouble("EtaMin", -2.0);
    double EtaMax                 = CL.GetDouble("EtaMax", +2.0);
@@ -165,9 +166,12 @@ int main(int argc, char *argv[])
       GenParticleTreeMessenger MGen(InputFile);
       JetTreeMessenger MJet(InputFile, JetName);
       TriggerTreeMessenger MTrigger(InputFile, "hltanalysis/HltTree");
-      PFTreeMessenger MPF(InputFile, PFName);
       SkimTreeMessenger MSkim(InputFile);
       RhoTreeMessenger MRho(InputFile, "hiPuRhoAnalyzer/t");
+      
+      PFTreeMessenger MPF(InputFile, PFName);
+      if(MPF.Tree == nullptr)
+         MPF.Initialize(InputFile, PFName2);
 
       int EntryCount = MEvent.Tree->GetEntries() * Fraction;
       ProgressBar Bar(cout, EntryCount);
