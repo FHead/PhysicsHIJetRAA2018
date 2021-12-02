@@ -54,9 +54,11 @@ do
          # ExtraArguments start from the Trigger
          ExtraArguments="None 1 1 1 $RTag 0 0 default"
          if [[ "$i" == "PPMC" ]]; then
-            ExtraArguments="None 1 1 1 $RTag 0 0 default"
+            # ExtraArguments="None 1 1 1 $RTag 0 0 default"   # NonUL
+            ExtraArguments="None 1 2 1 $RTag 0 0 default"   # UL
          elif [[ "$i" == "PPData" ]]; then
-            ExtraArguments="HLT_HIAK4PFJet80 0 1 1 $RTag 0 0 default"
+            # ExtraArguments="HLT_HIAK4PFJet80 0 1 1 $RTag 0 0 default"   # if PP Data NonUL recluster
+            ExtraArguments="HLT_HIAK4PFJet80 0 2 0 $RTag 0 0 default"   # if PP Data UL don't recluster
          elif [[ "$i" == "PbPbMC" ]]; then
             ExtraArguments="None 1 0 0 $RTag 1 1 default"
          elif [[ "$i" == "PbPbMCInclusive" ]]; then

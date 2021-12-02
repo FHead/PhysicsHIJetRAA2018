@@ -15,7 +15,18 @@ DoPhiResidual=$8
 DoExclusion=$9
 Centrality=${10}
 
-echo $InputFile $Tag $Trigger $IsMC $IsPP $Recluster $RTag $DoPhiResidual $DoExclusion $Centrality
+echo "Runing with the following"
+echo "  Input = $InputFile"
+echo "  Tag = $Tag"
+echo "  Trigger = $Trigger"
+echo "  IsMC = $IsMC (1 = yes, 0 = no)"
+echo "  IsPP = $IsPP (0 = PbPb, 1 = NonUL pp, 2 = UL pp)"
+echo "  Recluster = $Recluster (0 = no, 1 = yes)"
+echo "  RTag = $RTag (what radius?  Goes from 1-9)"
+echo "  DoPhiResidual = $DoPhiResidual (0 = no, 1 = yes)"
+echo "  DoExclusion = $DoExclusion (0 = no, 1 = yes)"
+echo "  Centrality = $Centrality"
+echo
 
 Fraction=1
 
@@ -23,13 +34,13 @@ JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 
 DoRhoWeight=0
 if [[ "$Centrality" == "default" ]]; then
-   if [[ "$IsPP" == "1" ]]; then
+   if [[ "$IsPP" != "0" ]]; then
       Centrality="Inclusive"
    else
       Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
    fi
 elif [[ "$Centrality" == "rho" ]]; then
-   if [[ "$IsPP" == "1" ]]; then
+   if [[ "$IsPP" != "0" ]]; then
       Centrality="Inclusive"
    else
       Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
@@ -51,6 +62,10 @@ elif [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "1" ]]; then
    JECTag="Spring18_ppRef5TeV_RAAV2_MC"
 elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "1" ]]; then
    JECTag="Spring18_ppRef5TeV_RAAV2_DATA"
+elif [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "2" ]]; then
+   JECTag="Summer20UL17_ppRef5TeV_RAAV1_MC"
+elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "2" ]]; then
+   JECTag="Summer20UL17_ppRef5TeV_RAAV1_DATA"
 fi
 
 if [[ "$IsMC" == "1" ]] && [[ "$DoPhiResidual" == 1 ]]; then
@@ -78,7 +93,7 @@ if [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "0" ]]; then
    BaselineCutAA=true
 fi
 BaselineCutPP=false
-if [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "1" ]]; then
+if [[ "$IsMC" == "0" ]] && [[ "$IsPP" != "0" ]]; then
    BaselineCutPP=true
 fi
 
@@ -112,9 +127,16 @@ do
       GenPTMin=0
    fi
 
+   Jet="akCs4PFJetAnalyzer/t"
+   if [[ "$IsPP" == 0 ]]; then
+      Jet="akCs${RTag}PFJetAnalyzer/t"
+   else
+      Jet="ak${RTag}PFJetAnalyzer/t"
+   fi
+
    mkdir -p /tmp/chenyi/
    ./Execute --Input $InputFile --Output /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root \
-      --JetR $RValue --Jet "akCs${RTag}PFJetAnalyzer/t" --JEC ${JEC} --JEU ${JEU} \
+      --JetR $RValue --Jet "${Jet}" --JEC ${JEC} --JEU ${JEU} \
       --Fraction $Fraction --Exclusion "$Exclusion" \
       --UseStoredGen $Stored --UseStoredReco $Stored --DoRecoSubtraction false --Trigger $Trigger \
       --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
