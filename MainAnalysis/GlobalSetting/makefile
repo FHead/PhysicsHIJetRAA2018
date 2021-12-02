@@ -6,12 +6,17 @@ default: DefaultSettings TAASettings SampleSettings
 DefaultSettings:
 	DHSet GlobalSetting.dh "Global" "JetR" string "1 2 3 4 5 6 7 8 9"
 	DHSet GlobalSetting.dh "Global" "Centrality" string "0to10 10to30 30to50 50to90"
+	# Initial naive Binning
 	# DHSet GlobalSetting.dh "Binning" "GenPT" string "20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1100,1200,1300,1400,1500"
 	# DHSet GlobalSetting.dh "Binning" "RecoPT" string "20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1100,1200,1300,1400,1500"
-	DHSet GlobalSetting.dh "Binning" "GenPT" string "20,25,30,35,40,45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1100,1200,1300,1400,1500"
-	DHSet GlobalSetting.dh "Binning" "RecoPT" string "20,25,30,35,40,45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1100,1200,1300,1400,1500"
-	# DHSet GlobalSetting.dh "Binning" "GenPT" string "50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1100,1200,1300,1400,1500"
-	# DHSet GlobalSetting.dh "Binning" "RecoPT" string "50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1100,1200,1300,1400,1500"
+	# ATLAS Binning
+	# DHSet GlobalSetting.dh "Binning" "GenPT" string "20,25,30,35,40,45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1100,1200,1300,1400,1500"
+	# DHSet GlobalSetting.dh "Binning" "RecoPT" string "20,25,30,35,40,45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1100,1200,1300,1400,1500"
+	# Binning to be used for MinPT = 40
+	DHSet GlobalSetting.dh "Binning" "GenPT" string "45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1200,1500"
+	DHSet GlobalSetting.dh "Binning" "RecoPT" string "45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1200,1500"
+	DHSet GlobalSetting.dh "Binning" "GenMin" float 40
+	DHSet GlobalSetting.dh "Binning" "RecoMin" float 40
 	DHSet GlobalSetting.dh "Binning" "PTUnderflow" int 13
 	DHSet GlobalSetting.dh "Binning" "PTOverflow" int 0
 	DHSet GlobalSetting.dh "Binning" "JetExclusion" string "-0.5,1.5,0.0,1.0,-2.0,-1.0,-1.8,-0.9"
@@ -45,8 +50,10 @@ DefaultSettings:
 	DHSet GlobalSetting.dh "CentralityMax" "Inclusive" float 999
 
 EOSHI = /eos/cms/store/group/phys_heavyions/chenyi
+EOSHIOps = /eos/cms/store/group/phys_heavyions_ops/chenyi
 EOSHI2017 = $(EOSHI)/pp2017/Forest/
 EOSHI2018 = $(EOSHI)/PbPb2018/Forest/
+EOSHIOps2017 = $(EOSHIOps)/pp2017/Forest/
 
 SampleSettings:
 	# PbPb Data
@@ -70,25 +77,45 @@ SampleSettings:
 	DHSet GlobalSetting.dh Sample PbPbMC8 string $(EOSHI2018)/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/HINPbPbSpring21MiniAOD-FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/DefaultPbPbMCForJetRAAWithRhoGenBugFix/211104_112116//
 	DHSet GlobalSetting.dh Sample PbPbMC9 string $(EOSHI2018)/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/HINPbPbSpring21MiniAOD-FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/DefaultPbPbMCForJetRAAWithRhoGenBugFix/211104_112116//
 	# PP Data
-	DHSet GlobalSetting.dh Sample PPData1 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
-	DHSet GlobalSetting.dh Sample PPData2 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
-	DHSet GlobalSetting.dh Sample PPData3 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
-	DHSet GlobalSetting.dh Sample PPData4 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
-	DHSet GlobalSetting.dh Sample PPData5 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
-	DHSet GlobalSetting.dh Sample PPData6 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
-	DHSet GlobalSetting.dh Sample PPData7 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
-	DHSet GlobalSetting.dh Sample PPData8 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
-	DHSet GlobalSetting.dh Sample PPData9 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData1 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData2 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData3 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData4 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData5 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData6 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData7 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData8 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# DHSet GlobalSetting.dh Sample PPData9 string $(EOSHI2017)/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+	# PP Data UL
+	DHSet GlobalSetting.dh Sample PPData1 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+	DHSet GlobalSetting.dh Sample PPData2 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+	DHSet GlobalSetting.dh Sample PPData3 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+	DHSet GlobalSetting.dh Sample PPData4 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+	DHSet GlobalSetting.dh Sample PPData5 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+	DHSet GlobalSetting.dh Sample PPData6 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+	DHSet GlobalSetting.dh Sample PPData7 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+	DHSet GlobalSetting.dh Sample PPData8 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+	DHSet GlobalSetting.dh Sample PPData9 string $(EOSHI2017)/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
 	# PP MC
-	DHSet GlobalSetting.dh Sample PPMC1 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
-	DHSet GlobalSetting.dh Sample PPMC2 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
-	DHSet GlobalSetting.dh Sample PPMC3 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
-	DHSet GlobalSetting.dh Sample PPMC4 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
-	DHSet GlobalSetting.dh Sample PPMC5 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
-	DHSet GlobalSetting.dh Sample PPMC6 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
-	DHSet GlobalSetting.dh Sample PPMC7 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
-	DHSet GlobalSetting.dh Sample PPMC8 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
-	DHSet GlobalSetting.dh Sample PPMC9 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC1 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC2 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC3 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC4 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC5 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC6 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC7 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC8 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# DHSet GlobalSetting.dh Sample PPMC9 string $(EOSHI2017)/QCD_pThat-15_Dijet_TuneCP5_5p02TeV_pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV_v1-v1/AODSIM/ManualRun22651//
+	# PP MC UL
+	DHSet GlobalSetting.dh Sample PPMC1 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
+	DHSet GlobalSetting.dh Sample PPMC2 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
+	DHSet GlobalSetting.dh Sample PPMC3 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
+	DHSet GlobalSetting.dh Sample PPMC4 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
+	DHSet GlobalSetting.dh Sample PPMC5 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
+	DHSet GlobalSetting.dh Sample PPMC6 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
+	DHSet GlobalSetting.dh Sample PPMC7 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
+	DHSet GlobalSetting.dh Sample PPMC8 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
+	DHSet GlobalSetting.dh Sample PPMC9 string $(EOSHIOps2017)/RunIISummer20UL17pp5TeV/anstahll-QCD_pThat-15_Dijet_TuneCP5_5p02TeV-pythia8_MINIAOD_20211122-4230e9eff0736cf0d162fef5ca3cfbe4/USER/RunIISummer20UL17pp5TeV/2021122PrivateDijetJECForest
 
 TAASettings:
 	# These values from previous RAA paper
