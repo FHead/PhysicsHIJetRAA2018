@@ -23,6 +23,7 @@ using namespace std;
 #include "SetStyle.h"
 #include "CustomAssert.h"
 #include "DataHelper.h"
+#include "RootUtilities.h"
 
 int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
@@ -41,6 +42,8 @@ vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    SetThesisStyle();
    vector<int> Colors = GetPrimaryColors();
 
@@ -101,7 +104,7 @@ int main(int argc, char *argv[])
    int MCCount = MCFileNames.size();
    Assert(MCCount == MCFileNames.size(), "MC file count not match");
    Assert(MCCount == MCHistNames.size(), "MC histogram count not match");
-   Assert(MCCount == MCLabels.size(), "MC label count not match");
+   Assert(MCCount == MCLabels.size(), Form("MC label count (%d) not match", MCLabels.size()));
    Assert(MCCount <= MCColors.size(), "Not enough colors for MC");
 
    Assert(Texts.size() % 4 == 0, "Wrong additional text format!  It should be a collection of quadruplets: pad_index,x,y,text");
@@ -686,8 +689,9 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
 
    // cout << G1.GetN() << " " << G2.GetN() << endl;
 
-   int N = G2.GetN();
-   for(int i = 0; i < N; i++)
+   int N1 = G1.GetN();
+   int N2 = G2.GetN();
+   for(int i = 0; i < N1; i++)
    {
       double X1, X2, Y1, Y2, E1YH, E1YL, E1XH, E1XL;
 
@@ -696,17 +700,28 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
       E1YL = G1.GetErrorYlow(i);
       E1XH = G1.GetErrorXhigh(i);
       E1XL = G1.GetErrorXlow(i);
-      G2.GetPoint(i, X2, Y2);
 
-      if(Y2 == 0)
+      for(int j = 0; j < N2; j++)
       {
-         G.SetPoint(i, X1, 0);
-         G.SetPointError(i, E1XL, E1XH, 0, 0);
-      }
-      else
-      {
-         G.SetPoint(i, X1, Y1 / Y2);
-         G.SetPointError(i, E1XL, E1XH, E1YL / Y2, E1YH / Y2);
+         G2.GetPoint(j, X2, Y2);
+
+         if(X2 < X1 - E1XL)
+            continue;
+         if(X2 > X1 + E1XH)
+            continue;
+
+         int GN = G.GetN();
+         if(Y2 == 0)
+         {
+            G.SetPoint(GN, X1, 0);
+            G.SetPointError(GN, E1XL, E1XH, 0, 0);
+         }
+         else
+         {
+            G.SetPoint(GN, X1, Y1 / Y2);
+            G.SetPointError(GN, E1XL, E1XH, E1YL / Y2, E1YH / Y2);
+         }
+         break;
       }
    }
 

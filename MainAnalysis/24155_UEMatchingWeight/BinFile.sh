@@ -6,7 +6,7 @@ mkdir -p graph
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
-JetR="1 2 3 4 5 8 9"
+JetR="6 7"
 
 OrderDHFile=Order.dh
 

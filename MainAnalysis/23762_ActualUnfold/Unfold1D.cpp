@@ -18,7 +18,8 @@ using namespace std;
 
 int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
-RooUnfoldResponse *FillResponse(const TH2 *HResponse);
+void RemoveOutOfRange(TH1D *H);
+void RemoveOutOfRange(TH2D *HResponse);
 void ReweightResponse(TH2D *HResponse, TH1D *HPrior);
 TH1D *ConstructPriorCopy(TH1D *HMC);
 TH1D *ConstructPriorCopyExternal(string FileName, string HistName);
@@ -31,9 +32,6 @@ int main(int argc, char *argv[])
 {
    SilenceRoot();
 
-   RooUnfold::ErrorTreatment ErrorChoice = RooUnfold::kErrors;
-   // RooUnfold::ErrorTreatment ErrorChoice = RooUnfold::kCovToy;
-
    CommandLine CL(argc, argv);
 
    string InputFileName    = CL.Get("Input",             "Input/DataJetPNominal.root");
@@ -44,6 +42,11 @@ int main(int argc, char *argv[])
    string Output           = CL.Get("Output",            "Unfolded.root");
    string PriorChoice      = CL.Get("Prior",             "MC");
    bool DoFoldNormalize    = CL.GetBool("FoldNormalize", false);
+   bool DoToyError         = CL.GetBool("DoToyError",    false);
+   
+   RooUnfold::ErrorTreatment ErrorChoice = RooUnfold::kErrors;
+   if(DoToyError == true)
+      ErrorChoice = RooUnfold::kCovToy;
 
    TFile InputFile(InputFileName.c_str());
 
@@ -52,6 +55,11 @@ int main(int argc, char *argv[])
    TH2D *HResponse = (TH2D *)InputFile.Get(ResponseName.c_str());
 
    TH1D *HInput    = (TH1D *)InputFile.Get(DataName.c_str())->Clone();
+
+   RemoveOutOfRange(HMeasured);
+   RemoveOutOfRange(HTruth);
+   RemoveOutOfRange(HResponse);
+   RemoveOutOfRange(HInput);
 
    TH1D *HPrior = nullptr;
    if(PriorChoice == "MC")
@@ -65,7 +73,7 @@ int main(int argc, char *argv[])
    {
       vector<double> GenBins = DetectBins((TH1D *)InputFile.Get("HGenPrimaryBinMin"),
                                           (TH1D *)InputFile.Get("HGenPrimaryBinMax"));
-      GenBins[0] = 0;
+      GenBins[0] = GenBins[1] - 5;
       GenBins[GenBins.size()-1] = GenBins[GenBins.size()-2] + 1;
       HPrior = ConstructPriorFlat(GenBins);
    }
@@ -73,7 +81,7 @@ int main(int argc, char *argv[])
    {
       vector<double> GenBins = DetectBins((TH1D *)InputFile.Get("HGenPrimaryBinMin"),
                                           (TH1D *)InputFile.Get("HGenPrimaryBinMax"));
-      GenBins[0] = GenBins[1]/2;
+      GenBins[0] = GenBins[1] - 5;
       GenBins[GenBins.size()-1] = GenBins[GenBins.size()-2] + 1;
       double PriorK = CL.GetDouble("PriorK", -5);
       HPrior = ConstructPriorPower(GenBins, PriorK);
@@ -213,29 +221,33 @@ vector<double> DetectBins(TH1D *HMin, TH1D *HMax)
    return Result;
 }
 
-RooUnfoldResponse *FillResponse(const TH2 *HResponse)
+void RemoveOutOfRange(TH1D *H)
 {
+   if(H == nullptr)
+      return;
+
+   H->SetBinContent(0, 0);
+   H->SetBinContent(H->GetNbinsX() + 1, 0);
+}
+
+void RemoveOutOfRange(TH2D *HResponse)
+{
+   if(HResponse == nullptr)
+      return;
+
    int NX = HResponse->GetNbinsX();
    int NY = HResponse->GetNbinsY();
-   double XMin = HResponse->GetXaxis()->GetBinLowEdge(1);
-   double YMin = HResponse->GetYaxis()->GetBinLowEdge(1);
-   double XMax = HResponse->GetXaxis()->GetBinUpEdge(NX);
-   double YMax = HResponse->GetYaxis()->GetBinUpEdge(NY);
 
-   RooUnfoldResponse *Response = new RooUnfoldResponse(NX, XMin, XMax, NY, YMin, YMax);
-
-   for(int i = 1; i <= HResponse->GetNbinsX(); i++)
+   for(int iX = 0; iX <= NX + 1; iX++)
    {
-      for(int j = 1; j <= HResponse->GetNbinsY(); j++)
-      {
-         double x = HResponse->GetXaxis()->GetBinCenter(i);
-         double y = HResponse->GetYaxis()->GetBinCenter(j);
-         for(int k = 0; k < HResponse->GetBinContent(i, j); k++)
-            Response->Fill(x, y);
-      }
+      HResponse->SetBinContent(iX, 0, 0);
+      HResponse->SetBinContent(iX, NY + 1, 0);
    }
-
-   return Response;
+   for(int iY = 0; iY <= NY + 1; iY++)
+   {
+      HResponse->SetBinContent(0, iY, 0);
+      HResponse->SetBinContent(NX + 1, iY, 0);
+   }
 }
 
 void ReweightResponse(TH2D *HResponse, TH1D *HPrior)

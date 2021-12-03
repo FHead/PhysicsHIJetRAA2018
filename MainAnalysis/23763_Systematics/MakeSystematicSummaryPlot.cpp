@@ -13,9 +13,12 @@ using namespace std;
 #include "CommandLine.h"
 #include "PlotHelper4.h"
 #include "SetStyle.h"
+#include "RootUtilities.h"
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    SetThesisStyle();
    vector<int> Colors = GetPrimaryColors();
 

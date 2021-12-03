@@ -19,6 +19,7 @@ using namespace std;
 #include "CommandLine.h"
 #include "SetStyle.h"
 #include "CustomAssert.h"
+#include "RootUtilities.h"
 
 int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
@@ -33,6 +34,8 @@ double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -9999);
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    SetThesisStyle();
    vector<int> Colors = GetPrimaryColors();
 

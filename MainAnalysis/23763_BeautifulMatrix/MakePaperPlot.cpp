@@ -20,6 +20,7 @@ using namespace std;
 #include "CommandLine.h"
 #include "SetStyle.h"
 #include "CustomAssert.h"
+#include "RootUtilities.h"
 
 #define MAX 1000
 
@@ -38,6 +39,8 @@ double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -99999);
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    SetThesisStyle();
    vector<int> Colors = GetPrimaryColors();
 
@@ -322,7 +325,7 @@ int main(int argc, char *argv[])
       }
    }
 
-   cout << "World done" << endl;
+   // cout << "World done" << endl;
 
    // Plot the actual histograms
    TH2D *SomeH2 = nullptr;

@@ -7,6 +7,7 @@ using namespace std;
 
 #include "CustomAssert.h"
 #include "CommandLine.h"
+#include "RootUtilities.h"
 
 int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
@@ -19,6 +20,8 @@ void DoBridgingPattern3(TH1D *HB, TH1D *H);
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    CommandLine CL(argc, argv);
 
    vector<string> BaseFileNames      = CL.GetStringVector("BaseInput");
@@ -67,7 +70,7 @@ int main(int argc, char *argv[])
    BinMappingFile.Get("HMatchedBinningBinMax")->Clone()->Write();
    
    int NormalizationGroupSize = DetectBins((TH1D *)BinMappingFile.Get("HGenPrimaryBinMin"), (TH1D *)BinMappingFile.Get("HGenPrimaryBinMax")).size() - 1;
-   cout << "Detected group size = " << NormalizationGroupSize << endl;
+   // cout << "Detected group size = " << NormalizationGroupSize << endl;
 
    BinMappingFile.Close();
 

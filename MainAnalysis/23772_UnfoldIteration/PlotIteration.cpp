@@ -12,6 +12,7 @@ using namespace std;
 #include "CommandLine.h"
 #include "PlotHelper4.h"
 #include "SetStyle.h"
+#include "RootUtilities.h"
 
 int main(int argc, char *argv[]);
 TH1D *ForwardFold(TH1D *HGen, TH2D *HResponse);
@@ -20,6 +21,8 @@ double CalculateE(TH1D *H, int IgnoreBin = 0, bool Relative = false, double Powe
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    SetThumbStyle();
 
    CommandLine CL(argc, argv);
@@ -165,7 +168,7 @@ int main(int argc, char *argv[])
 
    InputFile.Close();
 
-   cout << "!" << endl;
+   // cout << "!" << endl;
 
    DataHelper DHFile("GlobalSetting.dh");
    DHFile[State][Key] = BestIteration;
@@ -203,8 +206,8 @@ int main(int argc, char *argv[])
    GraphD.GetYaxis()->SetRangeUser(MinD2, MaxD2);
    GraphWD.GetYaxis()->SetRangeUser(MinWD2, MaxWD2);
 
-   Graph.Print();
-   GraphD.Print();
+   // Graph.Print();
+   // GraphD.Print();
 
    PdfFile.AddPlot(Graph, "apl");
    PdfFile.AddPlot(Graph, "apl", false, false, true, true);

@@ -61,20 +61,20 @@ RunPPMCToyChoice: Execute ExecutePlot
 	bash RunFile.sh ToyInput PPMC    Nominal_Toy 1 Original
 
 RunAADataToyChoice: Execute ExecutePlot
-	bash RunFile.sh ToyInput PbPbData  Nominal_Toy 0 ExternalMC
-	bash RunFile.sh ToyInput PbPbData  Nominal_Toy 0 Power40
-	bash RunFile.sh ToyInput PbPbData  Nominal_Toy 0 Power50
-	bash RunFile.sh ToyInput PbPbData  Nominal_Toy 0 Power60
-	bash RunFile.sh ToyInput PbPbData  Nominal_Toy 0 Flat
-	bash RunFile.sh ToyInput PbPbData  Nominal_Toy 0 Original
+	bash RunFile.sh ToyInput PbPbData  Nominal_Power50Prior_Toy 0 ExternalMC
+	bash RunFile.sh ToyInput PbPbData  Nominal_Power50Prior_Toy 0 Power40
+	bash RunFile.sh ToyInput PbPbData  Nominal_Power50Prior_Toy 0 Power50
+	bash RunFile.sh ToyInput PbPbData  Nominal_Power50Prior_Toy 0 Power60
+	bash RunFile.sh ToyInput PbPbData  Nominal_Power50Prior_Toy 0 Flat
+	bash RunFile.sh ToyInput PbPbData  Nominal_Power50Prior_Toy 0 Original
 
 RunPPDataToyChoice: Execute ExecutePlot
-	bash RunFile.sh ToyInput PPData    Nominal_Toy 1 ExternalMC
-	bash RunFile.sh ToyInput PPData    Nominal_Toy 1 Power40
-	bash RunFile.sh ToyInput PPData    Nominal_Toy 1 Power50
-	bash RunFile.sh ToyInput PPData    Nominal_Toy 1 Power60
-	bash RunFile.sh ToyInput PPData    Nominal_Toy 1 Flat
-	bash RunFile.sh ToyInput PPData    Nominal_Toy 1 Original
+	bash RunFile.sh ToyInput PPData    Nominal_Power50Prior_Toy 1 ExternalMC
+	bash RunFile.sh ToyInput PPData    Nominal_Power50Prior_Toy 1 Power40
+	bash RunFile.sh ToyInput PPData    Nominal_Power50Prior_Toy 1 Power50
+	bash RunFile.sh ToyInput PPData    Nominal_Power50Prior_Toy 1 Power60
+	bash RunFile.sh ToyInput PPData    Nominal_Power50Prior_Toy 1 Flat
+	bash RunFile.sh ToyInput PPData    Nominal_Power50Prior_Toy 1 Original
 
 RunTest: Execute ExecutePlot
 	# ./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestMCPrior.root \
@@ -83,14 +83,17 @@ RunTest: Execute ExecutePlot
 	# ./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestOriginalPrior.root \
 	# 	--Prior Original
 	# ./ExecutePlot --Input TestOriginalPrior.root --Output TestOriginalPrior.pdf --Ignore 14
-	# ./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower5Prior.root \
-	# 	--Prior Power --PriorK -5
-	# ./ExecutePlot --Input TestPower5Prior.root --Output TestPower5Prior.pdf --Ignore 14
+	./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower5Prior.root \
+		--Prior Power --PriorK -5
+	./ExecutePlot --Input TestPower5Prior.root --Output TestPower5Prior.pdf --Ignore 14
 	# ./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower6Prior.root \
 	# 	--Prior Power --PriorK -6
 	# ./ExecutePlot --Input TestPower6Prior.root --Output TestPower6Prior.pdf --Ignore 14
-	./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower7Prior.root \
-		--Prior Power --PriorK -7 --DoFoldNormalize true --Ignore 14
-	./ExecutePlot --Input TestPower7Prior.root --Output TestPower7Prior.pdf --Ignore 14
+	# ./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower7Prior.root \
+	# 	--Prior Power --PriorK -7 --DoFoldNormalize true --Ignore 14
+	# ./ExecutePlot --Input TestPower7Prior.root --Output TestPower7Prior.pdf --Ignore 14
+	./Execute --Input Input/PPData_R4_CentralityInclusive_Nominal.root --Output Meow.root \
+		--Prior Flat
+	./ExecutePlot --Input Meow.root --Output Meow.pdf --Ignore 10
 
 

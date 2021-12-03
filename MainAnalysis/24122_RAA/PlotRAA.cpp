@@ -13,6 +13,7 @@ using namespace std;
 #include "CustomAssert.h"
 #include "CommandLine.h"
 #include "SetStyle.h"
+#include "RootUtilities.h"
 
 int main(int argc, char *argv[]);
 TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string PPName, string AAName);
@@ -23,6 +24,8 @@ void SetWorld(TH2D &H);
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    SetThesisStyle();
    vector<int> Colors = GetPrimaryColors();
 

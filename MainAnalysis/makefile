@@ -1,5 +1,5 @@
 
-default: Prepare RunPart2
+default: Prepare RunPart2C
 
 Prepare:
 	(cd GlobalSetting && make)
@@ -48,7 +48,9 @@ CleanPart2:
 	(cd 24171_BeautifulSystematicsPlot && make Clean)
 	(cd 24122_RAA                      && make Clean)
 
-RunPart2:
+RunPart2: RunPart2A RunPart2B RunPart2C
+
+RunPart2A:
 	#########################################################################
 	# Make sure to copy over the following from lxplus before continuing... #
 	#    1. unfold preparation output files                                 #
@@ -66,12 +68,16 @@ RunPart2:
 	(cd 23762_FakeData                 && make Prepare RunData)
 	(cd 23762_ActualUnfold             && make Prepare RunDataToy)
 	(cd 23772_UnfoldIteration          && make Prepare RunData)
+
+RunPart2B:
+	(cd 24113_HEPData                  && make default)
+	(cd 24114_PPRatioHEPData           && make default)
+
+RunPart2C:
 	(cd 23763_Systematics              && make Prepare RunData)
 	(cd 24165_SystematicsCombination   && make Prepare SetDHFile RunAll)
-	(cd 24113_HEPData                  && make default)
 	(cd 23763_BeautifulPlots           && make Prepare RunJetPT RunJetPTClosure)
 	(cd 23763_BeautifulMatrix          && make Prepare RunPP RunAA)
-	(cd 24114_PPRatioHEPData           && make default)
 	(cd 24114_BeautifulPPRatioPlots    && make RunJetPT)
 	(cd 24171_BeautifulSystematicsPlot && make Prepare RunAll)
 	(cd 24122_RAA                      && make Prepare RunRAA RunRRAA)

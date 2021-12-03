@@ -31,8 +31,8 @@ do
          Luminosity=`DHQuery GlobalSetting.dh Lumi ${State}_R${R}_Centrality${C}_BRIL | tr -d '"' | DivideConst 1000000`
          LuminosityUnit="pb^{-1}"
          ExtraScale=`echo $ExtraScale | DivideConst $Luminosity | DivideConst 1000`
-         echo Lumi = $Luminosity
-         echo Extra scale = $ExtraScale
+         # echo Lumi = $Luminosity
+         # echo Extra scale = $ExtraScale
       else
          Luminosity=`DHQuery GlobalSetting.dh Lumi ${State}_R${R}_Centrality${C}_BRIL | tr -d '"'`
          LuminosityUnit="#mub^{-1}"
@@ -73,15 +73,25 @@ do
       HPrimary=HUnfoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
       Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
 
+      MCFile="Input/${PRCN},HEPData/Graph_pp_CMSR${R}.root,HEPData/Graph_pp_ATLASR${R}.root"
+      MCHist="HMCTruth,GHEPData,GHEPData"
+      MCLabel="MC (normalize to data),CMS HIN-18-014 |#eta|<2.0 (pp),ATLAS (2019) |y|<2.8 (pp)"
+      NormalizeMCToData="true,false,false"
+
+      if [[ "$Suffix" == "_Toy" ]]; then
+         MCFile="Input/${PRCN}"
+         MCHist="HMCTruth"
+         MCLabel="Input"
+         NormalizeMCToData="true"
+      fi
+
       ./Execute \
          --Input Input/${PRCN} \
          --Systematic Systematics/${PRC}.root \
          --Output Plots/QualityPlots_${PRC}${Suffix}.pdf --FinalOutput Plots/${PRC}${Suffix}.pdf \
          --RootOutput Root/${PRC}${Suffix}.root \
-         --MCFile "Input/${PRCN}","HEPData/Graph_pp_CMSR${R}.root","HEPData/Graph_pp_ATLASR${R}.root" \
-         --MCHistogram "HMCTruth","GHEPData","GHEPData" \
-         --MCLabel "MC (normalized to data)","CMS HIN-18-014 |#eta|<2.0 (pp)","ATLAS (2019) |y|<2.8 (pp)" \
-         --NormalizeMCToData true,false,false \
+         --MCFile "${MCFile}" --MCHistogram "${MCHist}" --MCLabel "${MCLabel}" \
+         --NormalizeMCToData ${NormalizeMCToData} \
          --PrimaryName $HPrimary \
          --Underflow $Underflow \
          --DoSelfNormalize false \
