@@ -198,6 +198,8 @@ int main(int argc, char *argv[])
          EventWeight = MEvent.weight;
          PTHat = MJet.PTHat;
 
+         bool SkipEvent = false;
+
          if(Trigger != "NONE" && Trigger != "None")
          {
             int Decision = MTrigger.CheckTriggerStartWith(Trigger);
@@ -205,168 +207,174 @@ int main(int argc, char *argv[])
             if(Decision < 0)
                cerr << "Warning! Trigger not found!" << endl;
             if(Decision == 0)   // trigger found and not fired
-               continue;
+               SkipEvent = true;
          }
 
          Centrality = MEvent.hiBin * 0.005;
          if(CheckCentrality == true)
          {
             if(MEvent.hiBin * 0.005 < CentralityMin)
-               continue;
+               SkipEvent = true;
             if(MEvent.hiBin * 0.005 > CentralityMax)
-               continue;
+               SkipEvent = true;
          }
 
          if(DoBaselineCutAA == true)
          {
             if(MSkim.HBHENoiseRun2Loose != 1)
-               continue;
+               SkipEvent = true;
             if(MSkim.PVFilter != 1)
-               continue;
+               SkipEvent = true;
             if(MSkim.ClusterCompatibilityFilter != 1)
-               continue;
+               SkipEvent = true;
             if(MSkim.HFCoincidenceFilter2Th4 != 1)
-               continue;
+               SkipEvent = true;
          }
          if(DoBaselineCutPP == true)
          {
             if(MSkim.HBHENoiseRun2Loose != 1)
-               continue;
+               SkipEvent = true;
             if(MSkim.PVFilter != 1)
-               continue;
+               SkipEvent = true;
             if(MSkim.BeamScrapingFilter != 1)
-               continue;
+               SkipEvent = true;
          }
 
          vector<pair<FourVector, PseudoJet>> GenJets;
          vector<pair<FourVector, PseudoJet>> RecoJets;
          RecoJetJEC.clear();
 
-         if(UseStoredGen == true)
+         if(SkipEvent == false)
          {
-            for(int iG = 0; iG < MJet.GenCount; iG++)
+            if(UseStoredGen == true)
             {
-               if(MJet.GenEta[iG] < EtaMin || MJet.GenEta[iG] > EtaMax)
-                  continue;
-               if(MJet.GenPT[iG] < GenPTMin)
-                  continue;
-
-               FourVector P;
-               P.SetPtEtaPhi(MJet.GenPT[iG], MJet.GenEta[iG], MJet.GenPhi[iG]);
-               PseudoJet J(P[1], P[2], P[3], P[0]);
-               GenJets.push_back(pair<FourVector, PseudoJet>(P, J));
-            }
-         }
-         else
-         {
-            if(MGen.Tree != nullptr)
-            {
-               // Cluster gen jets
-               vector<PseudoJet> VisibleParticles;
-               for(int iG = 0; iG < MGen.ID->size(); iG++)
+               for(int iG = 0; iG < MJet.GenCount; iG++)
                {
+                  if(MJet.GenEta[iG] < EtaMin || MJet.GenEta[iG] > EtaMax)
+                     continue;
+                  if(MJet.GenPT[iG] < GenPTMin)
+                     continue;
+
                   FourVector P;
-                  P.SetPtEtaPhi(MGen.PT->at(iG), MGen.Eta->at(iG), MGen.Phi->at(iG));
-
-                  if(MGen.ID->at(iG) == 12 || MGen.ID->at(iG) == -12)
-                     continue;
-                  if(MGen.ID->at(iG) == 14 || MGen.ID->at(iG) == -14)
-                     continue;
-                  if(MGen.ID->at(iG) == 16 || MGen.ID->at(iG) == -16)
-                     continue;
-                  if(MGen.DaughterCount->at(iG) > 0)
-                     continue;
-
-                  VisibleParticles.emplace_back(PseudoJet(P[1], P[2], P[3], P[0]));
-               }
-
-               JetDefinition Definition(antikt_algorithm, JetR);
-               ClusterSequence Sequence(VisibleParticles, Definition);
-               vector<PseudoJet> GenFastJets = Sequence.inclusive_jets(0.5);   // anti-kt, R = 0.4
-
-               for(int iG = 0; iG < GenFastJets.size(); iG++)
-               {
-                  if(GenFastJets[iG].eta() < EtaMin || GenFastJets[iG].eta() > EtaMax)
-                     continue;
-                  if(GenFastJets[iG].perp() < GenPTMin)
-                     continue;
-
-                  PseudoJet &J = GenFastJets[iG];
-                  FourVector P(J.e(), J.px(), J.py(), J.pz());
+                  P.SetPtEtaPhi(MJet.GenPT[iG], MJet.GenEta[iG], MJet.GenPhi[iG]);
+                  PseudoJet J(P[1], P[2], P[3], P[0]);
                   GenJets.push_back(pair<FourVector, PseudoJet>(P, J));
                }
             }
-         }
-
-         if(UseStoredReco == true)
-         {
-            for(int iR = 0; iR < MJet.JetCount; iR++)
+            else
             {
-               if(MJet.JetEta[iR] < EtaMin || MJet.JetEta[iR] > EtaMax)
-                  continue;
-            
-               double AverageRho = GetUE(MRho, MJet.JetEta[iR], JetR) / (JetR * JetR * M_PI);
+               if(MGen.Tree != nullptr)
+               {
+                  // Cluster gen jets
+                  vector<PseudoJet> VisibleParticles;
+                  for(int iG = 0; iG < MGen.ID->size(); iG++)
+                  {
+                     FourVector P;
+                     P.SetPtEtaPhi(MGen.PT->at(iG), MGen.Eta->at(iG), MGen.Phi->at(iG));
 
-               JEC.SetJetPT(MJet.JetRawPT[iR]);
-               JEC.SetJetEta(MJet.JetEta[iR]);
-               JEC.SetJetPhi(MJet.JetPhi[iR]);
-               JEC.SetRho(AverageRho);
-               if(JEC.GetCorrection() > 0)
-                  MJet.JetPT[iR] = JEC.GetCorrectedPT();
+                     if(MGen.ID->at(iG) == 12 || MGen.ID->at(iG) == -12)
+                        continue;
+                     if(MGen.ID->at(iG) == 14 || MGen.ID->at(iG) == -14)
+                        continue;
+                     if(MGen.ID->at(iG) == 16 || MGen.ID->at(iG) == -16)
+                        continue;
+                     if(MGen.DaughterCount->at(iG) > 0)
+                        continue;
 
-               if(MJet.JetPT[iR] < PTMin && MJet.JetRawPT[iR] < PTMin)
-                  continue;
-               if(IsExcluded(MJet.JetEta[iR], MJet.JetPhi[iR], JetExclusion) == true)
-                  continue;
+                     VisibleParticles.emplace_back(PseudoJet(P[1], P[2], P[3], P[0]));
+                  }
 
-               FourVector P;
-               P.SetPtEtaPhi(MJet.JetPT[iR], MJet.JetEta[iR], MJet.JetPhi[iR]);
-               PseudoJet J(P[1], P[2], P[3], P[0]);
-               RecoJets.push_back(pair<FourVector, PseudoJet>(P, J));
-               RecoJetJEC.push_back(JEC.GetCorrection());
+                  JetDefinition Definition(antikt_algorithm, JetR);
+                  ClusterSequence Sequence(VisibleParticles, Definition);
+                  vector<PseudoJet> GenFastJets = Sequence.inclusive_jets(0.5);   // anti-kt, R = 0.4
+
+                  for(int iG = 0; iG < GenFastJets.size(); iG++)
+                  {
+                     if(GenFastJets[iG].eta() < EtaMin || GenFastJets[iG].eta() > EtaMax)
+                        continue;
+                     if(GenFastJets[iG].perp() < GenPTMin)
+                        continue;
+
+                     PseudoJet &J = GenFastJets[iG];
+                     FourVector P(J.e(), J.px(), J.py(), J.pz());
+                     GenJets.push_back(pair<FourVector, PseudoJet>(P, J));
+                  }
+               }
             }
          }
-         else
+
+         if(SkipEvent == false)
          {
-            // Cluster reco jets from PF candidates.  No subtraction at the moment
-            vector<PseudoJet> Particles;
-            for(int iPF = 0; iPF < MPF.ID->size(); iPF++)
+            if(UseStoredReco == true)
             {
-               FourVector P;
-               P.SetPtEtaPhi(MPF.PT->at(iPF), MPF.Eta->at(iPF), MPF.Phi->at(iPF));
-               P[0] = MPF.E->at(iPF);
+               for(int iR = 0; iR < MJet.JetCount; iR++)
+               {
+                  if(MJet.JetEta[iR] < EtaMin || MJet.JetEta[iR] > EtaMax)
+                     continue;
 
-               Particles.emplace_back(PseudoJet(P[1], P[2], P[3], P[0]));
+                  double AverageRho = GetUE(MRho, MJet.JetEta[iR], JetR) / (JetR * JetR * M_PI);
+
+                  JEC.SetJetPT(MJet.JetRawPT[iR]);
+                  JEC.SetJetEta(MJet.JetEta[iR]);
+                  JEC.SetJetPhi(MJet.JetPhi[iR]);
+                  JEC.SetRho(AverageRho);
+                  if(JEC.GetCorrection() > 0)
+                     MJet.JetPT[iR] = JEC.GetCorrectedPT();
+
+                  if(MJet.JetPT[iR] < PTMin && MJet.JetRawPT[iR] < PTMin)
+                     continue;
+                  if(IsExcluded(MJet.JetEta[iR], MJet.JetPhi[iR], JetExclusion) == true)
+                     continue;
+
+                  FourVector P;
+                  P.SetPtEtaPhi(MJet.JetPT[iR], MJet.JetEta[iR], MJet.JetPhi[iR]);
+                  PseudoJet J(P[1], P[2], P[3], P[0]);
+                  RecoJets.push_back(pair<FourVector, PseudoJet>(P, J));
+                  RecoJetJEC.push_back(JEC.GetCorrection());
+               }
             }
-
-            JetDefinition Definition(antikt_algorithm, JetR);
-            ClusterSequence Sequence(Particles, Definition);
-            vector<PseudoJet> FastJets = Sequence.inclusive_jets(0.5);   // anti-kt, R = 0.4
-
-            for(int iR = 0; iR < FastJets.size(); iR++)
+            else
             {
-               if(FastJets[iR].eta() < EtaMin || FastJets[iR].eta() > EtaMax)
-                  continue;
+               // Cluster reco jets from PF candidates.  No subtraction at the moment
+               vector<PseudoJet> Particles;
+               for(int iPF = 0; iPF < MPF.ID->size(); iPF++)
+               {
+                  FourVector P;
+                  P.SetPtEtaPhi(MPF.PT->at(iPF), MPF.Eta->at(iPF), MPF.Phi->at(iPF));
+                  P[0] = MPF.E->at(iPF);
 
-               PseudoJet &J = FastJets[iR];
-               FourVector P(J.e(), J.px(), J.py(), J.pz());
+                  Particles.emplace_back(PseudoJet(P[1], P[2], P[3], P[0]));
+               }
 
-               double AverageRho = GetUE(MRho, P.GetEta(), JetR) / (JetR * JetR * M_PI);
-               
-               JEC.SetJetPT(P.GetPT());
-               JEC.SetJetEta(P.GetEta());
-               JEC.SetJetPhi(P.GetPhi());
-               JEC.SetRho(AverageRho);
+               JetDefinition Definition(antikt_algorithm, JetR);
+               ClusterSequence Sequence(Particles, Definition);
+               vector<PseudoJet> FastJets = Sequence.inclusive_jets(0.5);   // anti-kt, R = 0.4
 
-               if(P.GetPT() < PTMin && P.GetPT() * JEC.GetCorrection() < PTMin)
-                  continue;
-               if(IsExcluded(P.GetEta(), P.GetPhi(), JetExclusion) == true)
-                  continue;
+               for(int iR = 0; iR < FastJets.size(); iR++)
+               {
+                  if(FastJets[iR].eta() < EtaMin || FastJets[iR].eta() > EtaMax)
+                     continue;
 
-               P = P * JEC.GetCorrection();
+                  PseudoJet &J = FastJets[iR];
+                  FourVector P(J.e(), J.px(), J.py(), J.pz());
 
-               RecoJets.push_back(pair<FourVector, PseudoJet>(P, J));
-               RecoJetJEC.push_back(JEC.GetCorrection());
+                  double AverageRho = GetUE(MRho, P.GetEta(), JetR) / (JetR * JetR * M_PI);
+
+                  JEC.SetJetPT(P.GetPT());
+                  JEC.SetJetEta(P.GetEta());
+                  JEC.SetJetPhi(P.GetPhi());
+                  JEC.SetRho(AverageRho);
+
+                  if(P.GetPT() < PTMin && P.GetPT() * JEC.GetCorrection() < PTMin)
+                     continue;
+                  if(IsExcluded(P.GetEta(), P.GetPhi(), JetExclusion) == true)
+                     continue;
+
+                  P = P * JEC.GetCorrection();
+
+                  RecoJets.push_back(pair<FourVector, PseudoJet>(P, J));
+                  RecoJetJEC.push_back(JEC.GetCorrection());
+               }
             }
          }
 
@@ -660,7 +668,7 @@ double GetRhoWeight(DataHelper &DHFile, string &Key, double UE)
       for(int i = 0; i < N; i++)
          Function.SetParameter(i, DHFile["RhoWeight"][Key+"_P"+to_string(i)].GetDouble());
 
-      Function.Print("v");
+      // Function.Print("v");
    }
    
    if(UE > DHFile["RhoWeight"][Key+"_MaxUE"].GetDouble())
