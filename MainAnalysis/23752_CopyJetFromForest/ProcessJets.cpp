@@ -20,12 +20,25 @@ using namespace fastjet;
 #include "JetCorrector.h"
 #include "JetUncertainty.h"
 
+struct JetPF;
 int main(int argc, char *argv[]);
 bool IsExcluded(double Eta, double Phi, vector<double> &Exclusion);
 double GetRhoAtCenter(RhoTreeMessenger &M, double Eta);
 double GetUE(RhoTreeMessenger &M, double Eta, double R);
 double JetPhiWeight(double Eta, vector<double> &JetExclusion);
 double GetRhoWeight(DataHelper &DHFile, string &Key, double UE);
+bool PassJetID(JetPF &ID, JetPF &Min, JetPF &Max);
+
+struct JetPF
+{
+   float CHF;
+   float CEF;
+   float NHF;
+   float NEF;
+   float MUF;
+   float M;
+   float CM;
+};
 
 int main(int argc, char *argv[])
 {
@@ -48,6 +61,9 @@ int main(int argc, char *argv[])
    vector<string> JECFile        = CL.GetStringVector("JEC", vector<string>{"None"});
    string JEUFile                = CL.Get("JEU", "None");
    string Trigger                = CL.Get("Trigger", "NONE");
+
+   bool DoJetID                  = CL.GetBool("DoJetID", false);
+   string DHJetIDKeyBase         = (DoJetID ? CL.Get("JetIDKeyBase") : "none");
 
    string PFName                 = CL.Get("PF", "pfcandAnalyzer/pfTree");
    string PFName2                = CL.Get("PF2", "particleFlowAnalyser/pftree");
@@ -74,6 +90,35 @@ int main(int argc, char *argv[])
 
    DataHelper DHFile(DHFileName);
    GetRhoWeight(DHFile, DHKeyBase, 0);   // Initialize rho weight function
+
+   JetPF JetIDMin, JetIDMax;
+   if(DoJetID == true)
+   {
+      Assert(DHFile.Exist("JetID"), "Jet ID state not exist");
+
+      JetIDMin.CHF = DHFile["JetID"][DHJetIDKeyBase+"_CHFMinCut"].GetDouble();
+      JetIDMax.CHF = DHFile["JetID"][DHJetIDKeyBase+"_CHFMaxCut"].GetDouble();
+      JetIDMin.CEF = DHFile["JetID"][DHJetIDKeyBase+"_CEFMinCut"].GetDouble();
+      JetIDMax.CEF = DHFile["JetID"][DHJetIDKeyBase+"_CEFMaxCut"].GetDouble();
+      JetIDMin.NHF = DHFile["JetID"][DHJetIDKeyBase+"_NHFMinCut"].GetDouble();
+      JetIDMax.NHF = DHFile["JetID"][DHJetIDKeyBase+"_NHFMaxCut"].GetDouble();
+      JetIDMin.NEF = DHFile["JetID"][DHJetIDKeyBase+"_NEFMinCut"].GetDouble();
+      JetIDMax.NEF = DHFile["JetID"][DHJetIDKeyBase+"_NEFMaxCut"].GetDouble();
+      JetIDMin.MUF = DHFile["JetID"][DHJetIDKeyBase+"_MUFMinCut"].GetDouble();
+      JetIDMax.MUF = DHFile["JetID"][DHJetIDKeyBase+"_MUFMaxCut"].GetDouble();
+      JetIDMin.M   = DHFile["JetID"][DHJetIDKeyBase+"_MultiplicityMinCut"].GetInteger();
+      JetIDMax.M   = DHFile["JetID"][DHJetIDKeyBase+"_MultiplicityMaxCut"].GetInteger();
+      JetIDMin.CM  = DHFile["JetID"][DHJetIDKeyBase+"_ChargedMultiplicityMinCut"].GetInteger();
+      JetIDMax.CM  = DHFile["JetID"][DHJetIDKeyBase+"_ChargedMultiplicityMaxCut"].GetInteger();
+
+      if(JetIDMin.CHF == JetIDMax.CHF)   JetIDMin.CHF = -999999, JetIDMax.CHF = 999999;
+      if(JetIDMin.CEF == JetIDMax.CEF)   JetIDMin.CEF = -999999, JetIDMax.CEF = 999999;
+      if(JetIDMin.NHF == JetIDMax.NHF)   JetIDMin.NHF = -999999, JetIDMax.NHF = 999999;
+      if(JetIDMin.NEF == JetIDMax.NEF)   JetIDMin.NEF = -999999, JetIDMax.NEF = 999999;
+      if(JetIDMin.MUF == JetIDMax.MUF)   JetIDMin.MUF = -999999, JetIDMax.MUF = 999999;
+      if(JetIDMin.CM == JetIDMax.CM)     JetIDMin.CM = -999999, JetIDMax.CM = 999999;
+      if(JetIDMin.M == JetIDMax.M)       JetIDMin.M = -999999, JetIDMax.M = 999999;
+   }
 
    JetCorrector JEC(JECFile);
    JetUncertainty JEU(JEUFile);
@@ -325,6 +370,21 @@ int main(int argc, char *argv[])
                      continue;
                   if(IsExcluded(MJet.JetEta[iR], MJet.JetPhi[iR], JetExclusion) == true)
                      continue;
+
+                  if(DoJetID == true)
+                  {
+                     JetPF JetID;
+                     JetID.CHF = MJet.JetPFCHF[iR];
+                     JetID.CEF = MJet.JetPFCEF[iR];
+                     JetID.NHF = MJet.JetPFNHF[iR];
+                     JetID.NEF = MJet.JetPFNEF[iR];
+                     JetID.MUF = MJet.JetPFMUF[iR];
+                     JetID.CM  = MJet.JetPFCHM[iR] + MJet.JetPFCEM[iR];
+                     JetID.M   = JetID.CM + MJet.JetPFNHM[iR] + MJet.JetPFNEM[iR];
+
+                     if(PassJetID(JetID, JetIDMin, JetIDMax) == false)
+                        continue;
+                  }
 
                   FourVector P;
                   P.SetPtEtaPhi(MJet.JetPT[iR], MJet.JetEta[iR], MJet.JetPhi[iR]);
@@ -677,5 +737,23 @@ double GetRhoWeight(DataHelper &DHFile, string &Key, double UE)
    return Function.Eval(UE);
 }
 
+bool PassJetID(JetPF &ID, JetPF &Min, JetPF &Max)
+{
+   if(ID.CHF <= Min.CHF)   return false;
+   if(ID.CHF >= Max.CHF)   return false;
+   if(ID.CEF <= Min.CEF)   return false;
+   if(ID.CEF >= Max.CEF)   return false;
+   if(ID.NHF <= Min.NHF)   return false;
+   if(ID.NHF >= Max.NHF)   return false;
+   if(ID.NEF <= Min.NEF)   return false;
+   if(ID.NEF >= Max.NEF)   return false;
+   if(ID.MUF <= Min.MUF)   return false;
+   if(ID.MUF >= Max.MUF)   return false;
+   if(ID.CM <= Min.CM)     return false;
+   if(ID.CM >= Max.CM)     return false;
+   if(ID.M <= Min.M)       return false;
+   if(ID.M >= Max.M)       return false;
+   return true;
+}
 
 
