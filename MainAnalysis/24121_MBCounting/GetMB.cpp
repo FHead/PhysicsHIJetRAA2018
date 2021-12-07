@@ -15,7 +15,7 @@ using namespace std;
 int main(int argc, char *argv[]);
 vector<pair<int, int>> ParseJSON(string JSONFileName);
 void CheckMBFile(string MBFileName, vector<string> &HLTMatch, vector<string> &L1Match,
-   vector<pair<int, int>> &Lumis, int Raw[100], int HLT[100], int Final[100], double FinalW2[100]);
+   vector<pair<int, int>> &Lumis, long long Raw[100], long long HLT[100], long long Final[100], double FinalW2[100]);
 
 int main(int argc, char *argv[])
 {
@@ -38,10 +38,11 @@ int main(int argc, char *argv[])
    string CentralityTag     = CL.Get("CentralityTag");
 
    vector<pair<int, int>> Lumis = ParseJSON(JSONFileName);
+   int LumiCount = Lumis.size();
 
-   int Count[100] = {0};
-   int HLTWeightedCount[100] = {0};
-   int WeightedCount[100] = {0};
+   long long Count[100] = {0};
+   long long HLTWeightedCount[100] = {0};
+   long long WeightedCount[100] = {0};
    double FinalW2[100] = {0};
 
    CheckMBFile(MB1FileName, HLTMatch1, L1Match1, Lumis, Count, HLTWeightedCount, WeightedCount, FinalW2);
@@ -55,10 +56,10 @@ int main(int argc, char *argv[])
 
    if(Lumis.size() > 0)
    {
-      cout << "Lumis in JSON but not found in MB file (or present in MB file but count = 0):" << endl;
+      cout << "Lumis in JSON but not found in MB file (or present in MB file but count = 0): " << Lumis.size() << "/" << LumiCount << endl;
       for(int iL = 0; iL < Lumis.size(); iL++)
       {
-         cout << "(" << Lumis[iL].first << ", " << Lumis[iL].second << ")" << endl;
+         // cout << "(" << Lumis[iL].first << ", " << Lumis[iL].second << ")" << endl;
          if(iL != 0)
             LumiNotFound = LumiNotFound + ";";
          LumiNotFound = LumiNotFound + "(" + Lumis[iL].first + "," + Lumis[iL].second + ")";
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
 
    DataHelper DHFile(DHFileName);
 
-   int Total = 0, WeightedTotal = 0;
+   long long Total = 0, WeightedTotal = 0;
    double W2Total = 0;
    int Min = (int)(DHFile["CentralityMin"][CentralityTag].GetDouble() * 100);
    int Max = (int)(DHFile["CentralityMax"][CentralityTag].GetDouble() * 100);
@@ -80,12 +81,16 @@ int main(int argc, char *argv[])
       W2Total = W2Total + FinalW2[iC];
    }
 
-   DHFile[State][Tag+"_TriggedCount"]  = Total;
-   DHFile[State][Tag+"_WeightedCount"] = WeightedTotal;
-   DHFile[State][Tag+"_Error"]         = sqrt(W2Total);
-   DHFile[State][Tag+"_MissingLumi"]   = LumiNotFound;
+   DHFile[State][Tag+"_TriggedCount"]      = Total;
+   DHFile[State][Tag+"_WeightedCount"]     = WeightedTotal;
+   DHFile[State][Tag+"_Error"]             = sqrt(W2Total);
+   DHFile[State][Tag+"_MissingLumi"]       = LumiNotFound;
+   DHFile[State][Tag+"_MissingLumiCount"]  = (int)Lumis.size();
+   DHFile[State][Tag+"_InputLumiCount"]    = LumiCount;
 
    DHFile.SaveToFile();
+
+   cout << "Final weighted count = " << WeightedTotal << endl;
 
    return 0;
 }
@@ -134,9 +139,9 @@ vector<pair<int, int>> ParseJSON(string JSONFileName)
    stringstream str(content);
    while(str)
    {
-      char line[10240];
+      char line[1024000];
       line[0] = '\0';
-      str.getline(line, 10239, '\n');
+      str.getline(line, 1023999, '\n');
 
       if(line[0] == '\0')
          continue;
@@ -168,7 +173,7 @@ vector<pair<int, int>> ParseJSON(string JSONFileName)
 }
 
 void CheckMBFile(string MBFileName, vector<string> &HLTMatch, vector<string> &L1Match,
-   vector<pair<int, int>> &Lumis, int Raw[100], int HLT[100], int Final[100], double FinalW2[100])
+   vector<pair<int, int>> &Lumis, long long Raw[100], long long HLT[100], long long Final[100], double FinalW2[100])
 {
    TFile MBFile(MBFileName.c_str());
    TTree *Tree = (TTree *)MBFile.Get("MBCounter/MBTree");
@@ -234,7 +239,7 @@ void CheckMBFile(string MBFileName, vector<string> &HLTMatch, vector<string> &L1
       }
 
       // Get HLT counts
-      int TotalRawCount = 0;
+      long long TotalRawCount = 0;
       for(int iT = 0; iT < NTrigger; iT++)
       {
          bool Good = true;
