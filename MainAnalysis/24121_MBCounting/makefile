@@ -1,5 +1,5 @@
 
-default: Prepare MergeMB TestRun
+default: Prepare TestRun
 
 Prepare:
 	rm -f Input MBInput
@@ -16,6 +16,21 @@ Execute: GetMB.cpp
 
 RunAA: Execute
 	for i in Input/PbPbData_R*Nominal_JSON.txt; do echo $$i; bash CheckJSON.sh $$i; done
+
+TestRunFull: Execute
+	DHSet GlobalSettingTest.dh CentralityMin 0to90 float 0.0
+	DHSet GlobalSettingTest.dh CentralityMax 0to90 float 0.9
+	./Execute --JSON Cert_326381-327564_HI_PromptReco_Collisions18_JSON.txt \
+   	--MB1 MergedMB0.root \
+	   --HLTMatch1 "HLT_HI","MinimumBias_","part0" \
+	   --L1Match1 "L1_MinimumBiasHF1_AND_BptxAND" \
+	   --MB2 MergedMB1.root \
+	   --HLTMatch2 "HLT_HI","MinimumBias_","part1" \
+	   --L1Match2 "L1_MinimumBiasHF1_AND_BptxAND" \
+	   --MB3 MergedMB1.root \
+	   --HLTMatch3 "HLT_HI","MinimumBias_","part2" \
+	   --L1Match3 "L1_MinimumBiasHF1_AND_BptxAND" \
+	   --DHFile GlobalSettingTest.dh --State MBCount --Tag AllJSON --CentralityTag 0to90
 
 TestRun: Execute
 	./Execute --JSON Input/PbPbData_R9_Centrality50to90_Nominal_JSON.txt \
