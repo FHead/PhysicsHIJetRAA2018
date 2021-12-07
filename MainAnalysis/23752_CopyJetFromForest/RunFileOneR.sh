@@ -125,6 +125,9 @@ do
    if [[ "$IsPP" == 0 ]] && [[ "$DoPhiResidual" == 0 ]] && [[ "$IsMC" == 1 ]]; then
       PTMin=0
       GenPTMin=0
+   elif [[ "$IsPP" == 0 ]] && [[ "$RhoKey" != "none" ]] && [[ "$IsMC" == 1 ]]; then
+      PTMin=40
+      GenPTMin=40
    fi
 
    Jet="akCs4PFJetAnalyzer/t"
@@ -132,6 +135,18 @@ do
       Jet="akCs${RTag}PFJetAnalyzer/t"
    else
       Jet="ak${RTag}PFJetAnalyzer/t"
+   fi
+
+   JetIDTag=
+   if [[ "$IsPP" == 0 ]]; then
+      JetIDTag=PbPb
+   else
+      JetIDTag=PP
+   fi
+   if [[ "$IsMC" == 0 ]]; then
+      JetIDTag=${JetIDTag}Data
+   else
+      JetIDTag=${JetIDTag}MC
    fi
 
    mkdir -p /tmp/chenyi/
@@ -142,7 +157,8 @@ do
       --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
       --PTMin $PTMin --GenPTMin $GenPTMin \
       --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
-      --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey
+      --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey \
+      --DoJetID true --JetIDKeyBase ${JetIDTag}_R${RTag}_Centrality${CTag}
    mv /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root Output/${Tag}_R${RTag}_Centrality${CTag}.root
 done
 

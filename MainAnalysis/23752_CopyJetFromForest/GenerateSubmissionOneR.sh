@@ -11,8 +11,8 @@ ToRunR="$2"
 # PbPbMCInclusive = don't split centrality
 # PbPbMCRho       = don't split centrality, but use rho to weight to data
 ToRunList="PbPbData"
-ToRunR="6 7"
-Group=10
+ToRunR="1 2 3 4 5 6 7 8 9"
+Group=50
 
 echo "Setting up submission to run on the following list"
 echo "$ToRunList"

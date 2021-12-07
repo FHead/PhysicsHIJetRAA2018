@@ -1,7 +1,7 @@
 
 
 
-default: DefaultSettings TAASettings SampleSettings
+default: DefaultSettings TAASettings SampleSettings JetIDSettings
 
 DefaultSettings:
 	DHSet GlobalSetting.dh "Global" "JetR" string "1 2 3 4 5 6 7 8 9"
@@ -57,15 +57,25 @@ EOSHIOps2017 = $(EOSHIOps)/pp2017/Forest/
 
 SampleSettings:
 	# PbPb Data
-	DHSet GlobalSetting.dh Sample PbPbData1 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit12WithRhoGenBugFix/211106_162257/
-	DHSet GlobalSetting.dh Sample PbPbData2 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit12WithRhoGenBugFix/211106_162257/
-	DHSet GlobalSetting.dh Sample PbPbData3 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit35WithRhoGenBugFix/211106_221601/
-	DHSet GlobalSetting.dh Sample PbPbData4 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit35WithRhoGenBugFix/211106_221601/
-	DHSet GlobalSetting.dh Sample PbPbData5 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit35WithRhoGenBugFix/211106_221601/
-	DHSet GlobalSetting.dh Sample PbPbData6 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit67WithRhoGenBugFixRetry/211120_101659/
-	DHSet GlobalSetting.dh Sample PbPbData7 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit67WithRhoGenBugFixRetry/211120_101659/
-	DHSet GlobalSetting.dh Sample PbPbData8 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit8WithRhoGenBugFix/211106_162321/
-	DHSet GlobalSetting.dh Sample PbPbData9 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit9WithRhoGenBugFix/211106_162329/
+	DHSet GlobalSetting.dh Sample PbPbData1 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	DHSet GlobalSetting.dh Sample PbPbData2 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	DHSet GlobalSetting.dh Sample PbPbData3 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	DHSet GlobalSetting.dh Sample PbPbData4 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	DHSet GlobalSetting.dh Sample PbPbData5 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	DHSet GlobalSetting.dh Sample PbPbData6 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	DHSet GlobalSetting.dh Sample PbPbData7 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	DHSet GlobalSetting.dh Sample PbPbData8 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	DHSet GlobalSetting.dh Sample PbPbData9 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+	# PbPb Data Split Nov 2021 version
+	# DHSet GlobalSetting.dh Sample PbPbData1 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit12WithRhoGenBugFix/211106_162257/
+	# DHSet GlobalSetting.dh Sample PbPbData2 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit12WithRhoGenBugFix/211106_162257/
+	# DHSet GlobalSetting.dh Sample PbPbData3 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit35WithRhoGenBugFix/211106_221601/
+	# DHSet GlobalSetting.dh Sample PbPbData4 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit35WithRhoGenBugFix/211106_221601/
+	# DHSet GlobalSetting.dh Sample PbPbData5 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit35WithRhoGenBugFix/211106_221601/
+	# DHSet GlobalSetting.dh Sample PbPbData6 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit67WithRhoGenBugFixRetry/211120_101659/
+	# DHSet GlobalSetting.dh Sample PbPbData7 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit67WithRhoGenBugFixRetry/211120_101659/
+	# DHSet GlobalSetting.dh Sample PbPbData8 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit8WithRhoGenBugFix/211106_162321/
+	# DHSet GlobalSetting.dh Sample PbPbData9 string $(EOSHI2018)/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataForJetRAASplit9WithRhoGenBugFix/211106_162329/
 	# PbPb MC
 	DHSet GlobalSetting.dh Sample PbPbMC1 string $(EOSHI2018)/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/HINPbPbSpring21MiniAOD-FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/DefaultPbPbMCForJetRAAWithRhoGenBugFix/211104_112116//
 	DHSet GlobalSetting.dh Sample PbPbMC2 string $(EOSHI2018)/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/HINPbPbSpring21MiniAOD-FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/DefaultPbPbMCForJetRAAWithRhoGenBugFix/211104_112116//
@@ -193,6 +203,7 @@ TAASettings:
 	DHSet GlobalSetting.dh "TAAErrorUp" "95to100" float 0.025
 	DHSet GlobalSetting.dh "TAAErrorDown" "95to100" float 0.025
 
-
+JetIDSettings:
+	bash SetJetID.sh
 
 
