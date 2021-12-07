@@ -447,15 +447,18 @@ int main(int argc, char *argv[])
       if(EntryCount < 300 || (iE % (EntryCount / 200)) == 0)
          BarData.Print();
 
-      if(Lumis.find(MData.GetRun()) == Lumis.end())
-         Lumis.insert(pair<int, vector<int>>(MData.GetRun(), vector<int>{}));
-      Lumis[MData.GetRun()].push_back(MData.GetLumi());
-      if(Lumis[MData.GetRun()].size() > 2500)
+      if(ExportJSON == true)
       {
-         vector<int> V = Lumis[MData.GetRun()];
-         sort(V.begin(), V.end());
-         V.erase(unique(V.begin(), V.end()), V.end());
-         Lumis[MData.GetRun()] = V;
+         if(Lumis.find(MData.GetRun()) == Lumis.end())
+            Lumis.insert(pair<int, vector<int>>(MData.GetRun(), vector<int>{}));
+         Lumis[MData.GetRun()].push_back(MData.GetLumi());
+         if(MData.GetRun() > 1 && Lumis[MData.GetRun()].size() > 5000)
+         {
+            vector<int> V = Lumis[MData.GetRun()];
+            sort(V.begin(), V.end());
+            V.erase(unique(V.begin(), V.end()), V.end());
+            Lumis[MData.GetRun()] = V;
+         }
       }
 
       int NJet = MData.GetItemCount(Reco, PrimaryType);

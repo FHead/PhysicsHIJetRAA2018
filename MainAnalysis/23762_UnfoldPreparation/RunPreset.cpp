@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
    string JetSmear           = CL.Get("Smear", "1.025");
    string Flooring           = CL.Get("Flooring", "false");
 
+   bool DoCopy               = CL.GetBool("DoCopy", false);
+
    vector<string> JetR       = CL.GetStringVector("JetR", {"1", "2", "3", "4", "5", "6", "7", "8", "9"});
    vector<string> Centrality = CL.GetStringVector("Centrality", {"0to10", "10to30", "30to50", "50to90"});
 
@@ -49,8 +51,15 @@ int main(int argc, char *argv[])
          string MCFile = MCTag + "_" + RC + ".root";
          string DataFile = DataTag + "_" + RC + ".root";
 
-         cout << "time ./Execute --MC " << MCFile << " --Data " << DataFile
-            << " --MCFraction " << MCFraction << " --DataFraction " << DataFraction
+         if(DoCopy == true)
+         {
+            cout << "time cp " << MCFile << " MC.root;" << endl;
+            cout << "time cp " << DataFile << " Data.root;" << endl;
+            cout << "time ./Execute --MC MC.root --Data Data.root";
+         }
+         else
+            cout << "time ./Execute --MC " << MCFile << " --Data " << DataFile;
+         cout << " --MCFraction " << MCFraction << " --DataFraction " << DataFraction
             << " --Output Output/" << Prefix << "_" << RC << "_" << Suffix << ".root"
             << " --JSONOutput Output/" << Prefix << "_" << RC << "_" << Suffix << "_JSON.txt"
             << " --ExportJSON true"
@@ -65,6 +74,8 @@ int main(int argc, char *argv[])
             << " --Flooring " << Flooring
             << " --CheckMatchAngle true --MaxMatchAngle " << DHFile["JetRMatch"][R].GetDouble()
             << ";" << endl;
+         if(DoCopy == true)
+            cout << "time rm MC.root Data.root;" << endl;
       }
    }
 
