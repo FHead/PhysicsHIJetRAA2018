@@ -6,6 +6,7 @@ mkdir -p graph
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
+# JetR="1 2 3 4 5 8 9"
 JetR="6 7"
 
 OrderDHFile=Order.dh
@@ -22,6 +23,16 @@ do
 done
 
 # special cases
+DHSet $OrderDHFile R6_C0to10  BinCount      int    30
+DHSet $OrderDHFile R6_C0to10  Magnification int    5
+DHSet $OrderDHFile R6_C10to30 BinCount      int    50
+DHSet $OrderDHFile R6_C10to30 Magnification int    3
+DHSet $OrderDHFile R7_C0to10  BinCount      int    30
+DHSet $OrderDHFile R7_C0to10  Magnification int    5
+DHSet $OrderDHFile R7_C10to30 BinCount      int    50
+DHSet $OrderDHFile R7_C10to30 Magnification int    3
+DHSet $OrderDHFile R7_C50to90 BinCount      int    50
+DHSet $OrderDHFile R7_C50to90 Magnification int    3
 DHSet $OrderDHFile R8_C0to10  BinCount      int    30
 DHSet $OrderDHFile R8_C0to10  Magnification int    5
 DHSet $OrderDHFile R8_C10to30 BinCount      int    50

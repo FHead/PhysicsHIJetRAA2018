@@ -6,6 +6,7 @@ mkdir -p root
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
+JetR="1 2 3 4 5 8 9"
 JetR="6 7"
 
 OrderDHFile=Order.dh
@@ -17,7 +18,7 @@ do
    do
       DHSet $OrderDHFile R${R}_C${C} Order1 int 8
       DHSet $OrderDHFile R${R}_C${C} Order2 int 0
-      DHSet $OrderDHFile R${R}_C${C} PinSmall string true
+      DHSet $OrderDHFile R${R}_C${C} PinSmall string false
       DHSet $OrderDHFile R${R}_C${C} PinLarge string true
    done
 done
@@ -25,6 +26,8 @@ done
 # special cases
 # DHSet $OrderDHFile R1_C50to90 Order1 int 3
 # DHSet $OrderDHFile R1_C50to90 Order2 int 4
+DHSet $OrderDHFile R6_C0to10 PinSmall string true
+DHSet $OrderDHFile R8_C10to30 PinSmall string true
 DHSet $OrderDHFile R8_C10to30 PinSmall string true
 DHSet $OrderDHFile R8_C30to50 PinSmall string true
 DHSet $OrderDHFile R9_C10to30 PinSmall string true
