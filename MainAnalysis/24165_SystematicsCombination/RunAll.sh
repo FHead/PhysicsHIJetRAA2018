@@ -35,6 +35,20 @@ do
    done
 done
 
+# RCP
+echo Processing RCP
+for R in 1 2 3 4 5 6 7 8 9
+do
+   for C in 0to10 10to30 30to50 50to90
+   do
+      ./Execute --File1 Input/PbPbData_R${R}_Centrality${C}.root \
+         --File2 Input/PbPbData_R${R}_Centrality50to90.root \
+         --Output Output/RCP_R${R}_Centrality${C}.root \
+         --DHFile $DH --State RCP_R${R}_Centrality${C}
+   done
+done
+
+
 # pp spectrum ratio, but based on the smallest radius
 echo Processing PPRatio plot with R = 0.15 as reference
 for R in 2 3 4 5 6 7 8 9

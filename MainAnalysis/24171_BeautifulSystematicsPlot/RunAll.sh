@@ -93,6 +93,29 @@ do
    done
 done
 
+# Run RCP
+for R in $JetR
+do
+   for C in $Centrality
+   do
+      LowerBound=`DHQuery GlobalSetting.dh TriggerTurnOn R${R}_Centrality${C}_Cut`
+   
+      ./Execute --Input CombinedSystematics/RCP_R${R}_Centrality${C}.root \
+         --Output Plots/RCP_R${R}_Centrality${C}.pdf \
+         --FinalOutput FinalPlots/RCP_R${R}_Centrality${C}.pdf \
+         --GenPrimaryMin 0 --GenPrimaryMax 1600 \
+         --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
+         --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
+         --LegendX 0.12 --LegendY 0.5 --LegendSize 0.05 \
+         --XAxis 305 --YAxis 505 --RAxis 303 --MarkerModifier 1 \
+         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = 0.4",0,0.12,0.83,"|#eta| < 2.0" \
+         --Group 1 --Row 1 --Column 1 \
+         --Variations ${Variations} \
+         --SystematicGroups ${SystematicGroups} \
+         --Labels ${Labels}
+   done
+done
+
 # Run RRAA
 for R in $JetR
 do

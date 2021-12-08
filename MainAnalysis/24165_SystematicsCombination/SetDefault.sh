@@ -31,13 +31,39 @@ for R in 1 2 3 4 5 6 7 8 9
 do
    for C in 0to10 10to30 30to50 50to90
    do
-	   DHSet $DH RAA_R${R}_Centrality${C} HJECUp_Correlation         float 0.25
-   	DHSet $DH RAA_R${R}_Centrality${C} HJECDown_Correlation       float 0.25
-	   DHSet $DH RAA_R${R}_Centrality${C} HJERUp_Correlation         float 0.25
-   	DHSet $DH RAA_R${R}_Centrality${C} HJERDown_Correlation       float 0.25
+	   DHSet $DH RAA_R${R}_Centrality${C} HJECUp_Correlation         float 0.50
+   	DHSet $DH RAA_R${R}_Centrality${C} HJECDown_Correlation       float 0.50
+	   DHSet $DH RAA_R${R}_Centrality${C} HJERUp_Correlation         float 0.50
+   	DHSet $DH RAA_R${R}_Centrality${C} HJERDown_Correlation       float 0.50
 	   DHSet $DH RAA_R${R}_Centrality${C} HIterationUp_Correlation   float 0.25
    	DHSet $DH RAA_R${R}_Centrality${C} HIterationDown_Correlation float 0.25
 	   DHSet $DH RAA_R${R}_Centrality${C} HPrior_Correlation         float 0.00
+   done
+done
+
+# RCP
+for R in 1 2 3 4 5 6 7 8 9
+do
+   for C in 0to10 10to30 30to50
+   do
+	   DHSet $DH RCP_R${R}_Centrality${C} HJECUp_Correlation         float 0.95
+   	DHSet $DH RCP_R${R}_Centrality${C} HJECDown_Correlation       float 0.95
+	   DHSet $DH RCP_R${R}_Centrality${C} HJERUp_Correlation         float 0.95
+   	DHSet $DH RCP_R${R}_Centrality${C} HJERDown_Correlation       float 0.95
+	   DHSet $DH RCP_R${R}_Centrality${C} HIterationUp_Correlation   float 0.50
+   	DHSet $DH RCP_R${R}_Centrality${C} HIterationDown_Correlation float 0.50
+	   DHSet $DH RCP_R${R}_Centrality${C} HPrior_Correlation         float 0.00
+   done
+
+   for C in 50to90
+   do
+	   DHSet $DH RCP_R${R}_Centrality${C} HJECUp_Correlation         float 0.9999
+   	DHSet $DH RCP_R${R}_Centrality${C} HJECDown_Correlation       float 0.9999
+	   DHSet $DH RCP_R${R}_Centrality${C} HJERUp_Correlation         float 0.9999
+   	DHSet $DH RCP_R${R}_Centrality${C} HJERDown_Correlation       float 0.9999
+	   DHSet $DH RCP_R${R}_Centrality${C} HIterationUp_Correlation   float 0.9999
+   	DHSet $DH RCP_R${R}_Centrality${C} HIterationDown_Correlation float 0.9999
+	   DHSet $DH RCP_R${R}_Centrality${C} HPrior_Correlation         float 0.9999
    done
 done
 
