@@ -1,5 +1,9 @@
 #!/bin/bash
 
+DHRemove GlobalSetting.dh TAA 
+DHRemove GlobalSetting.dh TAAErrorUp
+DHRemove GlobalSetting.dh TAAErrorDown
+
 # These values from previous RAA paper
 DHSet GlobalSetting.dh "TAA" "0to10" float 23.2
 DHSet GlobalSetting.dh "TAAErrorUp" "0to10" float 0.4

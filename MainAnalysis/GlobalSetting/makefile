@@ -10,7 +10,8 @@ SampleSettings:
 	bash SetSample.sh
 
 TAASettings:
-	bash SetTAA.sh
+	# bash SetTAA.sh
+	bash SetTAACMS.sh
 
 JetIDSettings:
 	bash SetJetID.sh
