@@ -1,7 +1,7 @@
 
 
 
-default: RunRAA RunRRAA
+default: RunRAA RunRRAA RunRCP
 
 Prepare:
 	rm -f SpectraRoot CombinedSystematics
@@ -15,6 +15,9 @@ Clean:
 
 RunRAA: Execute
 	bash RunFile.sh
+
+RunRCP: Execute
+	bash RunRCP.sh
 
 RunRRAA: Execute
 	bash RunRRAA.sh
