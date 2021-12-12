@@ -65,7 +65,7 @@ do
          DHSet GlobalSystematics.dh $PRC TAA float $TAARelativeError
          DHSet GlobalSystematics.dh $PRC NMB float 0.0126
       else
-         DHSet GlobalSystematics.dh $PRC Luminosity float 0.035
+         DHSet GlobalSystematics.dh $PRC Luminosity float 0.019
       fi
 
       ./ExecutePlot \
