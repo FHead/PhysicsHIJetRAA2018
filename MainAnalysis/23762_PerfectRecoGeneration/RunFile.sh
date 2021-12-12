@@ -13,13 +13,14 @@ if [[ "$IsPP" == "1" ]]; then
    Centrality="Inclusive"
 fi
 
-echo $JetR
+# echo $JetR
 
 for R in $JetR
 do
-   echo $R
    for C in $Centrality
    do
+      echo Running R $R and Centrality $C
+      
       Prior=$PriorChoice
       if [[ $PriorChoice == "Nominal" ]]; then
          Prior=`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`
@@ -44,9 +45,9 @@ do
          OutputFile=Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${Prior}_PerfectReco.root
       fi
 
-      echo $C
-      echo GenHistogram = $GenHistogram
-      echo Input = Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root
+      # echo $C
+      # echo GenHistogram = $GenHistogram
+      # echo Input = Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root
 
       ./Execute \
          --MC           Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \

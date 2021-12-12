@@ -58,7 +58,8 @@ do
 
       ./Execute --Input $Location/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \
-         --Prior $PriorString $PriorExtra # --FoldNormalize true --Ignore $Ignore --DoToyError $DoToyError
+         --Prior $PriorString $PriorExtra --DoToyError $DoToyError
+         # --FoldNormalize true --Ignore $Ignore --DoToyError $DoToyError
       ./ExecutePlot --Input Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \
          --Output Plots/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.pdf \
          --Ignore $Ignore
