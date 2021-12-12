@@ -3,139 +3,172 @@
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
-Variations="HJECUp,HJECDown,HJERUp,HJERDown,HIterationUp,HIterationDown,HPrior"
-SystematicGroups="1,1,2,2,3,3,3"
-Labels="JEC,JER,Iteration"
+PPVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior"
+PPSystematicGroups="1,1,2,2,3,3"
+PPLabels="JES,JER,Unfolding"
+AAVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior,HCentralityUp,HCentralityDown"
+AASystematicGroups="1,1,2,2,3,3,4,4"
+AALabels="JES,JER,Unfolding,Centrality"
 
 # Run pp spectrum
+echo Running pp spectrum plots
 for R in $JetR
 do
+   RValue=`DHQuery GlobalSetting.dh JetR $R`
    LowerBound=`DHQuery GlobalSetting.dh TriggerTurnOn R${R}_CentralityInclusive_Cut`
 
    ./Execute --Input Systematics/PPData_R${R}_CentralityInclusive.root \
       --Output Plots/PPData_R${R}_CentralityInclusive.pdf \
       --FinalOutput FinalPlots/PPData_R${R}_CentralityInclusive.pdf \
+      --Global GlobalSystematics.dh \
       --GenPrimaryMin 0 --GenPrimaryMax 1600 \
       --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
       --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
       --LegendX 0.12 --LegendY 0.5 --LegendSize 0.05 \
       --XAxis 305 --YAxis 505 --RAxis 303 --MarkerModifier 1 \
-      --Texts 0,0.12,0.88,"Anti-k_{T} jet R = 0.4",0,0.12,0.83,"|#eta| < 2.0" \
+      --Texts 0,0.12,0.88,"Anti-k_{T} jet R = $RValue",0,0.12,0.83,"|#eta| < 2.0" \
       --Group 1 --Row 1 --Column 1 \
-      --Variations ${Variations} \
-      --SystematicGroups ${SystematicGroups} \
-      --Labels ${Labels}
+      --Variations ${PPVariations} \
+      --SystematicGroups ${PPSystematicGroups} \
+      --Labels ${PPLabels}
 done
 
 # Run PbPb spectrum
+echo Running PbPb spectrum plots
 for R in $JetR
 do
    for C in $Centrality
    do
+      RValue=`DHQuery GlobalSetting.dh JetR $R`
       LowerBound=`DHQuery GlobalSetting.dh TriggerTurnOn R${R}_Centrality${C}_Cut`
+      CMin=`DHQuery GlobalSetting.dh CentralityMin $C | MultiplyConst 100`
+      CMax=`DHQuery GlobalSetting.dh CentralityMax $C | MultiplyConst 100`
+      CLabel="${CMin}-${CMax}%"
       
       ./Execute --Input Systematics/PbPbData_R${R}_Centrality${C}.root \
          --Output Plots/PbPbData_R${R}_Centrality${C}.pdf \
          --FinalOutput FinalPlots/PbPbData_R${R}_Centrality${C}.pdf \
+         --Global GlobalSystematics.dh \
          --GenPrimaryMin 0 --GenPrimaryMax 1600 \
          --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
          --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
          --LegendX 0.12 --LegendY 0.5 --LegendSize 0.05 \
          --XAxis 305 --YAxis 505 --RAxis 303 --MarkerModifier 1 \
-         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = 0.4",0,0.12,0.83,"|#eta| < 2.0" \
+         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = $RValue",0,0.12,0.83,"|#eta| < 2.0",0,0.12,0.78,"$CLabel" \
          --Group 1 --Row 1 --Column 1 \
-         --Variations ${Variations} \
-         --SystematicGroups ${SystematicGroups} \
-         --Labels ${Labels}
+         --Variations ${AAVariations} \
+         --SystematicGroups ${AASystematicGroups} \
+         --Labels ${AALabels}
    done
 done
 
 # Run pp spectra ratio
+echo Running pp spectra ratio plots
 for R in $JetR
 do
+   RValue=`DHQuery GlobalSetting.dh JetR $R`
    LowerBound=`DHQuery GlobalSetting.dh TriggerTurnOn R9_CentralityInclusive_Cut`
    
    ./Execute --Input CombinedSystematics/PPDataRatio_R${R}R9_CentralityInclusive.root \
       --Output Plots/PPDataRatio_R${R}R9_CentralityInclusive.pdf \
       --FinalOutput FinalPlots/PPDataRatio_R${R}R9_CentralityInclusive.pdf \
+      --Global GlobalSystematics.dh \
       --GenPrimaryMin 0 --GenPrimaryMax 1600 \
       --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
       --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
       --LegendX 0.12 --LegendY 0.5 --LegendSize 0.05 \
       --XAxis 305 --YAxis 505 --RAxis 303 --MarkerModifier 1 \
-      --Texts 0,0.12,0.88,"Anti-k_{T} jet R = 0.4",0,0.12,0.83,"|#eta| < 2.0" \
+      --Texts 0,0.12,0.88,"Anti-k_{T} jet R = $RValue",0,0.12,0.83,"|#eta| < 2.0" \
       --Group 1 --Row 1 --Column 1 \
-      --Variations ${Variations} \
-      --SystematicGroups ${SystematicGroups} \
-      --Labels ${Labels}
+      --Variations ${PPVariations} \
+      --SystematicGroups ${PPSystematicGroups} \
+      --Labels ${PPLabels}
 done
 
 # Run RAA
+echo Running RAA plots
 for R in $JetR
 do
    for C in $Centrality
    do
+      RValue=`DHQuery GlobalSetting.dh JetR $R`
       LowerBound=`DHQuery GlobalSetting.dh TriggerTurnOn R${R}_Centrality${C}_Cut`
+      CMin=`DHQuery GlobalSetting.dh CentralityMin $C | MultiplyConst 100`
+      CMax=`DHQuery GlobalSetting.dh CentralityMax $C | MultiplyConst 100`
+      CLabel="${CMin}-${CMax}%"
    
       ./Execute --Input CombinedSystematics/RAA_R${R}_Centrality${C}.root \
          --Output Plots/RAA_R${R}_Centrality${C}.pdf \
          --FinalOutput FinalPlots/RAA_R${R}_Centrality${C}.pdf \
+         --Global GlobalSystematics.dh \
          --GenPrimaryMin 0 --GenPrimaryMax 1600 \
          --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
          --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
          --LegendX 0.12 --LegendY 0.5 --LegendSize 0.05 \
          --XAxis 305 --YAxis 505 --RAxis 303 --MarkerModifier 1 \
-         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = 0.4",0,0.12,0.83,"|#eta| < 2.0" \
+         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = $RValue",0,0.12,0.83,"|#eta| < 2.0",0,0.12,0.78,"$CLabel" \
          --Group 1 --Row 1 --Column 1 \
-         --Variations ${Variations} \
-         --SystematicGroups ${SystematicGroups} \
-         --Labels ${Labels}
+         --Variations ${AAVariations} \
+         --SystematicGroups ${AASystematicGroups} \
+         --Labels ${AALabels}
    done
 done
 
 # Run RCP
+echo Running RCP plots
 for R in $JetR
 do
    for C in $Centrality
    do
+      RValue=`DHQuery GlobalSetting.dh JetR $R`
       LowerBound=`DHQuery GlobalSetting.dh TriggerTurnOn R${R}_Centrality${C}_Cut`
+      CMin=`DHQuery GlobalSetting.dh CentralityMin $C | MultiplyConst 100`
+      CMax=`DHQuery GlobalSetting.dh CentralityMax $C | MultiplyConst 100`
+      CLabel="${CMin}-${CMax}%"
    
       ./Execute --Input CombinedSystematics/RCP_R${R}_Centrality${C}.root \
          --Output Plots/RCP_R${R}_Centrality${C}.pdf \
          --FinalOutput FinalPlots/RCP_R${R}_Centrality${C}.pdf \
+         --Global GlobalSystematics.dh \
          --GenPrimaryMin 0 --GenPrimaryMax 1600 \
          --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
          --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
          --LegendX 0.12 --LegendY 0.5 --LegendSize 0.05 \
          --XAxis 305 --YAxis 505 --RAxis 303 --MarkerModifier 1 \
-         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = 0.4",0,0.12,0.83,"|#eta| < 2.0" \
+         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = $RValue",0,0.12,0.83,"|#eta| < 2.0",0,0.12,0.78,"$CLabel" \
          --Group 1 --Row 1 --Column 1 \
-         --Variations ${Variations} \
-         --SystematicGroups ${SystematicGroups} \
-         --Labels ${Labels}
+         --Variations ${AAVariations} \
+         --SystematicGroups ${AASystematicGroups} \
+         --Labels ${AALabels}
    done
 done
 
 # Run RRAA
+echo Running RRAA plots
 for R in $JetR
 do
    for C in $Centrality
    do
+      RValue=`DHQuery GlobalSetting.dh JetR $R`
       LowerBound=`DHQuery GlobalSetting.dh TriggerTurnOn R${R}_Centrality${C}_Cut`
+      CMin=`DHQuery GlobalSetting.dh CentralityMin $C | MultiplyConst 100`
+      CMax=`DHQuery GlobalSetting.dh CentralityMax $C | MultiplyConst 100`
+      CLabel="${CMin}-${CMax}%"
       
       ./Execute --Input CombinedSystematics/RRAA_R${R}R1_Centrality${C}.root \
          --Output Plots/RRAA_R${R}R1_Centrality${C}.pdf \
          --FinalOutput FinalPlots/RRAA_R${R}R1_Centrality${C}.pdf \
+         --Global GlobalSystematics.dh \
          --GenPrimaryMin 0 --GenPrimaryMax 1600 \
          --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
          --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
          --LegendX 0.12 --LegendY 0.5 --LegendSize 0.05 \
          --XAxis 305 --YAxis 505 --RAxis 303 --MarkerModifier 1 \
-         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = 0.4",0,0.12,0.83,"|#eta| < 2.0" \
+         --Texts 0,0.12,0.88,"Anti-k_{T} jet R = $RValue",0,0.12,0.83,"|#eta| < 2.0",0,0.12,0.78,"$CLabel" \
          --Group 1 --Row 1 --Column 1 \
-         --Variations ${Variations} \
-         --SystematicGroups ${SystematicGroups} \
-         --Labels ${Labels}
+         --Variations ${AAVariations} \
+         --SystematicGroups ${AASystematicGroups} \
+         --Labels ${AALabels}
    done
 done
 

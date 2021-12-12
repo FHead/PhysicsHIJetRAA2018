@@ -20,6 +20,7 @@ using namespace std;
 #include "SetStyle.h"
 #include "CustomAssert.h"
 #include "RootUtilities.h"
+#include "DataHelper.h"
 
 int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
@@ -31,6 +32,8 @@ void SetAxis(TGaxis &A);
 void SetWorld(TH2D *H);
 TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2);
 double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -9999);
+string GuessState(string FileName);
+double GetTotalGlobalUncertainty(string DHFileName, string FileName);
 
 int main(int argc, char *argv[])
 {
@@ -74,6 +77,9 @@ int main(int argc, char *argv[])
    double LegendX                 = CL.GetDouble("LegendX", 0.5);
    double LegendY                 = CL.GetDouble("LegendY", 0.5);
    double LegendSize              = CL.GetDouble("LegendSize", 0.075);
+
+   string GlobalDHFileName        = CL.Get("Global");
+   double TotalGlobal = GetTotalGlobalUncertainty(GlobalDHFileName, InputFileName);
 
    Assert(SystematicGroups.size() == Variations.size(), "Grouping size is not the same as label count");
    Assert(Texts.size() % 4 == 0, "Wrong additional text format!  It should be a collection of quadruplets: pad_index,x,y,text");
@@ -256,6 +262,14 @@ int main(int argc, char *argv[])
    Latex.SetTextAngle(0);
    Latex.SetTextAlign(11);
    Latex.DrawLatex(PadX0, PadY0 + PadDY * Row + 0.01, "CMS #font[52]{Preliminary}");
+
+   // Global uncertainty
+   if(TotalGlobal > 0)
+   {
+      Latex.SetTextAngle(0);
+      Latex.SetTextAlign(31);
+      Latex.DrawLatex(PadX0 + PadDX * Column, PadY0 + PadDY * Row + 0.01, Form("Global uncertainty: %.2f%%", TotalGlobal * 100));
+   }
 
    // Setup worlds
    vector<TH2D *> HWorld;
@@ -584,4 +598,30 @@ double CalculateIntegral(TGraphAsymmErrors &G, double MinX)
    return Total;
 }
 
+string GuessState(string FileName)
+{
+   int Location = FileName.find_last_of('/');
+   if(Location != string::npos)
+      FileName = FileName.substr(Location + 1);
+   Location = FileName.find(".root");
+   if(Location != string::npos)
+      FileName = FileName.substr(0, Location);
+
+   return FileName;
+}
+
+double GetTotalGlobalUncertainty(string DHFileName, string FileName)
+{
+   string State = GuessState(FileName);
+
+   DataHelper DHFile(DHFileName);
+
+   double Variance = 0;
+
+   vector<string> Keys = DHFile[State].GetListOfKeys();
+   for(string Key : Keys)
+      Variance = Variance + DHFile[State][Key].GetDouble() * DHFile[State][Key].GetDouble();
+
+   return sqrt(Variance);
+}
 
