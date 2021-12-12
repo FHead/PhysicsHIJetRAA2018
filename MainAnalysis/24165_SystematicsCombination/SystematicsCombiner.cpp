@@ -19,16 +19,22 @@ vector<string> DiscoverVariationList(TFile &F);
 bool CopyUncertainty(TFile &FI, TFile &FO, string Name, int Mode, bool First);
 bool CombineUncertainty(TFile &F1, TFile &F2, TFile &FO, string Name, int Mode, double Correlation);
 void AddQuadrature(TH1D &HTotalPlus, TH1D &HTotalMinus, TH1D &HNominal, TH1D &HVariation);
+void CombineGlobal(string DHFileName, string FileName1, string FileName2, string OutputFileName);
+string GuessState(string FileName);
 
 int main(int argc, char *argv[])
 {
    CommandLine CL(argc, argv);
 
-   string FileName1      = CL.Get("File1");
-   string FileName2      = CL.Get("File2");
-   string OutputFileName = CL.Get("Output");
-   string DHFileName     = CL.Get("DHFile");
-   string State          = CL.Get("State");
+   string FileName1       = CL.Get("File1");
+   string FileName2       = CL.Get("File2");
+   string OutputFileName  = CL.Get("Output");
+   string DHFileName      = CL.Get("DHFile");
+   string State           = CL.Get("State");
+   vector<string> Include = CL.GetStringVector("Include");
+   string GlobalDHFile    = CL.Get("Global");
+
+   CombineGlobal(GlobalDHFile, FileName1, FileName2, OutputFileName);
 
    DataHelper DHFile(DHFileName);
 
@@ -63,7 +69,9 @@ int main(int argc, char *argv[])
 
       bool Combined = CombineUncertainty(F1, F2, FO, Name, MODE_RATIO, Correlation);
 
-      if(Combined == true)
+      if(Combined == true
+         && (find(Include.begin(), Include.end(), Name) != Include.end()
+            || find(Include.begin(), Include.end(), "H" + Name) != Include.end()))
       {
          TH1D *HBase      = (TH1D *)FO.Get((Name + "Base").c_str());
          TH1D *HVariation = (TH1D *)FO.Get(Name.c_str());
@@ -232,3 +240,54 @@ void AddQuadrature(TH1D &HTotalPlus, TH1D &HTotalMinus, TH1D &HNominal, TH1D &HV
       HTotalMinus.SetBinContent(i, -TotalMinus);
    }
 }
+
+void CombineGlobal(string DHFileName, string FileName1, string FileName2, string OutputFileName)
+{
+   DataHelper DHFile(DHFileName);
+
+   string State1 = GuessState(FileName1);
+   string State2 = GuessState(FileName2);
+   string StateO = GuessState(OutputFileName);
+
+   vector<string> Keys1 = DHFile[State1].GetListOfKeys();
+   vector<string> Keys2 = DHFile[State2].GetListOfKeys();
+
+   vector<string> AllKeys;
+   AllKeys.insert(AllKeys.end(), Keys1.begin(), Keys1.end());
+   AllKeys.insert(AllKeys.end(), Keys2.begin(), Keys2.end());
+   sort(AllKeys.begin(), AllKeys.end());
+   AllKeys.erase(unique(AllKeys.begin(), AllKeys.end()), AllKeys.end());
+
+   // cout << State1 << " " << State2 << " " << StateO << endl;
+
+   for(string Key : AllKeys)
+   {
+      // cout << Key << endl;
+
+      if(find(Keys1.begin(), Keys1.end(), Key) == Keys1.end())   // it's in 2 and not in 1
+         DHFile[StateO][Key] = DHFile[State2][Key].GetDouble();
+      else if(find(Keys2.begin(), Keys2.end(), Key) == Keys2.end())   // it's in 1 and not in 2
+         DHFile[StateO][Key] = DHFile[State1][Key].GetDouble();
+      else   // it's in both
+      {
+         double E1 = DHFile[State1][Key].GetDouble();
+         double E2 = DHFile[State2][Key].GetDouble();
+         DHFile[StateO][Key] = fabs(E1 - E2);
+      }
+   }
+
+   DHFile.SaveToFile();
+}
+
+string GuessState(string FileName)
+{
+   int Location = FileName.find_last_of('/');
+   if(Location != string::npos)
+      FileName = FileName.substr(Location + 1);
+   Location = FileName.find(".root");
+   if(Location != string::npos)
+      FileName = FileName.substr(0, Location);
+
+   return FileName;
+}
+
