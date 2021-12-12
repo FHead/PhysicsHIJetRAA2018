@@ -37,6 +37,7 @@ do
          Luminosity=`DHQuery GlobalSetting.dh Lumi ${State}_R${R}_Centrality${C}_BRIL | tr -d '"'`
          LuminosityUnit="#mub^{-1}"
          MBCount=`DHQuery GlobalSetting.dh MBCount ${State}_R${R}_Centrality${C}_WeightedCount | tr -d '"'`
+         # MBCount=`echo 11532346230 | DivideConst 1788.69 | MultiplyConst $Luminosity`
          TAA=`DHQuery GlobalSetting.dh TAA ${C} | tr -d '"' | DivideConst 1000000`
          ExtraScale=`echo $ExtraScale | DivideConst $MBCount | DivideConst $TAA`
       fi
@@ -96,7 +97,7 @@ do
          --Underflow $Underflow \
          --DoSelfNormalize false \
          --ExtraScale $ExtraScale \
-         --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.00000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \
+         --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.000000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \
          --LogX true --LogY true \
          --XLabel "Jet p_{T} (GeV)" --YLabel ${YLabel} --Binning None \
          --LegendX 0.10 --LegendY 0.10 --LegendSize 0.04 \
