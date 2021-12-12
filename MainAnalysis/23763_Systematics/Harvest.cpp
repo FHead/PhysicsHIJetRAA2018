@@ -87,7 +87,15 @@ int main(int argc, char *argv[])
       TH1D *H = (TH1D *)File.Get(HistogramNames[i].c_str());
       TH1D *HB = (TH1D *)BaseFile.Get(BaseHistogramNames[i].c_str());
 
-      if(H != nullptr && HB != nullptr)
+      if(H == nullptr || HB == nullptr)   // problem!  no systematics
+      {
+         OutputFile.cd();
+         TH1D *HCloned = (TH1D *)BaseFile.Get("HMCTruth")->Clone(Form("H%s", Labels[i].c_str()));
+         TH1D *HBCloned = (TH1D *)BaseFile.Get("HMCTruth")->Clone(Form("H%sBase", Labels[i].c_str()));
+         HCloned->Write();
+         HBCloned->Write();
+      }
+      else
       {
          OutputFile.cd();
          TH1D *HCloned = (TH1D *)H->Clone(Form("H%s", Labels[i].c_str()));

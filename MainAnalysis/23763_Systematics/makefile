@@ -5,6 +5,7 @@ Prepare:
 	ln -sf ../23762_ActualUnfold/Output Input
 	ln -sf ../23762_UnfoldPreparation/Output BinMapping
 	ln -sf ../GlobalSetting/GlobalSetting.dh
+	ln -sf ../GlobalSetting/GlobalSystematics.dh
 	mkdir -p Output Plot
 
 Clean:

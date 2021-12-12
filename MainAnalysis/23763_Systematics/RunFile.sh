@@ -9,6 +9,13 @@ if [[ "$IsPP" == "1" ]]; then
    Centrality="Inclusive"
 fi
 
+MCPrefix=$1
+if [[ "$Prefix" == "PbPbData" ]]; then
+   MCPrefix="PbPbMCRho"
+else
+   MCPrefix="PPMC"
+fi
+
 for R in $JetR
 do
    for C in $Centrality
@@ -20,8 +27,15 @@ do
       PRC="${Prefix}_${RC}"
       PRCN="Input/${PRC}_Nominal_${NP}.root"
 
+      MCPRC="${MCPrefix}_${RC}"
+      MCPRCN="Input/${MCPRC}_Nominal_${NP}.root"
+      MCPRCToy="Input/${MCPRC}_Nominal_Toy_${NP}.root"
+
       NominalIteration=`DHQuery GlobalSetting.dh Iterations ${Prefix}_R${R}_Centrality${C}_Nominal_${NP}`
       HNominal=HUnfoldedBayes${NominalIteration}
+
+      MCIteration=`DHQuery GlobalSetting.dh Iterations ${MCPrefix}_R${R}_Centrality${C}_Nominal_${NP}`
+      HMCNominal=HUnfoldedBayes${MCIteration}
       
       PriorIteration=`DHQuery GlobalSetting.dh Iterations ${Prefix}_R${R}_Centrality${C}_Nominal_${AP}`
       HPrior=HUnfoldedBayes${PriorIteration}
@@ -32,22 +46,32 @@ do
       HIterationDown=HUnfoldedBayes${IterationDown}
 
       ./Execute \
-         --BaseInput ${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN} \
-         --Input Input/${PRC}_JECUp_${NP}.root,Input/${PRC}_JECDown_${NP}.root,Input/${PRC}_JERUp_${NP}.root,Input/${PRC}_JERDown_${NP}.root,${PRCN},${PRCN},Input/${PRC}_Nominal_${AP}.root \
-         --BaseHistogram ${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal} \
-         --Histogram ${HNominal},${HNominal},${HNominal},${HNominal},${HIterationUp},${HIterationDown},${HPrior} \
-         --Label JECUp,JECDown,JERUp,JERDown,IterationUp,IterationDown,Prior \
-         --Group 1,1,1,1,1,1,1 \
-         --Bridging 0,0,0,0,0,0,0 \
-         --ExtraScaling 1,1,1,1,1,1,1 \
+         --BaseInput ${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${MCPRCToy},${PRCN},${PRCN} \
+         --Input Input/${PRC}_JECUp_${NP}.root,Input/${PRC}_JECDown_${NP}.root,Input/${PRC}_JERUp_${NP}.root,Input/${PRC}_JERDown_${NP}.root,${PRCN},${PRCN},Input/${PRC}_Nominal_${AP}.root,${MCPRCToy},Input/${PRC}_CentralityUp_${NP}.root,Input/${PRC}_CentralityDown_${NP}.root \
+         --BaseHistogram ${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HMCNominal},${HNominal},${HNominal} \
+         --Histogram ${HNominal},${HNominal},${HNominal},${HNominal},${HIterationUp},${HIterationDown},${HPrior},${HNominal},${HNominal},${HNominal} \
+         --Label JECUp,JECDown,JERUp,JERDown,IterationUp,IterationDown,Prior,Iteration,CentralityUp,CentralityDown \
+         --Group 1,1,1,1,0,0,1,1,1,1 \
+         --Bridging 0,0,0,0,0,0,0,0,0,0 \
+         --ExtraScaling 1,1,1,1,1,1,1,1,1,1 \
          --BinMapping BinMapping/${PRC}_Nominal.root \
          --DoSelfNormalize false \
          --Output Output/${PRC}.root
 
+      if [[ $IsPP == 0 ]]; then
+         TAA=`DHQuery GlobalSetting.dh TAA $C`
+         TAAError=`DHQuery GlobalSetting.dh TAAErrorUp $C`
+         TAARelativeError=`echo $TAAError | DivideConst $TAA`
+         DHSet GlobalSystematics.dh $PRC TAA float $TAARelativeError
+         DHSet GlobalSystematics.dh $PRC NMB float 0.0126
+      else
+         DHSet GlobalSystematics.dh $PRC Luminosity float 0.035
+      fi
+
       ./ExecutePlot \
          --Input Output/${PRC}.root --Output Plot/${PRC}.pdf \
-         --Variations HJECUp,HJECDown,HJERUp,HJERDown,HIterationUp,HIterationDown,HPrior \
-         --Labels "JEC Up","JEC Down","JER Up","JER Down","Iteration Up","Iteration Down","Prior"
+         --Variations HJECUp,HJECDown,HJERUp,HJERDown,HIterationUp,HIterationDown,HPrior,HIteration,HCentralityDown,HCentralityDown \
+         --Labels "JEC Up","JEC Down","JER Up","JER Down","Iteration Up","Iteration Down","Prior","Iteration","Centrality Up","Centrality Down"
    done
 done
 
