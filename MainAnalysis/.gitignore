@@ -1,1 +1,13 @@
 *.dh
+Execute
+Execute.dSYM
+*Input
+Output
+Plots
+FinalPlots
+Systematics
+CombinedSystematics
+*.pdf
+.DS_Store
+root
+Root
