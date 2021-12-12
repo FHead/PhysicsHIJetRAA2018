@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
    Latex.DrawLatex(PadX0, PadY0 + PadDY + 0.01, "CMS #font[52]{Preliminary}");
    Latex.SetTextAlign(31);
    Latex.DrawLatex(PadX0 + PadDX, PadY0 + PadDY + 0.01,
-      Form("pp (PbPb) 5.02 TeV %.1f %s (%.1f %s)", PPLumi, PPLumiUnit.c_str(), AALumi, AALumiUnit.c_str()));
+      Form("pp (PbPb) 5.02 TeV %.0f %s (%.2f %s)", PPLumi, PPLumiUnit.c_str(), AALumi, AALumiUnit.c_str()));
    
    Pad.cd();
    TH2D HWorld("HWorld", "", 100, WorldXMin, WorldXMax, 100, WorldYMin, WorldYMax);
