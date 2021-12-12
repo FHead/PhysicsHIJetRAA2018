@@ -19,14 +19,16 @@ ExecutePlot: Visualize.cpp
 	CompileRootMacro Visualize.cpp ExecutePlot
 
 RunAA: Execute ExecutePlot
-	bash RunFile.sh Input    PbPbMCRho Nominal     0 Nominal
-	bash RunFile.sh ToyInput PbPbMCRho Nominal_Toy 0 Nominal
-	bash RunFile.sh Input    PbPbData  Nominal     0 Nominal
-	bash RunFile.sh Input    PbPbData  Nominal     0 Alternate
-	bash RunFile.sh Input    PbPbData  JECUp       0 Nominal
-	bash RunFile.sh Input    PbPbData  JECDown     0 Nominal
-	bash RunFile.sh Input    PbPbData  JERUp       0 Nominal
-	bash RunFile.sh Input    PbPbData  JERDown     0 Nominal
+	bash RunFile.sh Input    PbPbMCRho Nominal        0 Nominal
+	bash RunFile.sh ToyInput PbPbMCRho Nominal_Toy    0 Nominal
+	bash RunFile.sh Input    PbPbData  Nominal        0 Nominal
+	bash RunFile.sh Input    PbPbData  Nominal        0 Alternate
+	bash RunFile.sh Input    PbPbData  JECUp          0 Nominal
+	bash RunFile.sh Input    PbPbData  JECDown        0 Nominal
+	bash RunFile.sh Input    PbPbData  JERUp          0 Nominal
+	bash RunFile.sh Input    PbPbData  JERDown        0 Nominal
+	bash RunFile.sh Input    PbPbData  CentralityUp   0 Nominal
+	bash RunFile.sh Input    PbPbData  CentralityDown 0 Nominal
 	
 RunPP: Execute ExecutePlot
 	bash RunFile.sh Input    PPMC      Nominal     1 Nominal
