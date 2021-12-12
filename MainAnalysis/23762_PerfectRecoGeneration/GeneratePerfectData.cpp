@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
    
       if(N == 0)
       {
-         cout << "Attention: N = " << N << ", V = " << V << endl;
+         // cout << "Attention: N = " << N << ", V = " << V << endl;
          continue;
       }
 
