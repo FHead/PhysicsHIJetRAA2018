@@ -35,8 +35,8 @@ do
 
       PPLumi=`DHQuery GlobalSetting.dh Lumi ${PPState}_R${R}_CentralityInclusive_BRIL | tr -d '"' | DivideConst 1000000`
       PPLumiUnit="pb^{-1}"
-      AALumi=`DHQuery GlobalSetting.dh Lumi ${AAState}_R${R}_Centrality0to10_BRIL | tr -d '"'`
-      AALumiUnit="#mub^{-1}"
+      AALumi=`DHQuery GlobalSetting.dh Lumi ${AAState}_R${R}_Centrality0to10_BRIL | tr -d '"' | DivideConst 1000`
+      AALumiUnit="nb^{-1}"
 
       RValue1=`DHQuery GlobalSetting.dh JetR $BaseR`
       RValue2=`DHQuery GlobalSetting.dh JetR $R`
