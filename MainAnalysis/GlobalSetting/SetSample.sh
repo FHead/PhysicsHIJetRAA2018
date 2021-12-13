@@ -8,8 +8,12 @@ EOSHIOps2017=${EOSHIOps}/pp2017/Forest/
 
 for $ in 1 2 3 4 5 6 7 8 9
 do
-   # PbPb Data
-   DHSet GlobalSetting.dh Sample PbPbData${R} string ${EOSHI2018}/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+   # PbPb Data, Jet100
+   # DHSet GlobalSetting.dh Sample PbPbData${R} string ${EOSHI2018}/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+   
+   # PbPb Data, Jet 80+100
+   # DHSet GlobalSetting.dh Sample PbPbData${R} string ${EOSHI2018}/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
+   DHSet GlobalSetting.dh Sample PbPbData${R} string ${EOSHI2018}/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet80And100/211205_074117/
 
    # PbPb MC
    DHSet GlobalSetting.dh Sample PbPbMC${R} string ${EOSHI2018}/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/HINPbPbSpring21MiniAOD-FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/DefaultPbPbMCForJetRAAWithRhoGenBugFix/211104_112116//
