@@ -13,6 +13,8 @@ using namespace std;
 #include "CommandLine.h"
 #include "ProgressBar.h"
 
+#include "JetCorrector.h"
+
 enum ObservableType {ObservableNone, ObservableJetPT};
 enum ObservableStep {Gen, Reco, Matched};
 
@@ -49,6 +51,8 @@ private:
    vector<float>         *MatchedJetAngle;
    vector<float>         *MatchedJetWeight;
    double                 MaxMatchedJetAngle;
+   bool                   UseJERSF;
+   SingleJetCorrector     JERSF;
 public:
    Messenger()              { Initialize(nullptr); }
    Messenger(TTree *Tree)   { Initialize(Tree); }
@@ -85,6 +89,7 @@ public:
       MatchedJetAngle = nullptr;
       MatchedJetWeight = nullptr;
       MaxMatchedJetAngle = -1;
+      UseJERSF = false;
 
       Tree = InputTree;
       if(Tree == nullptr)
@@ -114,6 +119,11 @@ public:
       Tree->SetBranchAddress("MatchedJetJEU", &MatchedJetJEU);
       Tree->SetBranchAddress("MatchedJetAngle", &MatchedJetAngle);
       Tree->SetBranchAddress("MatchedJetWeight", &MatchedJetWeight);
+   }
+   void InitializeJERSF(string FileName)
+   {
+      UseJERSF = true;
+      JERSF.Initialize(FileName);
    }
    void SetMaxMatchedJetAngle(double Value = -1) { MaxMatchedJetAngle = Value; }
    void GetEntry(int Entry)
@@ -154,7 +164,7 @@ public:
       return 0;
    }
    double GetValue(ObservableStep Step, ObservableType &Type, int Index, int Item,
-      double Shift = 0, double Smear = 1, double ExtraScale = 1)
+      double Shift = 0, double Smear = 0, double ExtraScale = 1)
    {
       double Value = GetValueNoScale(Step, Type, Index, Item, Shift, Smear);
       if(Value > 0)
@@ -162,7 +172,7 @@ public:
       return Value;
    }
    double GetValueNoScale(ObservableStep Step, ObservableType &Type, int Index, int Item,
-      double Shift = 0, double Smear = 1)
+      double Shift = 0, double Smear = 0)
    {
       if(Type == ObservableJetPT && Step == Gen && Item < GenJetPT->size())
          return (*GenJetPT)[Item];
@@ -176,14 +186,44 @@ public:
       {
          double Value = (*MatchedJetPT)[Item];
          Value = Value * (1 + Shift * (*MatchedJetJEU)[Item] / (*MatchedJetJEC)[Item]);
-         Value = (Value - (*GenJetPT)[Item]) * Smear + (*GenJetPT)[Item];
+         double SmearAmount = GetSmear(Value, (*MatchedJetEta)[Item], Smear);
+         Value = (Value - (*GenJetPT)[Item]) * (SmearAmount + 1) + (*GenJetPT)[Item];
          return Value;
       }
 
       return -1;
    }
+   double GetSmear(double PT, double Eta, double Smear)
+   {
+      if(UseJERSF == false)
+         return Smear;
+
+      JERSF.SetJetPT(PT);
+      JERSF.SetJetEta(Eta);
+      JERSF.SetJetPhi(0);
+      JERSF.SetRho(0);
+      JERSF.SetJetArea(0.5);
+
+      vector<double> Parameters = JERSF.GetParameters();
+
+      if(Parameters.size() < 3)   // Error!
+      {
+         cerr << "Error! JER SF parameter problem for PT = " << PT << ", eta = " << Eta << endl;
+         return Smear;
+      }
+      
+      if(Smear == 0)
+         return Parameters[0] - 1;
+      if(Smear < 0)
+         return min(Parameters[1], Parameters[2]) - 1;
+      if(Smear > 0)
+         return max(Parameters[1], Parameters[2]) - 1;
+
+      // it should never reach here!
+      return 0;
+   }
    int GetSimpleBin(ObservableStep Step, ObservableType &Type, int Index, int Item, vector<double> &Bins,
-      double Shift = 0, double Smear = 1, double ExtraScale = 1, double Min = -99999, double Max = 99999)
+      double Shift = 0, double Smear = 0, double ExtraScale = 1, double Min = -99999, double Max = 99999)
    {
       if(Bins.size() == 0)
          return 0;
@@ -251,16 +291,18 @@ int main(int argc, char *argv[])
    int PrimaryIndex               = CL.GetInt("ObservableIndex", -1);
    vector<double> PrimaryGenBins  = CL.GetDoubleVector("ObservableGenBins", Default);
    vector<double> PrimaryRecoBins = CL.GetDoubleVector("ObservableRecoBins", Default);
-   double PrimaryUncertaintyShift = CL.GetDouble("ObservableUncertaintyShift", 0);
-   double PrimaryUncertaintySmear = CL.GetDouble("ObservableUncertaintySmear", 1);
+   double PrimaryShift            = CL.GetDouble("ObservableShift", 0);
+   double PrimarySmear            = CL.GetDouble("ObservableSmear", 0);
    string Binning                 = CL.Get("Binning", "None");
    int BinningIndex               = CL.GetInt("BinningIndex", -1);
    vector<double> BinningGenBins  = CL.GetDoubleVector("BinningGenBins", Default);
    vector<double> BinningRecoBins = CL.GetDoubleVector("BinningRecoBins", Default);
-   double BinningUncertaintyShift = CL.GetDouble("BinningUncertaintyShift", 0);
-   double BinningUncertaintySmear = CL.GetDouble("BinningUncertaintySmear", 1);
+   double BinningShift            = CL.GetDouble("BinningShift", 0);
+   double BinningSmear            = CL.GetDouble("BinningSmear", 0);
    bool CheckMatchAngle           = CL.GetBool("CheckMatchAngle", true);
    double MaxMatchAngle           = CL.GetDouble("MaxMatchAngle", 0.2);
+
+   bool UseJERSFFile              = CL.GetBool("UseJERSFFile", false);
    
    double PrimaryGenMin           = CL.GetDouble("ObservableGenMin", -99999);
    double PrimaryGenMax           = CL.GetDouble("ObservableGenMax", +99999);
@@ -347,6 +389,8 @@ int main(int argc, char *argv[])
    Messenger MMC(FMC);
    if(CheckMatchAngle == true)
       MMC.SetMaxMatchedJetAngle(MaxMatchAngle);
+   if(UseJERSFFile == true)
+      MMC.InitializeJERSF(CL.Get("JERSF"));
 
    int EntryCount = MMC.GetEntries() * MCFraction;
    ProgressBar BarMC(cout, EntryCount);
@@ -383,15 +427,15 @@ int main(int argc, char *argv[])
             PrimaryMatrixType, PrimaryIndex, iJ, PrimaryGenBins, 0, 1, 1, PrimaryGenMin, PrimaryGenMax,
             BinningMatrixType, BinningIndex, iJ, BinningGenBins, 0, 1, 1, BinningGenMin, BinningGenMax);
          int MatchedBin = MMC.GetCompositeBin(Matched,
-            PrimaryMatrixType, PrimaryIndex, iJ, PrimaryRecoBins, PrimaryUncertaintyShift, PrimaryUncertaintySmear, 1,
+            PrimaryMatrixType, PrimaryIndex, iJ, PrimaryRecoBins, PrimaryShift, PrimarySmear, 1,
                PrimaryRecoMin, PrimaryRecoMax,
-            BinningMatrixType, BinningIndex, iJ, BinningRecoBins, BinningUncertaintyShift, BinningUncertaintySmear, 1,
+            BinningMatrixType, BinningIndex, iJ, BinningRecoBins, BinningShift, BinningSmear, 1,
                BinningRecoMin, BinningRecoMax);
         
          int MatchedGenBin = MMC.GetCompositeBin(Matched,
-            PrimaryMatrixType, PrimaryIndex, iJ, PrimaryGenBins, PrimaryUncertaintyShift, PrimaryUncertaintySmear, 1,
+            PrimaryMatrixType, PrimaryIndex, iJ, PrimaryGenBins, PrimaryShift, PrimarySmear, 1,
                PrimaryGenMin, PrimaryGenMax,
-            BinningMatrixType, BinningIndex, iJ, BinningGenBins, BinningUncertaintyShift, BinningUncertaintySmear, 1,
+            BinningMatrixType, BinningIndex, iJ, BinningGenBins, BinningShift, BinningSmear, 1,
                BinningGenMin, BinningGenMax);
 
          HMCMatched.Fill(MatchedBin, MMC.GetEventWeight() * MMC.GetJetWeight(Matched, iJ));

@@ -20,8 +20,11 @@ int main(int argc, char *argv[])
    string Prefix             = CL.Get("Prefix");
    string Suffix             = CL.Get("Suffix");
 
+   bool UseJERSFFile         = CL.GetBool("UseJERSFFile", false);
+   string JERSFFile          = CL.Get("JERSF", "none");
+
    string JetShift           = CL.Get("Shift", "0.0");
-   string JetSmear           = CL.Get("Smear", "1.025");
+   string JetSmear           = CL.Get("Smear", "0.025");
    string Flooring           = CL.Get("Flooring", "false");
 
    bool DoCopy               = CL.GetBool("DoCopy", false);
@@ -69,9 +72,10 @@ int main(int argc, char *argv[])
             << " --ObservableGenMin " << GenMin
             << " --ObservableRecoMin " << RecoMin
             << " --BinningGenBins 0,1 --BinningRecoBins 0,1"
-            << " --ObservableUncertaintyShift " << JetShift
-            << " --ObservableUncertaintySmear " << JetSmear
+            << " --ObservableShift " << JetShift
+            << " --ObservableSmear " << JetSmear
             << " --Flooring " << Flooring
+            << " --UseJERSFFile " << UseJERSFFile << " --JERSF " << JERSFFile
             << " --CheckMatchAngle true --MaxMatchAngle " << DHFile["JetRMatch"][R].GetDouble()
             << ";" << endl;
          if(DoCopy == true)
