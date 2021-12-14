@@ -36,7 +36,7 @@ do
          --File2 Input/PPData_R${R}_CentralityInclusive.root \
          --Output Output/RAA_R${R}_Centrality${C}.root \
          --DHFile $DH --State RAA_R${R}_Centrality${C} \
-         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown \
+         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown,HJECQuench \
          --Global GlobalSystematics.dh
    done
 done
@@ -51,7 +51,7 @@ do
          --File2 Input/PbPbData_R${R}_Centrality50to90.root \
          --Output Output/RCP_R${R}_Centrality${C}.root \
          --DHFile $DH --State RCP_R${R}_Centrality${C} \
-         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown \
+         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown,HJECQuench \
          --Global GlobalSystematics.dh
    done
 done
@@ -79,7 +79,7 @@ do
          --File2 Input/PbPbData_R1_Centrality${C}.root \
          --Output Output/PbPbDataRatio_R${R}R1_Centrality${C}.root \
          --DHFile $DH --State PbPbDataRatio_R${R}R1_Centrality${C} \
-         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown \
+         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown,HJECQuench \
          --Global GlobalSystematics.dh
    done
 done
@@ -94,7 +94,7 @@ do
          --File2 Output/PPDataRatio_R${R}R1_CentralityInclusive.root \
          --Output Output/RRAA_R${R}R1_Centrality${C}.root \
          --DHFile $DH --State RRAA_R${R}R1_Centrality${C} \
-         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown \
+         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown,HJECQuench \
          --Global GlobalSystematics.dh
    done
 done
@@ -121,7 +121,7 @@ do
          --File2 Input/PbPbData_R2_Centrality${C}.root \
          --Output Output/PbPbDataRatio_R${R}R2_Centrality${C}.root \
          --DHFile $DH --State PbPbDataRatio_R${R}R2_Centrality${C} \
-         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown \
+         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown,HJECQuench \
          --Global GlobalSystematics.dh
    done
 done
@@ -136,7 +136,7 @@ do
          --File2 Output/PPDataRatio_R${R}R2_CentralityInclusive.root \
          --Output Output/RRAA_R${R}R2_Centrality${C}.root \
          --DHFile $DH --State RRAA_R${R}R2_Centrality${C} \
-         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown \
+         --Include HJECUp,HJECDown,HJERUp,HJERDown,HPrior,HIteration,HCentralityUp,HCentralityDown,HJECQuench \
          --Global GlobalSystematics.dh
    done
 done
