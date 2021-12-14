@@ -6,9 +6,9 @@ Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 PPVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior"
 PPSystematicGroups="1,1,2,2,3,3"
 PPLabels="JES,JER,Unfolding"
-AAVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior,HCentralityUp,HCentralityDown"
-AASystematicGroups="1,1,2,2,3,3,4,4"
-AALabels="JES,JER,Unfolding,Centrality"
+AAVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior,HCentralityUp,HCentralityDown,HJECQuench"
+AASystematicGroups="1,1,2,2,3,3,5,5,4"
+AALabels="JES,JER,Unfolding,Quench,Centrality"
 
 # Run pp spectrum
 echo Running pp spectrum plots

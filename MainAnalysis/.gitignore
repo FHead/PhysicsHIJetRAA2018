@@ -1,6 +1,6 @@
 *.dh
-Execute
-Execute.dSYM
+Execute*
+*.dSYM/
 *Input
 Output
 Plots
@@ -11,3 +11,4 @@ CombinedSystematics
 .DS_Store
 root
 Root
+*.root

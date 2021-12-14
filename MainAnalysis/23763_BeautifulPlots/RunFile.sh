@@ -44,6 +44,9 @@ do
 
       PUBugCorrection=`DHQuery GlobalSetting.dh PUBugCorrection ${State}_R${R}_Centrality${C}`
       ExtraScale=`echo $ExtraScale | MultiplyConst $PUBugCorrection`
+      
+      EfficiencyCorrection=`DHQuery GlobalSetting.dh EventSelection ${State}_R${R}_Centrality${C}`
+      ExtraScale=`echo $ExtraScale | MultiplyConst $EfficiencyCorrection`
 
       System="PbPb"
       if [[ "$IsPP" == "1" ]]; then

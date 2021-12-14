@@ -46,14 +46,14 @@ do
       HIterationDown=HUnfoldedBayes${IterationDown}
 
       ./Execute \
-         --BaseInput ${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${MCPRCToy},${PRCN},${PRCN} \
-         --Input Input/${PRC}_JECUp_${NP}.root,Input/${PRC}_JECDown_${NP}.root,Input/${PRC}_JERUp_${NP}.root,Input/${PRC}_JERDown_${NP}.root,${PRCN},${PRCN},Input/${PRC}_Nominal_${AP}.root,${MCPRCToy},Input/${PRC}_CentralityUp_${NP}.root,Input/${PRC}_CentralityDown_${NP}.root \
-         --BaseHistogram ${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HMCNominal},${HNominal},${HNominal} \
-         --Histogram ${HNominal},${HNominal},${HNominal},${HNominal},${HIterationUp},${HIterationDown},${HPrior},${HNominal},${HNominal},${HNominal} \
-         --Label JECUp,JECDown,JERUp,JERDown,IterationUp,IterationDown,Prior,Iteration,CentralityUp,CentralityDown \
-         --Group 1,1,1,1,0,0,1,1,1,1 \
-         --Bridging 0,0,0,0,0,0,0,0,0,0 \
-         --ExtraScaling 1,1,1,1,1,1,1,1,1,1 \
+         --BaseInput ${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${MCPRCToy},${PRCN},${PRCN},${PRCN} \
+         --Input Input/${PRC}_JECUp_${NP}.root,Input/${PRC}_JECDown_${NP}.root,Input/${PRC}_JERUp_${NP}.root,Input/${PRC}_JERDown_${NP}.root,${PRCN},${PRCN},Input/${PRC}_Nominal_${AP}.root,${MCPRCToy},Input/${PRC}_CentralityUp_${NP}.root,Input/${PRC}_CentralityDown_${NP}.root,Input/${PRC}_JECQuench_${NP}.root \
+         --BaseHistogram ${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HMCNominal},${HNominal},${HNominal},${HNominal} \
+         --Histogram ${HNominal},${HNominal},${HNominal},${HNominal},${HIterationUp},${HIterationDown},${HPrior},${HNominal},${HNominal},${HNominal},${HNominal} \
+         --Label JECUp,JECDown,JERUp,JERDown,IterationUp,IterationDown,Prior,Iteration,CentralityUp,CentralityDown,JECQuench \
+         --Group 1,1,1,1,0,0,1,1,1,1,1 \
+         --Bridging 0,0,0,0,0,0,0,0,0,0,0 \
+         --ExtraScaling 1,1,1,1,1,1,1,1,1,1,1 \
          --BinMapping BinMapping/${PRC}_Nominal.root \
          --DoSelfNormalize false \
          --Output Output/${PRC}.root
@@ -64,14 +64,16 @@ do
          TAARelativeError=`echo $TAAError | DivideConst $TAA`
          DHSet GlobalSystematics.dh $PRC TAA float $TAARelativeError
          DHSet GlobalSystematics.dh $PRC NMB float 0.0126
+         DHSet GlobalSystematics.dh $PRC PbPbSelection float 0.01
       else
          DHSet GlobalSystematics.dh $PRC Luminosity float 0.019
+         DHSet GlobalSystematics.dh $PRC PPSelection float 0.01
       fi
 
       ./ExecutePlot \
          --Input Output/${PRC}.root --Output Plot/${PRC}.pdf \
-         --Variations HJECUp,HJECDown,HJERUp,HJERDown,HIterationUp,HIterationDown,HPrior,HIteration,HCentralityDown,HCentralityDown \
-         --Labels "JEC Up","JEC Down","JER Up","JER Down","Iteration Up","Iteration Down","Prior","Iteration","Centrality Up","Centrality Down"
+         --Variations HJECUp,HJECDown,HJERUp,HJERDown,HIterationUp,HIterationDown,HPrior,HIteration,HCentralityDown,HCentralityDown,HJECQuench \
+         --Labels "JEC Up","JEC Down","JER Up","JER Down","Iteration Up","Iteration Down","Prior","Iteration","Centrality Up","Centrality Down","Quench"
    done
 done
 

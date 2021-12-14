@@ -15,6 +15,7 @@ do
 	DHSet $DH PPDataRatio_R${R}R9_CentralityInclusive HIteration_Correlation      float 0.50
 	DHSet $DH PPDataRatio_R${R}R9_CentralityInclusive HCentralityUp_Correlation   float 0.00
 	DHSet $DH PPDataRatio_R${R}R9_CentralityInclusive HCentralityDown_Correlation float 0.00
+	DHSet $DH PPDataRatio_R${R}R9_CentralityInclusive HJECQuench_Correlation      float 0.00
 done
 
 # pp spectrum ratio
@@ -30,6 +31,7 @@ do
 	DHSet $DH PPDataRatio_R${R}R8_CentralityInclusive HIteration_Correlation      float 0.50
 	DHSet $DH PPDataRatio_R${R}R8_CentralityInclusive HCentralityUp_Correlation   float 0.00
 	DHSet $DH PPDataRatio_R${R}R8_CentralityInclusive HCentralityDown_Correlation float 0.00
+	DHSet $DH PPDataRatio_R${R}R8_CentralityInclusive HJECQuench_Correlation      float 0.00
 done
 
 # RAA
@@ -47,6 +49,7 @@ do
 	   DHSet $DH RAA_R${R}_Centrality${C} HIteration_Correlation      float 0.25
 	   DHSet $DH RAA_R${R}_Centrality${C} HCentralityUp_Correlation   float 0.00
    	DHSet $DH RAA_R${R}_Centrality${C} HCentralityDown_Correlation float 0.00
+   	DHSet $DH RAA_R${R}_Centrality${C} HJECQuench_Correlation      float 0.00
    done
 done
 
@@ -65,6 +68,7 @@ do
 	   DHSet $DH RCP_R${R}_Centrality${C} HIteration_Correlation      float 0.50
 	   DHSet $DH RCP_R${R}_Centrality${C} HCentralityUp_Correlation   float 0.00
    	DHSet $DH RCP_R${R}_Centrality${C} HCentralityDown_Correlation float 0.00
+   	DHSet $DH RCP_R${R}_Centrality${C} HJECQuench_Correlation      float 0.90
    done
 
    for C in 50to90
@@ -79,6 +83,7 @@ do
 	   DHSet $DH RCP_R${R}_Centrality${C} HIteration_Correlation      float 0.9999
 	   DHSet $DH RCP_R${R}_Centrality${C} HCentralityUp_Correlation   float 0.9999
    	DHSet $DH RCP_R${R}_Centrality${C} HCentralityDown_Correlation float 0.9999
+   	DHSet $DH RCP_R${R}_Centrality${C} HJECQuench_Correlation      float 0.9999
    done
 done
 
@@ -95,6 +100,7 @@ do
 	DHSet $DH PPDataRatio_R${R}R1_CentralityInclusive HIteration_Correlation      float 0.90
 	DHSet $DH PPDataRatio_R${R}R1_CentralityInclusive HCentralityUp_Correlation   float 0.00
 	DHSet $DH PPDataRatio_R${R}R1_CentralityInclusive HCentralityDown_Correlation float 0.00
+	DHSet $DH PPDataRatio_R${R}R1_CentralityInclusive HJECQuench_Correlation      float 0.00
 done
 
 # PbPb spectrum ratio, based on the smallest radius
@@ -112,6 +118,7 @@ do
 	   DHSet $DH PbPbDataRatio_R${R}R1_Centrality${C} HIteration_Correlation      float 0.90
 	   DHSet $DH PbPbDataRatio_R${R}R1_Centrality${C} HCentralityUp_Correlation   float 0.00
    	DHSet $DH PbPbDataRatio_R${R}R1_Centrality${C} HCentralityDown_Correlation float 0.00
+   	DHSet $DH PbPbDataRatio_R${R}R1_Centrality${C} HJECQuench_Correlation      float 0.90
    done
 done
 
@@ -130,6 +137,7 @@ do
       DHSet $DH RRAA_R${R}R1_Centrality${C} HIteration_Correlation      float 0.25
       DHSet $DH RRAA_R${R}R1_Centrality${C} HCentralityUp_Correlation   float 0.05
       DHSet $DH RRAA_R${R}R1_Centrality${C} HCentralityDown_Correlation float 0.05
+      DHSet $DH RRAA_R${R}R1_Centrality${C} HJECQuench_Correlation      float 0.00
    done
 done
 
@@ -146,6 +154,7 @@ do
 	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HIteration_Correlation      float 0.90
 	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HCentralityUp_Correlation   float 0.00
 	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HCentralityDown_Correlation float 0.00
+	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive HJECQuench_Correlation      float 0.00
 done
 
 # PbPb spectrum ratio, based on R2
@@ -163,6 +172,7 @@ do
 	   DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HIteration_Correlation      float 0.90
 	   DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HCentralityUp_Correlation   float 0.00
    	DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HCentralityDown_Correlation float 0.00
+   	DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} HJECQuench_Correlation      float 0.90
    done
 done
 
@@ -181,6 +191,7 @@ do
       DHSet $DH RRAA_R${R}R2_Centrality${C} HIteration_Correlation      float 0.25
       DHSet $DH RRAA_R${R}R2_Centrality${C} HCentralityUp_Correlation   float 0.00
       DHSet $DH RRAA_R${R}R2_Centrality${C} HCentralityDown_Correlation float 0.00
+      DHSet $DH RRAA_R${R}R2_Centrality${C} HJECQuench_Correlation      float 0.00
    done
 done
 
