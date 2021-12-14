@@ -17,12 +17,14 @@ int main(int argc, char *argv[])
    string DHFileName        = CL.Get("DHFile", "GlobalSetting.dh");
    string Base              = CL.Get("Base", "R1_Centrality0to10");
 
+   double MinPT             = CL.GetDouble("MinPT");
+
    bool DoTrigger           = CL.GetBool("DoTrigger", false);
    double TriggerPercentage = CL.GetDouble("TriggerPercentage", 0.99);
    double TriggerTolerance  = CL.GetDouble("TriggerTolerance", 0.001);
    // bool TriggerResolution   = CL.GetBool("TriggerResolutionShift", false);
 
-   double PTBound = 0;
+   double PTBound = MinPT;
 
    DataHelper DHFile(DHFileName);
 
