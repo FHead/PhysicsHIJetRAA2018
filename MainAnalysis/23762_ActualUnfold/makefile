@@ -25,6 +25,7 @@ RunAA: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbData  Nominal        0 Alternate
 	bash RunFile.sh Input    PbPbData  JECUp          0 Nominal
 	bash RunFile.sh Input    PbPbData  JECDown        0 Nominal
+	bash RunFile.sh Input    PbPbData  JECQuench      0 Nominal
 	bash RunFile.sh Input    PbPbData  JERUp          0 Nominal
 	bash RunFile.sh Input    PbPbData  JERDown        0 Nominal
 	bash RunFile.sh Input    PbPbData  CentralityUp   0 Nominal
