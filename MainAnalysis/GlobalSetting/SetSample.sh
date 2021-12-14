@@ -6,7 +6,7 @@ EOSHI2017=${EOSHI}/pp2017/Forest/
 EOSHI2018=${EOSHI}/PbPb2018/Forest/
 EOSHIOps2017=${EOSHIOps}/pp2017/Forest/
 
-for $ in 1 2 3 4 5 6 7 8 9
+for R in 1 2 3 4 5 6 7 8 9
 do
    # PbPb Data, Jet100
    # DHSet GlobalSetting.dh Sample PbPbData${R} string ${EOSHI2018}/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet100OnlyRetry2/211204_093116/
