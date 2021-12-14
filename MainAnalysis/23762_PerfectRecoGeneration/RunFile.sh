@@ -17,10 +17,10 @@ fi
 
 for R in $JetR
 do
+   echo Running R $R
+      
    for C in $Centrality
    do
-      echo Running R $R and Centrality $C
-      
       Prior=$PriorChoice
       if [[ $PriorChoice == "Nominal" ]]; then
          Prior=`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`
