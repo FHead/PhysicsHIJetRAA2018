@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   int NX = HResponse->GetNbinsX() - 1;
-   int NY = HResponse->GetNbinsY() - 1;
+   int NX = HResponse->GetNbinsX();
+   int NY = HResponse->GetNbinsY();
 
    TMatrixD M(NX, NY);
    for(int iX = 0; iX < NX; iX++)
