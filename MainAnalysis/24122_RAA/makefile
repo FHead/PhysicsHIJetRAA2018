@@ -19,8 +19,11 @@ RunRAA: Execute
 RunRAACheck: Execute
 	bash RunFile.sh PPData Nominal PbPbData JERUp
 	bash RunFile.sh PPData Nominal PbPbData JERDown
+	bash RunFile.sh PPData Nominal PbPbData FlatJER
+	bash RunFile.sh PPData Nominal PbPbData NoJER
 	bash RunFile.sh PPData Nominal PbPbData JECUp
 	bash RunFile.sh PPData Nominal PbPbData JECDown
+	bash RunFile.sh PPData Nominal PbPbData JECQuench
 
 RunRCP: Execute
 	bash RunRCP.sh PPData Nominal PbPbData Nominal
@@ -41,7 +44,10 @@ Deploy:
 	mkdir -p $(DeployBase)/Check/RAA
 	cp Plots/RAA*_PPNominal_AAJERUp.pdf $(DeployBase)/Check/RAA/
 	cp Plots/RAA*_PPNominal_AAJERDown.pdf $(DeployBase)/Check/RAA/
+	cp Plots/RAA*_PPNominal_AAFlatJER.pdf $(DeployBase)/Check/RAA/
+	cp Plots/RAA*_PPNominal_AANoJER.pdf $(DeployBase)/Check/RAA/
 	cp Plots/RAA*_PPNominal_AAJECUp.pdf $(DeployBase)/Check/RAA/
 	cp Plots/RAA*_PPNominal_AAJECDown.pdf $(DeployBase)/Check/RAA/
+	cp Plots/RAA*_PPNominal_AAJECQuench.pdf $(DeployBase)/Check/RAA/
 
 
