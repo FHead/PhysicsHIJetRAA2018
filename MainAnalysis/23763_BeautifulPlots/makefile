@@ -18,10 +18,13 @@ RunJetPT: Execute
 	bash RunFile.sh PPData   Nominal "" 1
 
 RunCheck: Execute
-	bash RunFile.sh PbPbData JERUp "" 0
-	bash RunFile.sh PbPbData JERDown "" 0
-	bash RunFile.sh PbPbData JECUp "" 0
-	bash RunFile.sh PbPbData JECDown "" 0
+	bash RunFile.sh PbPbData JERUp     "" 0
+	bash RunFile.sh PbPbData JERDown   "" 0
+	bash RunFile.sh PbPbData FlatJER   "" 0
+	bash RunFile.sh PbPbData NoJER     "" 0
+	bash RunFile.sh PbPbData JECUp     "" 0
+	bash RunFile.sh PbPbData JECDown   "" 0
+	bash RunFile.sh PbPbData JECQuench "" 0
 
 RunJetPTClosure: Execute
 	bash RunFile.sh PbPbMCRho Nominal Toy 0
