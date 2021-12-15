@@ -13,10 +13,6 @@ Clean:
 	rm -f Plots/*pdf
 	rm -f Root/*root
 
-Deploy:
-	mkdir -p ../FinalResult/Unfolded/
-	cp Plots/*.pdf ../FinalResult/Unfolded/
-
 RunJetPT: Execute
 	bash RunFile.sh PbPbData "" 0
 	bash RunFile.sh PPData   "" 1
@@ -27,3 +23,9 @@ RunJetPTClosure: Execute
 
 Execute: MakePaperPlot.cpp
 	CompileRootMacro MakePaperPlot.cpp Execute
+
+Deploy:
+	mkdir -p $(DeployBase)/Result/Spectra/
+	cp Plots/PbPbData*pdf $(DeployBase)/Result/Spectra
+	cp Plots/PPData*pdf $(DeployBase)/Result/Spectra
+

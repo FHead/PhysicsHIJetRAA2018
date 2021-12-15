@@ -36,8 +36,8 @@ do
       else
          Luminosity=`DHQuery GlobalSetting.dh Lumi ${State}_R${R}_Centrality${C}_BRIL | tr -d '"'`
          LuminosityUnit="#mub^{-1}"
-         MBCount=`DHQuery GlobalSetting.dh MBCount ${State}_R${R}_Centrality${C}_WeightedCount | tr -d '"'`
-         # MBCount=`echo 11532346230 | DivideConst 1788.69 | MultiplyConst $Luminosity`
+         # MBCount=`DHQuery GlobalSetting.dh MBCount ${State}_R${R}_Centrality${C}_WeightedCount | tr -d '"'`
+         MBCount=`DHQuery GlobalSetting.dh MBCount ${State}_R${R}_Centrality${C}_OfficialCount | tr -d '"'`
          TAA=`DHQuery GlobalSetting.dh TAA ${C} | tr -d '"' | DivideConst 1000000`
          ExtraScale=`echo $ExtraScale | DivideConst $MBCount | DivideConst $TAA`
       fi
@@ -76,6 +76,7 @@ do
       PRCN="${PRC}_Nominal${Suffix}_${NP}.root"
       HPrimary=HUnfoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
       Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
+      Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow_R${R}_Centrality${C}`
 
       MCFile="Input/${PRCN},HEPData/Graph_pp_CMSR${R}.root,HEPData/Graph_pp_ATLASR${R}.root"
       MCHist="HMCTruth,GHEPData,GHEPData"
@@ -98,6 +99,7 @@ do
          --NormalizeMCToData ${NormalizeMCToData} \
          --PrimaryName $HPrimary \
          --Underflow $Underflow \
+         --Overflow $Overflow \
          --DoSelfNormalize false \
          --ExtraScale $ExtraScale \
          --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.000000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \

@@ -29,7 +29,7 @@ int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 void SelfNormalize(TH1D *H, vector<double> Bins1, vector<double> Bins2);
 TH1D *BuildSystematics(TH1D *HResult, TH1D *HVariation);
-vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true, int Underflow = 0);
+vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true, int Underflow = 0, int Overflow = 0);
 void SetPad(TPad *P);
 void SetAxis(TGaxis &A);
 void SetWorld(TH2D *H);
@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
    bool DoEventNormalize          = CL.GetBool("DoEventNormalize", false);
    double ExtraScale              = CL.GetDouble("ExtraScale", 1.00);
    int Underflow                  = CL.GetInt("Underflow");
+   int Overflow                   = CL.GetInt("Overflow");
 
    vector<string> MCFileNames     = CL.GetStringVector("MCFile", vector<string>{InputFileName});
    vector<string> MCHistNames     = CL.GetStringVector("MCHistogram", vector<string>{"HMCTruth"});
@@ -182,9 +183,9 @@ int main(int argc, char *argv[])
    double PadDR = PadRHeight / CanvasHeight;
 
    vector<TGraphAsymmErrors> GResult
-      = Transcribe(H1[PrimaryName], GenBins1, GenBins2, nullptr, true, Underflow);
+      = Transcribe(H1[PrimaryName], GenBins1, GenBins2, nullptr, true, Underflow, Overflow);
    vector<TGraphAsymmErrors> GSystematics
-      = Transcribe(H1["HSystematicsPlus"], GenBins1, GenBins2, H1["HSystematicsMinus"], true, Underflow);
+      = Transcribe(H1["HSystematicsPlus"], GenBins1, GenBins2, H1["HSystematicsMinus"], true, Underflow, Overflow);
    
    double PrimaryScale = AddUp(H1[PrimaryName], WorldXMin, WorldXMax, GenBins1);
    vector<vector<TGraphAsymmErrors>> GMC(MCCount);
@@ -589,7 +590,7 @@ TH1D *BuildSystematics(TH1D *HResult, TH1D *HVariation)
    return HSystematics;
 }
 
-vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2, bool Normalize, int Underflow)
+vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2, bool Normalize, int Underflow, int Overflow)
 {
    int BinningCount = Bins2.size() - 1;
    if(BinningCount <= 0)
@@ -614,7 +615,7 @@ vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<doubl
 
    for(int iB = 0; iB < BinningCount; iB++)
    {
-      for(int i = Underflow; i < PrimaryBinCount; i++)
+      for(int i = Underflow; i < PrimaryBinCount - Overflow; i++)
       {
          double X = (PrimaryBins[i] + PrimaryBins[i+1]) / 2;
          double DX = (PrimaryBins[i+1] - PrimaryBins[i]) / 2;
