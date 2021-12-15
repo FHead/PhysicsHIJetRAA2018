@@ -24,6 +24,12 @@ int main(int argc, char *argv[])
    TFile File(InputFileName.c_str());
 
    TH2D *HResponse = (TH2D *)File.Get("HResponse");
+   if(HResponse == nullptr)
+   {
+      cerr << "Error getting response matrix, exiting." << endl;
+      File.Close();
+      return -1;
+   }
 
    int NX = HResponse->GetNbinsX() - 1;
    int NY = HResponse->GetNbinsY() - 1;

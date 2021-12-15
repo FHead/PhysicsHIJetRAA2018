@@ -13,8 +13,8 @@
 # DHSet GlobalSetting.dh "Binning" "RecoPT" string "45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,447,501,562,631,708,794,891,1000,1200,1500"
 
 # Reduced binning above 400 GeV
-DHSet GlobalSetting.dh "Binning" "GenPT" string "45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,501,631,794,1000,1200,1500"
-DHSet GlobalSetting.dh "Binning" "RecoPT" string "45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,501,631,794,1000,1200,1500"
+DHSet GlobalSetting.dh "Binning" "GenPT" string "45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,501,631,794,1000,1200"
+DHSet GlobalSetting.dh "Binning" "RecoPT" string "45,50,56,63,71,79,89,100,112,126,141,158,178,200,224,251,282,316,355,398,501,631,794,1000,1200"
 
 # Some more phase space cuts
 DHSet GlobalSetting.dh "Binning" "GenMin" float 40
