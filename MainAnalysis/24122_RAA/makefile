@@ -14,23 +14,34 @@ Clean:
 	rm -f Plots/*pdf Root/*root
 
 RunRAA: Execute
-	bash RunFile.sh
+	bash RunFile.sh PPData Nominal PbPbData Nominal
+
+RunRAACheck: Execute
+	bash RunFile.sh PPData Nominal PbPbData JERUp
+	bash RunFile.sh PPData Nominal PbPbData JERDown
+	bash RunFile.sh PPData Nominal PbPbData JECUp
+	bash RunFile.sh PPData Nominal PbPbData JECDown
 
 RunRCP: Execute
-	bash RunRCP.sh
+	bash RunRCP.sh PPData Nominal PbPbData Nominal
 
 RunRRAA: Execute
-	bash RunRRAA.sh
+	bash RunRRAA.sh PPData Nominal PbPbData Nominal
 
 Execute: PlotRAA.cpp
 	CompileRootMacro PlotRAA.cpp Execute
 
 Deploy:
 	mkdir -p $(DeployBase)/Result/RAA
-	cp Plots/RAA*pdf $(DeployBase)/Result/RAA/
+	cp Plots/RAA*_PPNominal_AANominal.pdf $(DeployBase)/Result/RAA/
 	mkdir -p $(DeployBase)/Result/RCP
-	cp Plots/RCP*pdf $(DeployBase)/Result/RCP/
+	cp Plots/RCP*_AANominal.pdf $(DeployBase)/Result/RCP/
 	mkdir -p $(DeployBase)/Result/RRAA
-	cp Plots/RRAA*pdf $(DeployBase)/Result/RRAA/
+	cp Plots/RRAA*_PPNominal_AANominal.pdf $(DeployBase)/Result/RRAA/
+	mkdir -p $(DeployBase)/Check/RAA
+	cp Plots/RAA*_PPNominal_AAJERUp.pdf $(DeployBase)/Check/RAA/
+	cp Plots/RAA*_PPNominal_AAJERDown.pdf $(DeployBase)/Check/RAA/
+	cp Plots/RAA*_PPNominal_AAJECUp.pdf $(DeployBase)/Check/RAA/
+	cp Plots/RAA*_PPNominal_AAJECDown.pdf $(DeployBase)/Check/RAA/
 
 

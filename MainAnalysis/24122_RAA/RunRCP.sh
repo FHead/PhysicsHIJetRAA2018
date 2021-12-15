@@ -1,25 +1,27 @@
 #!/bin/bash
 
-PPState=PPData
-AAState=PbPbData
+PPState=$1
+PPSuffix=$2
+AAState=$3
+AASuffix=$4
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
 
 for R in $JetR
 do
-   PPFile0=SpectraRoot/${AAState}_R${R}_Centrality50to90.root
-   PPFile1=SpectraRoot/${AAState}_R${R}_Centrality50to90.root
-   PPFile2=SpectraRoot/${AAState}_R${R}_Centrality50to90.root
-   PPFile3=SpectraRoot/${AAState}_R${R}_Centrality50to90.root
+   PPFile0=SpectraRoot/${AAState}_R${R}_Centrality50to90_${AASuffix}.root
+   PPFile1=SpectraRoot/${AAState}_R${R}_Centrality50to90_${AASuffix}.root
+   PPFile2=SpectraRoot/${AAState}_R${R}_Centrality50to90_${AASuffix}.root
+   PPFile3=SpectraRoot/${AAState}_R${R}_Centrality50to90_${AASuffix}.root
    PPCurve0=Result0
    PPCurve1=Result0
    PPCurve2=Result0
    PPCurve3=Result0
-   AAFile0=SpectraRoot/${AAState}_R${R}_Centrality0to10.root
-   AAFile1=SpectraRoot/${AAState}_R${R}_Centrality10to30.root
-   AAFile2=SpectraRoot/${AAState}_R${R}_Centrality30to50.root
-   AAFile3=SpectraRoot/${AAState}_R${R}_Centrality50to90.root
+   AAFile0=SpectraRoot/${AAState}_R${R}_Centrality0to10_${AASuffix}.root
+   AAFile1=SpectraRoot/${AAState}_R${R}_Centrality10to30_${AASuffix}.root
+   AAFile2=SpectraRoot/${AAState}_R${R}_Centrality30to50_${AASuffix}.root
+   AAFile3=SpectraRoot/${AAState}_R${R}_Centrality50to90_${AASuffix}.root
    AACurve0=Result0
    AACurve1=Result0
    AACurve2=Result0
@@ -48,8 +50,8 @@ do
       --AAName $AACurve0,$AACurve1,$AACurve2 \
       --Systematics ${SysFile0},${SysFile1},${SysFile2} \
       --Labels "0-10%","10-30%","30-50%" \
-      --FinalOutput Plots/RCPR${R}.pdf \
-      --RootOutput Root/RCPR${R}.root \
+      --FinalOutput Plots/RCPR${R}_AA${AASuffix}.pdf \
+      --RootOutput Root/RCPR${R}_AA${AASuffix}.root \
       --CurveLabel $CLabel0,$CLabel1,$CLabel2 \
       --WorldXMin 158 --WorldXMax 1500 --WorldYMin 0.0 --WorldYMax 1.2 --LogX true --LogY false \
       --XLabel "Jet p_{T} (GeV)" --YLabel "$YLabel" \

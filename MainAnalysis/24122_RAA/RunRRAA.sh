@@ -1,7 +1,9 @@
 #!/bin/bash
 
-PPState=PPData
-AAState=PbPbData
+PPState=$1
+PPSuffix=$2
+AAState=$3
+AASuffix=$4
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
@@ -14,12 +16,12 @@ do
          continue
       fi
 
-      PPFile=Root/RAAR$BaseR.root
+      PPFile=Root/RAAR${BaseR}_PP${PPSuffix}_AA${AASuffix}.root
       PPCurve0=RAA_R${BaseR}_Centrality0to10
       PPCurve1=RAA_R${BaseR}_Centrality10to30
       PPCurve2=RAA_R${BaseR}_Centrality30to50
       PPCurve3=RAA_R${BaseR}_Centrality50to90
-      AAFile=Root/RAAR${R}.root
+      AAFile=Root/RAAR${R}_PP${PPSuffix}_AA${AASuffix}.root
       AACurve0=RAA_R${R}_Centrality0to10
       AACurve1=RAA_R${R}_Centrality10to30
       AACurve2=RAA_R${R}_Centrality30to50
@@ -49,8 +51,8 @@ do
          --AAName $AACurve0,$AACurve1,$AACurve2,$AACurve3 \
          --Systematics ${SysFile0},${SysFile1},${SysFile2},${SysFile3} \
          --Labels "0-10%","10-30%","30-50%","50-90%" \
-         --FinalOutput Plots/RRAAR${R}R${BaseR}.pdf \
-         --RootOutput Root/RRAAR${R}R${BaseR}.root \
+         --FinalOutput Plots/RRAAR${R}R${BaseR}_PP${PPSuffix}_AA${AASuffix}.pdf \
+         --RootOutput Root/RRAAR${R}R${BaseR}_PP${PPSuffix}_AA${AASuffix}.root \
          --CurveLabel $CLabel0,$CLabel1,$CLabel2,$CLabel3 \
          --WorldXMin 158 --WorldXMax 1500 --WorldYMin 0.0 --WorldYMax 2.0 --LogX true --LogY false \
          --XLabel "Jet p_{T} (GeV)" --YLabel "$YLabel" \

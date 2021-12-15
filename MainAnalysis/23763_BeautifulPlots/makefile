@@ -14,18 +14,24 @@ Clean:
 	rm -f Root/*root
 
 RunJetPT: Execute
-	bash RunFile.sh PbPbData "" 0
-	bash RunFile.sh PPData   "" 1
+	bash RunFile.sh PbPbData Nominal "" 0
+	bash RunFile.sh PPData   Nominal "" 1
+
+RunCheck: Execute
+	bash RunFile.sh PbPbData JERUp "" 0
+	bash RunFile.sh PbPbData JERDown "" 0
+	bash RunFile.sh PbPbData JECUp "" 0
+	bash RunFile.sh PbPbData JECDown "" 0
 
 RunJetPTClosure: Execute
-	bash RunFile.sh PbPbMCRho Toy 0
-	bash RunFile.sh PPMC      Toy 1
+	bash RunFile.sh PbPbMCRho Nominal Toy 0
+	bash RunFile.sh PPMC      Nominal Toy 1
 
 Execute: MakePaperPlot.cpp
 	CompileRootMacro MakePaperPlot.cpp Execute
 
 Deploy:
 	mkdir -p $(DeployBase)/Result/Spectra/
-	cp Plots/PbPbData*pdf $(DeployBase)/Result/Spectra
-	cp Plots/PPData*pdf $(DeployBase)/Result/Spectra
+	cp Plots/PbPbData*Nominal.pdf $(DeployBase)/Result/Spectra
+	cp Plots/PPData*Nominal.pdf $(DeployBase)/Result/Spectra
 

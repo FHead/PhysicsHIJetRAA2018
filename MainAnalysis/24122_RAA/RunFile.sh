@@ -1,19 +1,21 @@
 #!/bin/bash
 
-PPState=PPData
-AAState=PbPbData
+PPState=$1
+PPSuffix=$2
+AAState=$3
+AASuffix=$4
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
 
 for R in $JetR
 do
-   PPFile=SpectraRoot/${PPState}_R${R}_CentralityInclusive.root
+   PPFile=SpectraRoot/${PPState}_R${R}_CentralityInclusive_${PPSuffix}.root
    PPCurve=Result0
-   AAFile0=SpectraRoot/${AAState}_R${R}_Centrality0to10.root
-   AAFile1=SpectraRoot/${AAState}_R${R}_Centrality10to30.root
-   AAFile2=SpectraRoot/${AAState}_R${R}_Centrality30to50.root
-   AAFile3=SpectraRoot/${AAState}_R${R}_Centrality50to90.root
+   AAFile0=SpectraRoot/${AAState}_R${R}_Centrality0to10_${AASuffix}.root
+   AAFile1=SpectraRoot/${AAState}_R${R}_Centrality10to30_${AASuffix}.root
+   AAFile2=SpectraRoot/${AAState}_R${R}_Centrality30to50_${AASuffix}.root
+   AAFile3=SpectraRoot/${AAState}_R${R}_Centrality50to90_${AASuffix}.root
    AACurve0=Result0
    AACurve1=Result0
    AACurve2=Result0
@@ -42,8 +44,8 @@ do
       --AAName $AACurve0,$AACurve1,$AACurve2,$AACurve3 \
       --Systematics ${SysFile0},${SysFile1},${SysFile2},${SysFile3} \
       --Labels "0-10%","10-30%","30-50%","50-90%" \
-      --FinalOutput Plots/RAAR${R}.pdf \
-      --RootOutput Root/RAAR${R}.root \
+      --FinalOutput Plots/RAAR${R}_PP${PPSuffix}_AA${AASuffix}.pdf \
+      --RootOutput Root/RAAR${R}_PP${PPSuffix}_AA${AASuffix}.root \
       --CurveLabel $CLabel0,$CLabel1,$CLabel2,$CLabel3 \
       --WorldXMin 158 --WorldXMax 1500 --WorldYMin 0.0 --WorldYMax 1.2 --LogX true --LogY false \
       --XLabel "Jet p_{T} (GeV)" --YLabel "$YLabel" \

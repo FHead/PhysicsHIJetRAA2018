@@ -1,7 +1,8 @@
 #!/bin/bash
 Prefix=$1
-Suffix=$2
-IsPP=$3
+Type=$2
+Suffix=$3
+IsPP=$4
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
@@ -73,7 +74,7 @@ do
 
       NP="`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`Prior"
       PRC="${Prefix}_R${R}_Centrality${C}"
-      PRCN="${PRC}_Nominal${Suffix}_${NP}.root"
+      PRCN="${PRC}_${Type}${Suffix}_${NP}.root"
       HPrimary=HUnfoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
       Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
       Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow_R${R}_Centrality${C}`
@@ -90,11 +91,18 @@ do
          NormalizeMCToData="true"
       fi
 
+      if [[ "$Type" != "Nominal" ]]; then
+         MCFile="DUMMY"
+         MCHist="DUMMY"
+         MCLabel="DUMMY"
+         NormalizeMCToData="false"
+      fi
+
       ./Execute \
          --Input Input/${PRCN} \
          --Systematic Systematics/${PRC}.root \
-         --Output Plots/QualityPlots_${PRC}${Suffix}.pdf --FinalOutput Plots/${PRC}${Suffix}.pdf \
-         --RootOutput Root/${PRC}${Suffix}.root \
+         --Output Plots/QualityPlots_${PRC}_${Type}${Suffix}.pdf --FinalOutput Plots/${PRC}_${Type}${Suffix}.pdf \
+         --RootOutput Root/${PRC}_${Type}${Suffix}.root \
          --MCFile "${MCFile}" --MCHistogram "${MCHist}" --MCLabel "${MCLabel}" \
          --NormalizeMCToData ${NormalizeMCToData} \
          --PrimaryName $HPrimary \
