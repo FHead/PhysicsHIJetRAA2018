@@ -5,6 +5,8 @@ using namespace std;
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1D.h"
+#include "TArrow.h"
+#include "TCanvas.h"
 #include "TProfile.h"
 
 #include "CommandLine.h"
@@ -19,6 +21,7 @@ using namespace std;
 int main(int argc, char *argv[]);
 double GetUE(RhoTreeMessenger &M, double Eta, double R);
 void SetHistogram(TH1 &H, int Color);
+void AddPlot(PdfFileHelper &PdfFile, TH1 &H, double Min, double Max);
 
 int main(int argc, char *argv[])
 {
@@ -69,19 +72,19 @@ int main(int argc, char *argv[])
    TH1D HJetPFCEF("HJetPFCEF", "Charged EM Fraction;PF CEF;", 100, 0, 1);
    TH1D HJetPFNHF("HJetPFNHF", "Neutral Hadron Fraction;PF NHF;", 100, 0, 1);
    TH1D HJetPFNEF("HJetPFNEF", "Neutral EM Fraction;PF NEF;", 100, 0, 1);
-   TH1D HJetPFMUF("HJetPFMUF", "Neutral Muon Fraction;PF MuF;", 100, 0, 1);
+   TH1D HJetPFMUF("HJetPFMUF", "Muon Fraction;PF MuF;", 100, 0, 1);
    TH1D HJetPFCM("HJetPFCM", "Charged Multiplicity;PF Charged Multiplicity;", 30, 0, 30);
    TH1D HJetPFM("HJetPFM", "Multiplicity;PF Multiplicity;", 30, 0, 30);
    TH1D HPassPFCHF("HPassPFCHF", "Charged Hadron Fraction;PF CHF;", 100, 0, 1);
    TH1D HPassPFCEF("HPassPFCEF", "Charged EM Fraction;PF CEF;", 100, 0, 1);
    TH1D HPassPFNHF("HPassPFNHF", "Neutral Hadron Fraction;PF NHF;", 100, 0, 1);
    TH1D HPassPFNEF("HPassPFNEF", "Neutral EM Fraction;PF NEF;", 100, 0, 1);
-   TH1D HPassPFMUF("HPassPFMUF", "Neutral Muon Fraction;PF MuF;", 100, 0, 1);
+   TH1D HPassPFMUF("HPassPFMUF", "Muon Fraction;PF MuF;", 100, 0, 1);
    TH1D HPassPFCM("HPassPFCM", "Charged Multiplicity;PF Charged Multiplicity;", 30, 0, 30);
    TH1D HPassPFM("HPassPFM", "Multiplicity;PF Multiplicity;", 30, 0, 30);
 
-   int NBin = 100;
-   double MaxPT = 1500;
+   int NBin = 40;
+   double MaxPT = 1000;
    double Bins[101];
    for(int i = 0; i <= NBin; i++)
       Bins[i] = MinPT * exp((log(MaxPT) - log(MinPT)) / NBin * i);
@@ -144,7 +147,7 @@ int main(int argc, char *argv[])
          if(Centrality > CentralityMax)
             continue;
 
-         if(MTrigger.CheckTriggerStartWith(Trigger) <= 0)
+         if(Trigger != "none" && MTrigger.CheckTriggerStartWith(Trigger) <= 0)
             continue;
 
          if(DoBaselineCutAA == true)
@@ -237,25 +240,34 @@ int main(int argc, char *argv[])
    PdfFile.AddTextPage("Jet ID Plots");
 
    PdfFile.AddTextPage("Pre-cut distributions");
-   PdfFile.AddPlot(HJetPFCHF, "", true);
-   PdfFile.AddPlot(HJetPFCEF, "", true);
-   PdfFile.AddPlot(HJetPFNHF, "", true);
-   PdfFile.AddPlot(HJetPFNEF, "", true);
-   PdfFile.AddPlot(HJetPFMUF, "", true);
-   PdfFile.AddPlot(HJetPFCM, "", true);
-   PdfFile.AddPlot(HJetPFM, "", true);
+   AddPlot(PdfFile, HJetPFCHF, CHFMin, CHFMax);
+   AddPlot(PdfFile, HJetPFCEF, CEFMin, CEFMax);
+   AddPlot(PdfFile, HJetPFNHF, NHFMin, NHFMax);
+   AddPlot(PdfFile, HJetPFNEF, NEFMin, NEFMax);
+   AddPlot(PdfFile, HJetPFMUF, MUFMin, MUFMax);
+   AddPlot(PdfFile, HJetPFCM, ChargedMultiplicityMin + 1, ChargedMultiplicityMax - 1);
+   AddPlot(PdfFile, HJetPFM, MultiplicityMin + 1, MultiplicityMax - 1);
    
    PdfFile.AddTextPage("Post-cut distributions");
-   PdfFile.AddPlot(HPassPFCHF, "", true);
-   PdfFile.AddPlot(HPassPFCEF, "", true);
-   PdfFile.AddPlot(HPassPFNHF, "", true);
-   PdfFile.AddPlot(HPassPFNEF, "", true);
-   PdfFile.AddPlot(HPassPFMUF, "", true);
-   PdfFile.AddPlot(HPassPFCM, "", true);
-   PdfFile.AddPlot(HPassPFM, "", true);
+   AddPlot(PdfFile, HPassPFCHF, CHFMin, CHFMax);
+   AddPlot(PdfFile, HPassPFCEF, CEFMin, CEFMax);
+   AddPlot(PdfFile, HPassPFNHF, NHFMin, NHFMax);
+   AddPlot(PdfFile, HPassPFNEF, NEFMin, NEFMax);
+   AddPlot(PdfFile, HPassPFMUF, MUFMin, MUFMax);
+   AddPlot(PdfFile, HPassPFCM, ChargedMultiplicityMin + 1, ChargedMultiplicityMax - 1);
+   AddPlot(PdfFile, HPassPFM, MultiplicityMin + 1, MultiplicityMax - 1);
 
    PdfFile.AddTextPage("Survival fractions");
-   PdfFile.AddPlot(PSurvival, "", false, false, true, true);
+
+   TCanvas Canvas;
+   TH2D HWorld("HWorld", ";JetPT;%", 100, MinPT, MaxPT, 100, 0.9, 1.02);
+   HWorld.SetStats(0);
+   HWorld.Draw("axis");
+   PSurvival.Draw("same");
+   Canvas.SetLogx();
+   Canvas.SetGridx();
+   Canvas.SetGridy();
+   PdfFile.AddCanvas(Canvas);
 
    PdfFile.AddTimeStampPage();
    PdfFile.Close();
@@ -306,4 +318,30 @@ void SetHistogram(TH1 &H, int Color)
    H.SetMarkerColor(Color);
    H.SetMarkerStyle(20);
 }
+
+void AddPlot(PdfFileHelper &PdfFile, TH1 &H, double Min, double Max)
+{
+   TCanvas Canvas;
+
+   H.Draw("");
+
+   double RightEdge = H.GetXaxis()->GetBinUpEdge(H.GetNbinsX());
+   double LeftEdge = H.GetXaxis()->GetBinLowEdge(1);
+
+   double MinY = H.GetMinimum();
+   double MaxY = H.GetMaximum();
+
+   if(MinY == 0)
+      MinY = 1;
+   double Location = sqrt(MinY * MaxY);
+
+   TArrow Arrow(max(LeftEdge, Min), Location, min(RightEdge, Max), Location, 0.01, "<|>");
+   Arrow.SetLineWidth(2);
+   Arrow.Draw();
+
+   Canvas.SetLogy(true);
+
+   PdfFile.AddCanvas(Canvas);
+}
+
 
