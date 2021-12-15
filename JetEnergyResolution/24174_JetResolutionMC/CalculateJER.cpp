@@ -29,12 +29,15 @@ struct Jet
 {
    float PT;
    float R;
+   float W;
    bool operator <(const Jet &other) const
    {
       if(PT < other.PT)   return true;
       if(PT > other.PT)   return false;
       if(R < other.R)     return true;
       if(R > other.R)     return false;
+      if(W < other.W)     return true;
+      if(W > other.W)     return false;
       return false;
    }
 };
@@ -78,11 +81,13 @@ int main(int argc, char *argv[])
    vector<float> *Eta = nullptr;
    vector<float> *GenPT = nullptr;
    vector<float> *RecoPT = nullptr;
+   vector<float> *Weight = nullptr;
 
    Tree->SetBranchAddress("NJet",   &NJet);
    Tree->SetBranchAddress("Eta",    &Eta);
    Tree->SetBranchAddress("GenPT",  &GenPT);
    Tree->SetBranchAddress("RecoPT", &RecoPT);
+   Tree->SetBranchAddress("Weight", &Weight);
 
    for(int iEta = 0; iEta < NEtaBin; iEta++)
    {
@@ -95,6 +100,8 @@ int main(int argc, char *argv[])
       ProgressBar Bar(cout, EntryCount);
       Bar.SetStyle(-1);
 
+      vector<float> F0;
+
       for(int iE = 0; iE < EntryCount; iE++)
       {
          Tree->GetEntry(iE);
@@ -105,6 +112,12 @@ int main(int argc, char *argv[])
             Bar.Print();
          }
 
+         if(Weight == nullptr)
+         {
+            Weight = &F0;
+            F0.resize(NJet, 1);
+         }
+
          for(int iJ = 0; iJ < NJet; iJ++)
          {
             if(Eta->at(iJ) < EtaBins[iEta] || Eta->at(iJ) > EtaBins[iEta+1])
@@ -112,7 +125,7 @@ int main(int argc, char *argv[])
             if(GenPT->at(iJ) < GenPTMin)
                continue;
 
-            Jets.push_back({GenPT->at(iJ), RecoPT->at(iJ) / GenPT->at(iJ)});
+            Jets.push_back({GenPT->at(iJ), RecoPT->at(iJ) / GenPT->at(iJ), Weight->at(iJ)});
          }
       }
 
@@ -140,23 +153,28 @@ int main(int argc, char *argv[])
          double MinPT = Jets[Min].PT;
          double MaxPT = Jets[Max-1].PT;
 
+         double SumW = 0;
          double SumPT = 0;
          for(int iJ = Min; iJ < Max; iJ++)
-            SumPT = SumPT + Jets[iJ].PT;
-         double MeanPT = SumPT / (Max - Min);
+         {
+            SumW = SumW + Jets[iJ].W;
+            SumPT = SumPT + Jets[iJ].PT * Jets[iJ].W;
+         }
+         double MeanPT = SumPT / SumW;
 
-         vector<float> Rs(Max - Min);
+         vector<pair<float, float>> Rs(Max - Min);
          for(int iJ = Min; iJ < Max; iJ++)
-            Rs[iJ-Min] = Jets[iJ].R;
+            Rs[iJ-Min] = {Jets[iJ].R, Jets[iJ].W};
 
          sort(Rs.begin(), Rs.end());
 
          int ToDiscardEachSide = FractionEachSide * (Max - Min);
 
-         double MinR = Rs[ToDiscardEachSide];
-         double MaxR = Rs[(Max-Min-1)-ToDiscardEachSide];
+         double MinR = Rs[ToDiscardEachSide].first;
+         double MaxR = Rs[(Max-Min-1)-ToDiscardEachSide].first;
 
          RooRealVar R("R", Form("R GenPT [%.2f,%.2f]", MinPT, MaxPT), MinR, MaxR);
+         RooRealVar W("Weight", "", 0, 100000);
          RooRealVar Mean("Mean", "", MinR, MaxR);
          RooRealVar Width("Width", "", 0.02, 1.5);
          RooGaussian Gauss("Gauss", "", R, Mean, Width);
@@ -165,20 +183,21 @@ int main(int argc, char *argv[])
          double SumR1 = 0;
          double SumR2 = 0;
 
-         RooDataSet Data("Data", "", RooArgSet(R));
+         RooDataSet Data("Data", "", RooArgSet(R, W), "Weight");
          for(int i = ToDiscardEachSide; i < (Max - Min) - ToDiscardEachSide; i++)
          {
-            R = Rs[i];
-            Data.add(RooArgSet(R));
+            R = Rs[i].first;
+            W = Rs[i].second;
+            Data.add(RooArgSet(R, W), Rs[i].second);
 
-            SumR0 = SumR0 + 1;
-            SumR1 = SumR1 + Rs[i];
-            SumR2 = SumR2 + Rs[i] * Rs[i];
+            SumR0 = SumR0 + Rs[i].second;
+            SumR1 = SumR1 + Rs[i].first * Rs[i].second;
+            SumR2 = SumR2 + Rs[i].first * Rs[i].first * Rs[i].second;
          }
 
          RooFitResult *Result = Gauss.fitTo(Data, Save());
 
-         cout << "PT Range: [" << MinPT << ", " << MaxPT << "], Mean = " << Mean.getVal() << ", Sigma = " << Width.getVal() << endl;
+         cout << "Eta Range: [" << EtaBins[iEta] << ", " << EtaBins[iEta+1] << "], PT Range: [" << MinPT << ", " << MaxPT << "], Mean = " << Mean.getVal() << ", Sigma = " << Width.getVal() << endl;
 
          RooPlot *Frame = R.frame();
          Data.plotOn(Frame);
