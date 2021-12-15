@@ -6,10 +6,6 @@ Prepare:
 	ln -sf ../GlobalSetting/GlobalSetting.dh
 	mkdir -p Plots
 
-Deploy:
-	mkdir -p ../FinalResult/SmearingMatrix
-	cp Plots/*png ../FinalResult/SmearingMatrix
-
 Clean:
 	rm -f Plots/*
 
@@ -47,5 +43,10 @@ TestRunOld: Execute
 
 Execute: MakePaperPlot.cpp
 	CompileRootMacro MakePaperPlot.cpp Execute
+
+Deploy:
+	mkdir -p $(DeployBase)/Matrix/
+	cp Plots/PbPbData*pdf $(DeployBase)/Matrix/
+	cp Plots/PPData*pdf $(DeployBase)/Matrix/
 
 
