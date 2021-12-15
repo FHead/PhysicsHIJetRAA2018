@@ -41,6 +41,9 @@ int main(int argc, char *argv[])
    string ResponseMeasured = CL.Get("ResponseMeasured",  "HMCReco");
    string Output           = CL.Get("Output",            "Unfolded.root");
    string PriorChoice      = CL.Get("Prior",             "MC");
+   bool DoBayes            = CL.GetBool("DoBayes",       true);
+   bool DoSVD              = CL.GetBool("DoSVD",         true);
+   bool DoInvert           = CL.GetBool("DoInvert",      true);
    bool DoFoldNormalize    = CL.GetBool("FoldNormalize", false);
    bool DoToyError         = CL.GetBool("DoToyError",    false);
    
@@ -105,35 +108,44 @@ int main(int argc, char *argv[])
 
    // cout << HGen << endl;
 
+   vector<TH1 *> HUnfolded;
    map<string, TMatrixD> Covariance;
 
    RooUnfoldResponse *Response = new RooUnfoldResponse(HReco, HGen, HResponse);
- 
-   vector<int> Iterations{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150, 200, 250};
-   vector<TH1 *> HUnfolded;
-   for(int I : Iterations)
+
+   if(DoBayes == true)
    {
-      RooUnfoldBayes BayesUnfold(Response, HInput, I);
-      BayesUnfold.SetVerbose(-1);
-      HUnfolded.push_back((TH1 *)(BayesUnfold.Hreco(ErrorChoice)->Clone(Form("HUnfoldedBayes%d", I))));
-      Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedBayes%d", I), BayesUnfold.Ereco()));
+      vector<int> Iterations{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150, 200, 250};
+      for(int I : Iterations)
+      {
+         RooUnfoldBayes BayesUnfold(Response, HInput, I);
+         BayesUnfold.SetVerbose(-1);
+         HUnfolded.push_back((TH1 *)(BayesUnfold.Hreco(ErrorChoice)->Clone(Form("HUnfoldedBayes%d", I))));
+         Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedBayes%d", I), BayesUnfold.Ereco()));
+      }
    }
 
-   RooUnfoldInvert InvertUnfold(Response, HInput);
-   InvertUnfold.SetVerbose(-1);
-   HUnfolded.push_back((TH1 *)(InvertUnfold.Hreco(ErrorChoice)->Clone("HUnfoldedInvert")));
-   Covariance.insert(pair<string, TMatrixD>("MUnfoldedInvert", InvertUnfold.Ereco()));
-   
-   vector<double> SVDRegularization{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150};
-   for(double D : SVDRegularization)
+   if(DoInvert == true)
    {
-      if(D >= HGen->GetNbinsX())
-         continue;
+      RooUnfoldInvert InvertUnfold(Response, HInput);
+      InvertUnfold.SetVerbose(-1);
+      HUnfolded.push_back((TH1 *)(InvertUnfold.Hreco(ErrorChoice)->Clone("HUnfoldedInvert")));
+      Covariance.insert(pair<string, TMatrixD>("MUnfoldedInvert", InvertUnfold.Ereco()));
+   }
+   
+   if(DoSVD == true)
+   {
+      vector<double> SVDRegularization{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150};
+      for(double D : SVDRegularization)
+      {
+         if(D >= HGen->GetNbinsX())
+            continue;
 
-      RooUnfoldSvd SVDUnfold(Response, HInput, D);
-      SVDUnfold.SetVerbose(-1);
-      HUnfolded.push_back((TH1 *)(SVDUnfold.Hreco(ErrorChoice)->Clone(Form("HUnfoldedSVD%.1f", D))));
-      Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedSVD%.1f", D), SVDUnfold.Ereco()));
+         RooUnfoldSvd SVDUnfold(Response, HInput, D);
+         SVDUnfold.SetVerbose(-1);
+         HUnfolded.push_back((TH1 *)(SVDUnfold.Hreco(ErrorChoice)->Clone(Form("HUnfoldedSVD%.1f", D))));
+         Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedSVD%.1f", D), SVDUnfold.Ereco()));
+      }
    }
 
    if(DoFoldNormalize == true)

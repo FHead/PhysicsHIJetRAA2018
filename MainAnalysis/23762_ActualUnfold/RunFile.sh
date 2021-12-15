@@ -45,9 +45,9 @@ do
       fi
 
       DoToyError=false
-      if [[ "$Suffix" == "Nominal" ]] && [[ "$PriorChoice" == "Nominal" ]]; then
-         DoToyError=true
-      fi
+      # if [[ "$Suffix" == "Nominal" ]] && [[ "$PriorChoice" == "Nominal" ]]; then
+      #    DoToyError=true
+      # fi
 
       echo Unfolding now with R$R, Centrality $C, Prefix $Prefix, Suffix $Suffix and prior $Prior
       # echo Input file = $Location/${Prefix}_R${R}_Centrality${C}_${Suffix}.root
@@ -58,7 +58,8 @@ do
 
       ./Execute --Input $Location/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \
-         --Prior $PriorString $PriorExtra --DoToyError $DoToyError
+         --Prior $PriorString $PriorExtra --DoToyError $DoToyError \
+         --DoBayes true --DoSVD false --DoInvert false
          # --FoldNormalize true --Ignore $Ignore --DoToyError $DoToyError
       ./ExecutePlot --Input Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \
          --Output Plots/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.pdf \
