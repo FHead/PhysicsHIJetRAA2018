@@ -1,7 +1,7 @@
 
 
 
-default: RunRAA RunRRAA RunRCP
+default: RunRAA RunRRAA RunRCP Deploy
 
 Prepare:
 	rm -f SpectraRoot CombinedSystematics
@@ -24,3 +24,13 @@ RunRRAA: Execute
 
 Execute: PlotRAA.cpp
 	CompileRootMacro PlotRAA.cpp Execute
+
+Deploy:
+	mkdir -p $(DeployBase)/Result/RAA
+	cp Plots/RAA*pdf $(DeployBase)/Result/RAA/
+	mkdir -p $(DeployBase)/Result/RCP
+	cp Plots/RCP*pdf $(DeployBase)/Result/RCP/
+	mkdir -p $(DeployBase)/Result/RRAA
+	cp Plots/RRAA*pdf $(DeployBase)/Result/RRAA/
+
+

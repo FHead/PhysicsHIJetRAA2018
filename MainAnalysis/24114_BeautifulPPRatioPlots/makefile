@@ -18,3 +18,9 @@ RunJetPT: Execute
 
 Execute: MakePlot.cpp
 	CompileRootMacro MakePlot.cpp Execute
+
+Deploy:
+	mkdir -p $(DeployBase)/Result/PPRatio/
+	cp Plots/* $(DeployBase)/Result/PPRatio/
+
+

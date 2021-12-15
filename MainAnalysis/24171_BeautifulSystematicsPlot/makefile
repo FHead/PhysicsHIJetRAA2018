@@ -15,10 +15,6 @@ Clean:
 	rm -f Plots/*pdf
 	rm -f FinalPlots/*pdf
 
-Deploy:
-	mkdir -p ../FinalResult/SystematicsPartial
-	cp Plots/*png ../FinalResult/SystematicsPartial
-
 RunTest: Execute
 	./Execute --Input Systematics/PPData_R4_CentralityInclusive.root \
 		--Output Plots/PPData_R4_CentralityInclusive.pdf \
@@ -39,4 +35,18 @@ RunAll: Execute
 
 Execute: MakePaperPlot.cpp
 	CompileRootMacro MakePaperPlot.cpp Execute
+
+Deploy:
+	mkdir -p $(DeployBase)/Systematics/Spectra
+	cp FinalPlots/PbPbData_*pdf $(DeployBase)/Systematics/Spectra
+	cp FinalPlots/PPData_*pdf $(DeployBase)/Systematics/Spectra
+	mkdir -p $(DeployBase)/Systematics/PPRatio
+	cp FinalPlots/PPDataRatio_*pdf $(DeployBase)/Systematics/PPRatio
+	mkdir -p $(DeployBase)/Systematics/RAA
+	cp FinalPlots/RAA_*pdf $(DeployBase)/Systematics/RAA
+	mkdir -p $(DeployBase)/Systematics/RCP
+	cp FinalPlots/RCP_*pdf $(DeployBase)/Systematics/RCP
+	mkdir -p $(DeployBase)/Systematics/RRAA
+	cp FinalPlots/RRAA_*pdf $(DeployBase)/Systematics/RRAA
+
 
