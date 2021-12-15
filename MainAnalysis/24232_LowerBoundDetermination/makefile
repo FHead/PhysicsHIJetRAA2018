@@ -14,4 +14,5 @@ RunAll: Execute
 	bash RunAll.sh
 
 Execute: GetLowerBound.cpp
-	CompileRootMacro GetLowerBound.cpp Execute
+	CompileRootMacro GetLowerBound.cpp Execute \
+		-I$(ProjectBase)/CommonCode/include/
