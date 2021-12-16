@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
       double Metric = Chi2 + E;
       if(Metric > 0 && isinf(Metric) == false)
       {
-         if(BestMetric < 0 || BestMetric > Metric)
+         if(i > 1 && (BestMetric < 0 || BestMetric > Metric))
          {
             BestMetric = Metric;
             BestIteration = i;

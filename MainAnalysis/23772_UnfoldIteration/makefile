@@ -26,4 +26,16 @@ RunData: Execute
 Execute: PlotIteration.cpp
 	CompileRootMacro PlotIteration.cpp Execute
 
+ExecutePlot: MakeSummaryPlot.cpp
+	CompileRootMacro MakeSummaryPlot.cpp ExecutePlot
+
+RunPlot: ExecutePlot
+	./ExecutePlot --DHFile GlobalSetting.dh --Output IterationMC.pdf --PPBase PPMC --AABase PbPbMCRho
+	./ExecutePlot --DHFile GlobalSetting.dh --Output IterationData.pdf --PPBase PPData --AABase PbPbData
+
+Deploy:
+	mkdir -p $(DeployBase)/Check/Iterations/
+	cp Iteration*pdf $(DeployBase)/Check/Iterations/
+
+
 
