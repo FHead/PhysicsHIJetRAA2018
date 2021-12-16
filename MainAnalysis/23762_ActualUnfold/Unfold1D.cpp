@@ -109,6 +109,7 @@ int main(int argc, char *argv[])
    // cout << HGen << endl;
 
    vector<TH1 *> HUnfolded;
+   vector<TH1 *> HRefolded;
    map<string, TMatrixD> Covariance;
 
    RooUnfoldResponse *Response = new RooUnfoldResponse(HReco, HGen, HResponse);
@@ -122,6 +123,9 @@ int main(int argc, char *argv[])
          BayesUnfold.SetVerbose(-1);
          HUnfolded.push_back((TH1 *)(BayesUnfold.Hreco(ErrorChoice)->Clone(Form("HUnfoldedBayes%d", I))));
          Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedBayes%d", I), BayesUnfold.Ereco()));
+         TH1D *HFold = ForwardFold(HUnfolded[HUnfolded.size()-1], HResponse);
+         HFold->SetName(Form("HRefoldedBayes%d", I));
+         HRefolded.push_back(HFold);
       }
    }
 
@@ -131,6 +135,9 @@ int main(int argc, char *argv[])
       InvertUnfold.SetVerbose(-1);
       HUnfolded.push_back((TH1 *)(InvertUnfold.Hreco(ErrorChoice)->Clone("HUnfoldedInvert")));
       Covariance.insert(pair<string, TMatrixD>("MUnfoldedInvert", InvertUnfold.Ereco()));
+      TH1D *HFold = ForwardFold(HUnfolded[HUnfolded.size()-1], HResponse);
+      HFold->SetName("HRefoldedInvert");
+      HRefolded.push_back(HFold);
    }
    
    if(DoSVD == true)
@@ -145,6 +152,9 @@ int main(int argc, char *argv[])
          SVDUnfold.SetVerbose(-1);
          HUnfolded.push_back((TH1 *)(SVDUnfold.Hreco(ErrorChoice)->Clone(Form("HUnfoldedSVD%.1f", D))));
          Covariance.insert(pair<string, TMatrixD>(Form("MUnfoldedSVD%.1f", D), SVDUnfold.Ereco()));
+         TH1D *HFold = ForwardFold(HUnfolded[HUnfolded.size()-1], HResponse);
+         HFold->SetName(Form("HRefoldedSVD%.1f", D));
+         HRefolded.push_back(HFold);
       }
    }
 
@@ -166,6 +176,9 @@ int main(int argc, char *argv[])
    Response->Mresponse().Clone("HMCFilledResponse")->Write();
    HInput->Clone("HInput")->Write();
    for(TH1 *H : HUnfolded)
+      if(H != nullptr)
+         H->Write();
+   for(TH1 *H : HRefolded)
       if(H != nullptr)
          H->Write();
    for(auto I : Covariance)
