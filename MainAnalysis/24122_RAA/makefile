@@ -56,6 +56,9 @@ Deploy:
 	cp Plots/RAA*_PPNominal_AAJECUp.pdf $(DeployBase)/Check/RAA/JECVariation/
 	cp Plots/RAA*_PPNominal_AAJECDown.pdf $(DeployBase)/Check/RAA/JECVariation/
 	cp Plots/RAA*_PPNominal_AAJECQuench.pdf $(DeployBase)/Check/RAA/JECVariation/
+	mkdir -p $(DeployBase)/Check/RAA/JECExtremeCheck
+	cp Plots/RAA*_PPNominal_AAJECNoPhi.pdf $(DeployBase)/Check/RAA/JECExtremeCheck/
+	cp Plots/RAA*_PPNominal_AAJECNoResidual.pdf $(DeployBase)/Check/RAA/JECExtremeCheck/
 	mkdir -p $(DeployBase)/Check/RAA/CentralityVariation
 	cp Plots/RAA*_PPNominal_AACentralityUp.pdf $(DeployBase)/Check/RAA/CentralityVariation/
 	cp Plots/RAA*_PPNominal_AACentralityDown.pdf $(DeployBase)/Check/RAA/CentralityVariation/
