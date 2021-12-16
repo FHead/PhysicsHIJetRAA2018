@@ -87,6 +87,10 @@ RunPart2C:
 	(cd 24122_RAA                      && make Prepare RunRAA RunRCP RunRRAA)
 
 RunPart2D:
+	(cd 23763_BeautifulPlots           && make Prepare RunCheck)
+	(cd 24122_RAA                      && make Prepare RunRAACheck)
+
+RunPart2E:
 	(cd 23763_BeautifulPlots           && make Deploy)
 	(cd 23763_BeautifulMatrix          && make Deploy)
 	(cd 24114_BeautifulPPRatioPlots    && make Deploy)
