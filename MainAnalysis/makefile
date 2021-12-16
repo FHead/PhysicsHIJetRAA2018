@@ -89,6 +89,8 @@ RunPart2C:
 RunPart2D:
 	(cd 23763_BeautifulPlots           && make Prepare RunCheck)
 	(cd 24122_RAA                      && make Prepare RunRAACheck)
+	(cd 24231_ConditionNumber          && make Prepare RunAll)
+	(cd 23772_UnfoldIteration          && make Prepare RunPlot)
 
 RunPart2E:
 	(cd 23763_BeautifulPlots           && make Deploy)
@@ -96,4 +98,6 @@ RunPart2E:
 	(cd 24114_BeautifulPPRatioPlots    && make Deploy)
 	(cd 24171_BeautifulSystematicsPlot && make Deploy)
 	(cd 24122_RAA                      && make Deploy)
+	(cd 24231_ConditionNumber          && make Deploy)
+	(cd 23772_UnfoldIteration          && make Deploy)
 

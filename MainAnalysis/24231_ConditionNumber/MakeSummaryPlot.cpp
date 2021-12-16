@@ -5,11 +5,14 @@ using namespace std;
 #include "TCanvas.h"
 #include "TH2D.h"
 
+#include "SetStyle.h"
 #include "CommandLine.h"
 #include "DataHelper.h"
 
 int main(int argc, char *argv[])
 {
+   SetThesisStyle();
+
    CommandLine CL(argc, argv);
 
    string DHFileName = CL.Get("DHFile");
