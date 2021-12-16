@@ -12,7 +12,7 @@ Clean:
 	rm -f Output/*root
 	rm -f Plot/*pdf
 
-RunData: Execute
+RunData: Execute ExecutePlot ExecuteIteration
 	bash RunFile.sh PbPbData 0
 	bash RunFile.sh PPData 1
 
