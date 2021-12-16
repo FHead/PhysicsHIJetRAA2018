@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in Input/*root
+for i in `ls Input/*root | grep -v Nominal`
 do
    State=`basename $i`
    State=${State/.root}
