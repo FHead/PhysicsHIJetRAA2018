@@ -63,7 +63,7 @@ RunPart2A:
 	(cd 24165_PUBugCorrection          && make Prepare PlaceHolder)
 	(cd 24231_EventSelectionEfficiency && make Prepare SetEfficiency)
 	(cd 24233_OfficialMBCount          && make Prepare RunAll)
-	(cd 23772_UnfoldIteration          && make SetDefault)
+	(cd 23772_UnfoldIteration          && make Prepare SetDefault)
 	(cd 23762_PerfectRecoGeneration    && make Prepare RunMC)
 	(cd 23762_FakeData                 && make Prepare RunMC)
 	(cd 23762_ActualUnfold             && make Prepare RunAA RunPP)
