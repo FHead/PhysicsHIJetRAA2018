@@ -1,8 +1,8 @@
 
-default: TestRun
+default: RunAll
 
 Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
 
-TestRun:
+RunAll:
 	bash RunAll.sh
