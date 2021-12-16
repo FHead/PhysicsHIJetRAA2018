@@ -82,7 +82,7 @@ RunPart2C:
 	(cd 24165_SystematicsCombination   && make Prepare SetDHFile RunAll)
 	(cd 23763_BeautifulPlots           && make Prepare RunJetPT RunJetPTClosure)
 	(cd 23763_BeautifulMatrix          && make Prepare RunPP RunAA)
-	(cd 24114_BeautifulPPRatioPlots    && make RunJetPT)
+	(cd 24114_BeautifulPPRatioPlots    && make Prepare RunJetPT)
 	(cd 24171_BeautifulSystematicsPlot && make Prepare RunAll)
 	(cd 24122_RAA                      && make Prepare RunRAA RunRCP RunRRAA)
 
