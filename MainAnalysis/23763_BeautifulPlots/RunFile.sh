@@ -3,6 +3,7 @@ Prefix=$1
 Type=$2
 Suffix=$3
 IsPP=$4
+Tier=$5
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
@@ -104,6 +105,7 @@ do
          --Output Plots/QualityPlots_${PRC}_${Type}${Suffix}.pdf --FinalOutput Plots/${PRC}_${Type}${Suffix}.pdf \
          --RootOutput Root/${PRC}_${Type}${Suffix}.root \
          --MCFile "${MCFile}" --MCHistogram "${MCHist}" --MCLabel "${MCLabel}" \
+         --Tier $Tier \
          --NormalizeMCToData ${NormalizeMCToData} \
          --PrimaryName $HPrimary \
          --Underflow $Underflow \

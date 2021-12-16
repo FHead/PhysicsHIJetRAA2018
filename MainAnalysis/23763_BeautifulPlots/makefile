@@ -14,26 +14,26 @@ Clean:
 	rm -f Root/*root
 
 RunJetPT: Execute
-	bash RunFile.sh PbPbData Nominal "" 0
-	bash RunFile.sh PPData   Nominal "" 1
+	bash RunFile.sh PbPbData Nominal "" 0 Gen
+	bash RunFile.sh PPData   Nominal "" 1 Gen
 
 RunCheck: Execute
-	bash RunFile.sh PbPbData JERUp          "" 0
-	bash RunFile.sh PbPbData JERDown        "" 0
-	bash RunFile.sh PbPbData FlatJER        "" 0
-	bash RunFile.sh PbPbData NoJER          "" 0
-	bash RunFile.sh PbPbData JECUp          "" 0
-	bash RunFile.sh PbPbData JECDown        "" 0
-	bash RunFile.sh PbPbData JECQuench      "" 0
-	bash RunFile.sh PbPbData JECNoResidual  "" 0
-	bash RunFile.sh PbPbData JECNoPhi       "" 0
-	bash RunFile.sh PbPbData CentralityUp   "" 0
-	bash RunFile.sh PbPbData CentralityDown "" 0
-	bash RunFile.sh PbPbData MCCentrality   "" 0
+	bash RunFile.sh PbPbData JERUp          "" 0 Gen
+	bash RunFile.sh PbPbData JERDown        "" 0 Gen
+	bash RunFile.sh PbPbData FlatJER        "" 0 Gen
+	bash RunFile.sh PbPbData NoJER          "" 0 Gen
+	bash RunFile.sh PbPbData JECUp          "" 0 Gen
+	bash RunFile.sh PbPbData JECDown        "" 0 Gen
+	bash RunFile.sh PbPbData JECQuench      "" 0 Gen
+	bash RunFile.sh PbPbData JECNoResidual  "" 0 Gen
+	bash RunFile.sh PbPbData JECNoPhi       "" 0 Gen
+	bash RunFile.sh PbPbData CentralityUp   "" 0 Gen
+	bash RunFile.sh PbPbData CentralityDown "" 0 Gen
+	bash RunFile.sh PbPbData MCCentrality   "" 0 Gen
 
 RunJetPTClosure: Execute
-	bash RunFile.sh PbPbMCRho Nominal Toy 0
-	bash RunFile.sh PPMC      Nominal Toy 1
+	bash RunFile.sh PbPbMCRho Nominal Toy 0 Gen
+	bash RunFile.sh PPMC      Nominal Toy 1 Gen
 
 Execute: MakePaperPlot.cpp
 	CompileRootMacro MakePaperPlot.cpp Execute

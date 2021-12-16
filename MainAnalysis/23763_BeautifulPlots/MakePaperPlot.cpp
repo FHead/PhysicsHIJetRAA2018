@@ -38,7 +38,7 @@ double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -99999);
 double AddUp(TH1D *H, double XMin, double XMax, vector<double> Bins);
 vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
    double MinOverwrite, double MaxOverwrite, double XMin, double XMax,
-   bool DoSelfNormalize = false, double Scale = 1);
+   string Tier, bool DoSelfNormalize = false, double Scale = 1);
 
 int main(int argc, char *argv[])
 {
@@ -58,12 +58,15 @@ int main(int argc, char *argv[])
    double GenPrimaryMaxOverwrite  = CL.GetDouble("GenPrimaryMax", 99999);
    double RecoPrimaryMinOverwrite = CL.GetDouble("RecoPrimaryMin", -99999);
    double RecoPrimaryMaxOverwrite = CL.GetDouble("RecoPrimaryMax", 99999);
+   string Tier                    = CL.Get("Tier", "Gen");
    string PrimaryName             = CL.Get("PrimaryName", "HUnfoldedBayes14");
    bool DoSelfNormalize           = CL.GetBool("DoSelfNormalize", false);
    bool DoEventNormalize          = CL.GetBool("DoEventNormalize", false);
    double ExtraScale              = CL.GetDouble("ExtraScale", 1.00);
    int Underflow                  = CL.GetInt("Underflow");
    int Overflow                   = CL.GetInt("Overflow");
+
+   Assert(Tier == "Gen" || Tier == "Reco", "DataTier wrong!  Can only be Gen or Reco at the moment");
 
    vector<string> MCFileNames     = CL.GetStringVector("MCFile", vector<string>{InputFileName});
    vector<string> MCHistNames     = CL.GetStringVector("MCHistogram", vector<string>{"HMCTruth"});
@@ -105,7 +108,7 @@ int main(int argc, char *argv[])
    int MCCount = MCFileNames.size();
    Assert(MCCount == MCFileNames.size(), "MC file count not match");
    Assert(MCCount == MCHistNames.size(), "MC histogram count not match");
-   Assert(MCCount == MCLabels.size(), Form("MC label count (%d) not match", MCLabels.size()));
+   Assert(MCCount == MCLabels.size(), Form("MC label count (%d) not match", (int)MCLabels.size()));
    Assert(MCCount <= MCColors.size(), "Not enough colors for MC");
 
    Assert(Texts.size() % 4 == 0, "Wrong additional text format!  It should be a collection of quadruplets: pad_index,x,y,text");
@@ -119,12 +122,26 @@ int main(int argc, char *argv[])
    if(DoEventNormalize == true)
       Assert(InputFile.Get("DataBaselineEventCount") != nullptr, "No event count found in input file but option enabled");
 
-   vector<double> GenBins1
-      = DetectBins((TH1D *)InputFile.Get("HGenPrimaryBinMin"), (TH1D *)InputFile.Get("HGenPrimaryBinMax"));
-   vector<double> GenBins2
-      = DetectBins((TH1D *)InputFile.Get("HGenBinningBinMin"), (TH1D *)InputFile.Get("HGenBinningBinMax"));
-   GenBins1[0] = GenPrimaryMinOverwrite;
-   GenBins1[GenBins1.size()-1] = GenPrimaryMaxOverwrite;
+   vector<double> Bins1, Bins2;
+   double PrimaryMinOverwrite, PrimaryMaxOverwrite;
+   if(Tier == "Gen")
+   {
+      Bins1 = DetectBins((TH1D *)InputFile.Get("HGenPrimaryBinMin"), (TH1D *)InputFile.Get("HGenPrimaryBinMax"));
+      Bins2 = DetectBins((TH1D *)InputFile.Get("HGenBinningBinMin"), (TH1D *)InputFile.Get("HGenBinningBinMax"));
+      Bins1[0] = GenPrimaryMinOverwrite;
+      Bins1[Bins1.size()-1] = GenPrimaryMaxOverwrite;
+      PrimaryMinOverwrite = GenPrimaryMinOverwrite;
+      PrimaryMaxOverwrite = GenPrimaryMaxOverwrite;
+   }
+   else if(Tier == "Reco")
+   {
+      Bins1 = DetectBins((TH1D *)InputFile.Get("HRecoPrimaryBinMin"), (TH1D *)InputFile.Get("HRecoPrimaryBinMax"));
+      Bins2 = DetectBins((TH1D *)InputFile.Get("HRecoBinningBinMin"), (TH1D *)InputFile.Get("HRecoBinningBinMax"));
+      Bins1[0] = RecoPrimaryMinOverwrite;
+      Bins1[Bins1.size()-1] = RecoPrimaryMaxOverwrite;
+      PrimaryMinOverwrite = RecoPrimaryMinOverwrite;
+      PrimaryMaxOverwrite = RecoPrimaryMaxOverwrite;
+   }
 
    vector<string> H1Names{"HInput", "HMCMeasured", "HMCTruth"};
 
@@ -136,7 +153,7 @@ int main(int argc, char *argv[])
       H1[Name] = (TH1D *)InputFile.Get(Name.c_str());
 
    if(DoSelfNormalize == true)
-      SelfNormalize(H1[PrimaryName], GenBins1, GenBins2);
+      SelfNormalize(H1[PrimaryName], Bins1, Bins2);
    else
    {
       if(DoEventNormalize == true)
@@ -157,7 +174,7 @@ int main(int argc, char *argv[])
    int Column      = CL.GetInt("Column", 4);
    int Row         = CL.GetInt("Row", 2);
 
-   int BinningCount = GenBins2.size() - 1;
+   int BinningCount = Bins2.size() - 1;
    if(BinningCount == 1)
    {
       IgnoreGroup = 0;
@@ -183,16 +200,16 @@ int main(int argc, char *argv[])
    double PadDR = PadRHeight / CanvasHeight;
 
    vector<TGraphAsymmErrors> GResult
-      = Transcribe(H1[PrimaryName], GenBins1, GenBins2, nullptr, true, Underflow, Overflow);
+      = Transcribe(H1[PrimaryName], Bins1, Bins2, nullptr, true, Underflow, Overflow);
    vector<TGraphAsymmErrors> GSystematics
-      = Transcribe(H1["HSystematicsPlus"], GenBins1, GenBins2, H1["HSystematicsMinus"], true, Underflow, Overflow);
+      = Transcribe(H1["HSystematicsPlus"], Bins1, Bins2, H1["HSystematicsMinus"], true, Underflow, Overflow);
    
-   double PrimaryScale = AddUp(H1[PrimaryName], WorldXMin, WorldXMax, GenBins1);
+   double PrimaryScale = AddUp(H1[PrimaryName], WorldXMin, WorldXMax, Bins1);
    vector<vector<TGraphAsymmErrors>> GMC(MCCount);
    for(int i = 0; i < MCCount; i++)
       GMC[i] = TranscribeMC(MCFileNames[i], MCHistNames[i],
-         GenPrimaryMinOverwrite, GenPrimaryMaxOverwrite,
-         WorldXMin, WorldXMax, DoSelfNormalize, (NormalizeMCToData[i] ? PrimaryScale : -1));
+         PrimaryMinOverwrite, PrimaryMaxOverwrite,
+         WorldXMin, WorldXMax, Tier, DoSelfNormalize, (NormalizeMCToData[i] ? PrimaryScale : -1));
    
    // for(TGraphAsymmErrors G : GResult)
    //    cout << "Total integral = " << CalculateIntegral(G, WorldXMin) << endl;
@@ -334,11 +351,11 @@ int main(int argc, char *argv[])
          Pads[Index]->cd();
 
          string BinLabel = "";
-         if(GenBins2[i] > -99999)
-            BinLabel = BinLabel + Form("%.1f < ", GenBins2[i]);
+         if(Bins2[i] > -99999)
+            BinLabel = BinLabel + Form("%.1f < ", Bins2[i]);
          BinLabel = BinLabel + BinningLabel;
-         if(GenBins2[i+1] < 99999)
-            BinLabel = BinLabel + Form(" < %.1f", GenBins2[i+1]);
+         if(Bins2[i+1] < 99999)
+            BinLabel = BinLabel + Form(" < %.1f", Bins2[i+1]);
 
          Latex.SetTextFont(42);
          Latex.SetTextSize(0.075);
@@ -774,7 +791,8 @@ double AddUp(TH1D *H, double XMin, double XMax, vector<double> Bins)
 }
 
 vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
-   double MinOverwrite, double MaxOverwrite, double XMin, double XMax, bool DoSelfNormalize, double Scale)
+   double MinOverwrite, double MaxOverwrite, double XMin, double XMax,
+   string Tier, bool DoSelfNormalize, double Scale)
 {
    vector<TGraphAsymmErrors> G;
 
@@ -849,20 +867,30 @@ vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
 
    TH1D *H = (TH1D *)Object;
 
-   vector<double> GenBins1
-      = DetectBins((TH1D *)File.Get("HGenPrimaryBinMin"), (TH1D *)File.Get("HGenPrimaryBinMax"));
-   vector<double> GenBins2
-      = DetectBins((TH1D *)File.Get("HGenBinningBinMin"), (TH1D *)File.Get("HGenBinningBinMax"));
-   GenBins1[0] = MinOverwrite;
-   GenBins1[GenBins1.size()-1] = MaxOverwrite;
+   vector<double> Bins1, Bins2;
+   
+   if(Tier == "Gen")
+   {
+      Bins1 = DetectBins((TH1D *)File.Get("HGenPrimaryBinMin"), (TH1D *)File.Get("HGenPrimaryBinMax"));
+      Bins2 = DetectBins((TH1D *)File.Get("HGenBinningBinMin"), (TH1D *)File.Get("HGenBinningBinMax"));
+      Bins1[0] = MinOverwrite;
+      Bins1[Bins1.size()-1] = MaxOverwrite;
+   }
+   else if(Tier == "Reco")
+   {
+      Bins1 = DetectBins((TH1D *)File.Get("HRecoPrimaryBinMin"), (TH1D *)File.Get("HRecoPrimaryBinMax"));
+      Bins2 = DetectBins((TH1D *)File.Get("HRecoBinningBinMin"), (TH1D *)File.Get("HRecoBinningBinMax"));
+      Bins1[0] = MinOverwrite;
+      Bins1[Bins1.size()-1] = MaxOverwrite;
+   }
 
-   double Total = AddUp(H, XMin, XMax, GenBins1);
+   double Total = AddUp(H, XMin, XMax, Bins1);
    H->Scale(Scale / Total);
 
    if(DoSelfNormalize == true)
-      SelfNormalize(H, GenBins1, GenBins2);
+      SelfNormalize(H, Bins1, Bins2);
 
-   G = Transcribe(H, GenBins1, GenBins2);
+   G = Transcribe(H, Bins1, Bins2);
 
    File.Close();
 
