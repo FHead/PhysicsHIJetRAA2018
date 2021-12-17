@@ -132,9 +132,9 @@ int main(int argc, char *argv[])
       HTruthPower->Draw("hist");
       HUnfoldedPower->SetMarkerStyle(20);
       HUnfoldedPower->Draw("same");
-      PdfFile.AddCanvas(Canvas);
-      Canvas.SetLogy();
-      PdfFile.AddCanvas(Canvas);
+      // PdfFile.AddCanvas(Canvas);
+      // Canvas.SetLogy();
+      // PdfFile.AddCanvas(Canvas);
       
       double WD2 = CalculateChi2(HTruthPower, HUnfoldedPower, PointsToIgnore, false);
       if(WD2 > 0 && isinf(WD2) == false)

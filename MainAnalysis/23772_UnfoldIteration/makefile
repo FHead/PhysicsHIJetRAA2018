@@ -1,5 +1,5 @@
 
-default: TestRun TestRunData
+default: TestRun
 
 Prepare:
 	rm -f Input
@@ -23,8 +23,16 @@ RunData: Execute
 	bash RunFile.sh PPData Nominal_Power50Prior_Toy Nominal Nominal 1
 	bash RunFile.sh PPData Nominal_Power50Prior_Toy Nominal Alternate 1
 
+TestRun: ExecuteLCurve
+	./ExecuteLCurve --Input Input/PPData_R4_CentralityInclusive_Nominal_Power50Prior_Toy_Power50Prior.root \
+		--Output PPData_R4_CentralityInclusive_Nominal_Power50Prior_Toy_Power50Prior.pdf \
+		--Ignore 10 --IgnoreReco 0
+
 Execute: PlotIteration.cpp
 	CompileRootMacro PlotIteration.cpp Execute
+
+ExecuteLCurve: PlotLCurve.cpp
+	CompileRootMacro PlotLCurve.cpp ExecuteLCurve -I../../CommonCode/include
 
 ExecutePlot: MakeSummaryPlot.cpp
 	CompileRootMacro MakeSummaryPlot.cpp ExecutePlot
