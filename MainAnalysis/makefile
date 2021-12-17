@@ -87,7 +87,7 @@ RunPart2C:
 	(cd 24122_RAA                      && make Prepare RunRAA RunRCP RunRRAA)
 
 RunPart2D:
-	(cd 23763_BeautifulPlots           && make Prepare RunCheck)
+	(cd 23763_BeautifulPlots           && make Prepare RunCheck RunJetPTReco)
 	(cd 24122_RAA                      && make Prepare RunRAACheck)
 	(cd 24231_ConditionNumber          && make Prepare RunAll)
 	(cd 23772_UnfoldIteration          && make Prepare RunPlot)
