@@ -69,13 +69,18 @@ int main(int argc, char *argv[])
       = DetectBins((TH1D *)BaseFile.Get("HGenBinningBinMin"), (TH1D *)BaseFile.Get("HGenBinningBinMax"));
 
    // Get base spectrum
-   int BaseIteration
-      = DHFile["Iterations"]["PPData_R"+BaseRLabel+"_CentralityInclusive_Nominal_Power50Prior"].GetInteger();
-   TH1D *HBase = (TH1D *)BaseFile.Get(Form("HUnfoldedBayes%d", BaseIteration));
-   double LumiBase = stof(DHFile["Lumi"]["PPData_R"+BaseRLabel+"_CentralityInclusive_BRIL"].GetString());
-   double PUBugBase = DHFile["PUBugCorrection"]["PPData_R"+BaseRLabel+"_CentralityInclusive"].GetDouble();
-   vector<TGraphAsymmErrors> GBase = Transcribe(HBase, GenBins1, GenBins2, nullptr, true, PUBugBase / LumiBase);
-   
+   string BasePRC            = "PPData_R" + BaseRLabel + "_CentralityInclusive";
+   string BasePrior          = DHFile["PriorToUse"][BasePRC+"_Default"].GetString() + "Prior";
+   int BaseIteration         = DHFile["Iterations"][BasePRC+"_Nominal_"+BasePrior].GetInteger();
+   TH1D *HBase               = (TH1D *)BaseFile.Get(Form("HUnfoldedBayes%d", BaseIteration));
+   double LumiBase           = stof(DHFile["Lumi"][BasePRC+"_BRIL"].GetString());
+   double PUBugBase          = DHFile["PUBugCorrection"][BasePRC].GetDouble();
+   double EventSelectionBase = DHFile["EventSelection"][BasePRC].GetDouble();
+   double FactorBase         = PUBugBase * EventSelectionBase / LumiBase;
+   vector<TGraphAsymmErrors> GBase = Transcribe(HBase, GenBins1, GenBins2, nullptr, true, FactorBase);
+
+   // cout << BasePRC+"_Nominal_"+BasePrior << endl;
+   // cout << BaseIteration << " " << HBase << endl;
    // cout << PUBugBase << " " << LumiBase << " " << DHFile["Lumi"]["PPData_R"+BaseRLabel+"_CentralityInclusive_BRIL"].GetString() << endl;
 
    // Get the spectra
@@ -84,12 +89,15 @@ int main(int argc, char *argv[])
    {
       TFile File(FileName[i].c_str());
 
-      int Iteration
-         = DHFile["Iterations"][Form("PPData_R%s_CentralityInclusive_Nominal_Power50Prior",RLabel[i].c_str())].GetInteger();
-      TH1D *H = (TH1D *)File.Get(Form("HUnfoldedBayes%d", Iteration));
-      double PUBug = DHFile["PUBugCorrection"][Form("PPData_R%s_CentralityInclusive",RLabel[i].c_str())].GetDouble();
-      double Lumi = stof(DHFile["Lumi"][Form("PPData_R%s_CentralityInclusive_BRIL",RLabel[i].c_str())].GetString());
-      GSpectra[i] = Transcribe(H, GenBins1, GenBins2, nullptr, true, PUBug / Lumi);
+      string PRC            = "PPData_R" + RLabel[i] + "_CentralityInclusive";
+      string Prior          = DHFile["PriorToUse"][PRC+"_Default"].GetString() + "Prior";
+      int Iteration         = DHFile["Iterations"][PRC+"_Nominal_"+Prior].GetInteger();
+      TH1D *H               = (TH1D *)File.Get(Form("HUnfoldedBayes%d", Iteration));
+      double PUBug          = DHFile["PUBugCorrection"][PRC].GetDouble();
+      double EventSelection = DHFile["EventSelection"][PRC].GetDouble();
+      double Lumi           = stof(DHFile["Lumi"][PRC+"_BRIL"].GetString());
+      double Factor         = PUBug * EventSelection / Lumi;
+      GSpectra[i] = Transcribe(H, GenBins1, GenBins2, nullptr, true, Factor);
 
       File.Close();
    }

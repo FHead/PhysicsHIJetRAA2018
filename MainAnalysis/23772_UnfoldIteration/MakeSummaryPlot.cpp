@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
       for(int iY = 0; iY < NY; iY++)
       {
          string Key = Base[iY] + "_R" + RLabel[iX] + "_Centrality" + CLabel[iY];
-         string Prior = DHFile["DefaultPrior"][Key].GetString();
+         string Prior = DHFile["PriorToUse"][Key+"_Default"].GetString();
          Key = Key + "_Nominal_" + Prior + "Prior";
          int Value = DHFile["Iterations"][Key].GetInteger();
          H.SetBinContent(iX + 1, iY + 1, Value);

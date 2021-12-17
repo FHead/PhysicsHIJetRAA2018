@@ -41,7 +41,7 @@ do
       fi
 
       PRC="${Prefix}_R${R}_Centrality${C}"
-      NP="`DHQuery GlobalSetting.dh DefaultPrior ${PRC} | tr -d '"'`Prior"
+      NP="`DHQuery GlobalSetting.dh PriorToUse ${PRC}_Default | tr -d '"'`Prior"
       PRCN="${PRC}_Nominal${Suffix}_${NP}.root"
 
       ./Execute \

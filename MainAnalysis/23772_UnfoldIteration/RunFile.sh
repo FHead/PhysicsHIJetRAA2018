@@ -18,13 +18,7 @@ do
    do
       Ignore=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
 
-      Prior=$PriorChoice
-      if [[ "$PriorChoice" == "Nominal" ]]; then
-         Prior=`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`
-      elif [[ "$PriorChoice" == "Alternate" ]]; then
-         Prior=`DHQuery GlobalSetting.dh AlternatePrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`
-      fi
-      Prior=${Prior}Prior
+      Prior=${PriorChoice}Prior
 
 	   ./Execute --Input Input/${Prefix}_R${R}_Centrality${C}_${Suffix}_${Prior}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${Prior}.pdf \

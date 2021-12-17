@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 Location=$1
 Prefix=$2
@@ -16,13 +16,15 @@ for R in $JetR
 do
    for C in $Centrality
    do
-      Prior=
-      if [[ $PriorChoice == "Nominal" ]]; then
-         Prior=`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`
-      elif [[ $PriorChoice == "Alternate" ]]; then
-         Prior=`DHQuery GlobalSetting.dh AlternatePrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`
-      else
+      Prior=`DHQuery GlobalSetting.dh Prior ${Prefix}_R${R}_Centrality${C}_${PriorChoice} | tr -d '"'`
+      # If not found in DHFile, set directly
+      if [[ "$Prior" == "" ]]; then
          Prior=$PriorChoice
+      fi
+      # If no input, resort to Power50
+      if [[ "$PriorChoice" == "" ]]; then
+         PriorChoice=Power50
+         Prior=Power50
       fi
 
       PriorString=$Prior
@@ -45,8 +47,8 @@ do
       elif [[ "$Prior" == "External" ]]; then
          PriorString="External"
          # Use nominal for now.  Can upgrade later if needed
-         PriorFile=`DHQuery GlobalSetting.dh ExternalPrior ${Prefix}_R${R}_Centrality${C}_Nominal_File | tr -d '"'`
-         PriorHistogram=`DHQuery GlobalSetting.dh ExternalPrior ${Prefix}_R${R}_Centrality${C}_Nominal_Histogram | tr -d '"'`
+         PriorFile=Output/`DHQuery GlobalSetting.dh Prior ${Prefix}_R${R}_Centrality${C}_${PriorChoice}_File | tr -d '"'`
+         PriorHistogram=`DHQuery GlobalSetting.dh Prior ${Prefix}_R${R}_Centrality${C}_${PriorChoice}_Histogram | tr -d '"'`
          PriorExtra="--ExternalPriorFile $PriorFile --ExternalPriorHistogram $PriorHistogram"
       fi
 
@@ -55,12 +57,12 @@ do
       #    DoToyError=true
       # fi
 
-      echo Unfolding now with R$R, Centrality $C, Prefix $Prefix, Suffix $Suffix and prior $Prior
+      echo "Unfolding now with R$R, Centrality $C, Prefix $Prefix, Suffix $Suffix and prior $Prior ($PriorChoice)"
       # echo Input file = $Location/${Prefix}_R${R}_Centrality${C}_${Suffix}.root
 
       Ignore=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
 
-      OutputSuffix="${Prior}Prior"
+      OutputSuffix="${PriorChoice}Prior"
 
       ./Execute --Input $Location/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \

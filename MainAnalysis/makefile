@@ -48,9 +48,40 @@ CleanPart2:
 	(cd 24171_BeautifulSystematicsPlot && make Clean)
 	(cd 24122_RAA                      && make Clean)
 
-RunPart2: RunPart2A RunPart2B RunPart2C
+RunPart2: RunPart2A RunPart2B RunPart2C RunPart2D RunPart2E
 
 RunPart2A:
+	######################################################################
+	# Make sure to copy over the following from lxplus before continuing #
+	#    1. unfold preparation output files                              #
+	#    2. GlobalSetting.dh                                             #
+	# Also make sure that the ProjectBase is set correctly!              #
+	######################################################################
+	sleep 10
+	(cd 24232_LowerBoundDetermination  && make Prepare RunAll)
+	(cd 24233_UpperBoundDetermination  && make Prepare RunAll)
+	(cd 24165_PUBugCorrection          && make Prepare PlaceHolder)
+	(cd 24231_EventSelectionEfficiency && make Prepare SetEfficiency)
+	(cd 24233_OfficialMBCount          && make Prepare RunAll)
+	(cd 23772_UnfoldIteration          && make Prepare SetDefault)
+	(cd 23762_PerfectRecoGeneration    && make Prepare RunMC)
+	(cd 23762_FakeData                 && make Prepare RunMC)
+	(cd 23762_ActualUnfold             && make Prepare RunMCToy)
+	(cd 23772_UnfoldIteration          && make Prepare RunMC)
+	(cd 23762_ActualUnfold             && make Prepare RunDataStep1)
+	(cd 23762_PerfectRecoGeneration    && make Prepare RunDataStep1)
+	(cd 23762_FakeData                 && make Prepare RunDataStep1)
+	(cd 23762_ActualUnfold             && make Prepare RunDataStep1Toy)
+	(cd 23772_UnfoldIteration          && make Prepare RunDataStep1)
+	(cd 23762_ActualUnfold             && make Prepare RunDataStep2)
+	(cd 23762_PerfectRecoGeneration    && make Prepare RunDataStep2)
+	(cd 23762_FakeData                 && make Prepare RunDataStep2)
+	(cd 23762_ActualUnfold             && make Prepare RunDataStep2Toy)
+	(cd 23772_UnfoldIteration          && make Prepare RunDataStep2)
+	(cd 23762_ActualUnfold             && make Prepare RunPP RunAA)
+	(cd 23762_ActualUnfold             && make Prepare RunSetDHFile)
+
+RunPart2AOld:
 	#########################################################################
 	# Make sure to copy over the following from lxplus before continuing... #
 	#    1. unfold preparation output files                                 #

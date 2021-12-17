@@ -5,6 +5,11 @@ Suffix=$2
 IsPP=$3
 IterationPrefix=$4
 PriorChoice=$5
+IterationPriorChoice=$6
+
+if [[ "$IterationPriorChoice" == "" ]]; then
+   IterationPriorChoice=PriorChoice
+fi
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 
@@ -13,23 +18,14 @@ if [[ "$IsPP" == "1" ]]; then
    Centrality="Inclusive"
 fi
 
-# echo $JetR
-
 for R in $JetR
 do
    echo Running R $R
       
    for C in $Centrality
    do
-      Prior=$PriorChoice
-      if [[ $PriorChoice == "Nominal" ]]; then
-         Prior=`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`
-      elif [[ $PriorChoice == "Alternate" ]]; then
-         Prior=`DHQuery GlobalSetting.dh AlternatePrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`
-      else
-         Prior=$PriorChoice
-      fi
-      Prior=${Prior}Prior
+      Prior=${PriorChoice}Prior
+      IterationPrior=${IterationPriorChoice}Prior
 
       GenHistogram=HMCGen
       GenFile=
@@ -39,7 +35,7 @@ do
          GenFile=Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root
          OutputFile=Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_PerfectReco.root
       else
-         Iteration=`DHQuery GlobalSetting.dh Iterations ${IterationPrefix}_R${R}_Centrality${C}_${Suffix}_${Prior}`
+         Iteration=`DHQuery GlobalSetting.dh Iterations ${IterationPrefix}_R${R}_Centrality${C}_${Suffix}_${IterationPrior}`
          GenHistogram=HUnfoldedBayes${Iteration}
          GenFile=UnfoldedInput/${Prefix}_R${R}_Centrality${C}_${Suffix}_${Prior}.root
          OutputFile=Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${Prior}_PerfectReco.root
@@ -49,6 +45,15 @@ do
       # echo GenHistogram = $GenHistogram
       # echo Input = Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root
 
+      # We get shape from gen file and gen histogram
+      # We get yield from yield file
+      # We copy bookkeeping stuff from MC file
+      # echo ./Execute \
+      #    --MC           Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
+      #    --Yield        Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
+      #    --Gen          $GenFile \
+      #    --GenHistogram $GenHistogram \
+      #    --Output       $OutputFile
       ./Execute \
          --MC           Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Yield        Input/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \

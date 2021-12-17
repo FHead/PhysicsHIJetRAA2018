@@ -22,15 +22,11 @@ do
       Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
       Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow_R${R}_Centrality${C}`
 
-      Prior=$PriorChoice
-      if [[ $PriorChoice == "Nominal" ]]; then
-         Prior="_`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`Prior"
-      elif [[ $PriorChoice == "Alternate" ]]; then
-         Prior="_`DHQuery GlobalSetting.dh AlternatePrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`Prior"
-      elif [[ $PriorChoice == "None" ]]; then
+      Prior=
+      if [[ $PriorChoice == "None" ]]; then
          Prior=
       else
-         Prior="_$PriorChoice"
+         Prior="_${PriorChoice}Prior"
       fi
    
       ./Execute \

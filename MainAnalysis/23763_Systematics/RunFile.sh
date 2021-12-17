@@ -20,21 +20,22 @@ for R in $JetR
 do
    for C in $Centrality
    do
-      NP="`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`Prior"
-      AP="`DHQuery GlobalSetting.dh AlternatePrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`Prior"
+      MCNP="`DHQuery GlobalSetting.dh PriorToUse ${MCPrefix}_R${R}_Centrality${C}_Default | tr -d '"'`Prior"
+      NP="`DHQuery GlobalSetting.dh PriorToUse ${Prefix}_R${R}_Centrality${C}_Default | tr -d '"'`Prior"
+      AP="`DHQuery GlobalSetting.dh PriorToUse ${Prefix}_R${R}_Centrality${C}_Alternate | tr -d '"'`Prior"
 
       RC="R${R}_Centrality${C}"
       PRC="${Prefix}_${RC}"
       PRCN="Input/${PRC}_Nominal_${NP}.root"
 
       MCPRC="${MCPrefix}_${RC}"
-      MCPRCN="Input/${MCPRC}_Nominal_${NP}.root"
-      MCPRCToy="Input/${MCPRC}_Nominal_Toy_${NP}.root"
+      MCPRCN="Input/${MCPRC}_Nominal_${MCNP}.root"
+      MCPRCToy="Input/${MCPRC}_Nominal_Toy_${MCNP}.root"
 
       NominalIteration=`DHQuery GlobalSetting.dh Iterations ${Prefix}_R${R}_Centrality${C}_Nominal_${NP}`
       HNominal=HUnfoldedBayes${NominalIteration}
 
-      MCIteration=`DHQuery GlobalSetting.dh Iterations ${MCPrefix}_R${R}_Centrality${C}_Nominal_${NP}`
+      MCIteration=`DHQuery GlobalSetting.dh Iterations ${MCPrefix}_R${R}_Centrality${C}_Nominal_${MCNP}`
       HMCNominal=HUnfoldedBayes${MCIteration}
       
       PriorIteration=`DHQuery GlobalSetting.dh Iterations ${Prefix}_R${R}_Centrality${C}_Nominal_${AP}`

@@ -11,11 +11,23 @@ Clean:
 	rm -f Output/*pdf
 
 SetDefault:
-	bash SetDefaultPriorChoice.sh
+	bash SetInitialPriorChoice.sh
+
+# RunFile.sh parameters
+#    Prefix Suffix StateSuffix PriorChoice IsPP
 
 RunMC: Execute
-	bash RunFile.sh PbPbMCRho Nominal_Toy Nominal Nominal 0
-	bash RunFile.sh PPMC      Nominal_Toy Nominal Nominal 1
+	bash RunFile.sh PbPbMCRho Nominal_Toy Nominal DefaultStep1 0
+	bash RunFile.sh PPMC      Nominal_Toy Nominal DefaultStep1 1
+
+RunDataStep1: Execute
+	bash RunFile.sh PbPbData  Nominal_DefaultStep1Prior_Toy Nominal DefaultStep1 0
+	bash RunFile.sh PPData    Nominal_DefaultStep1Prior_Toy Nominal DefaultStep1 1
+	bash SetDataPriorExtra.sh
+
+RunDataStep2: Execute
+	bash RunFile.sh PbPbData  Nominal_DefaultStep2Prior_Toy Nominal DefaultStep2 0
+	bash RunFile.sh PPData    Nominal_DefaultStep2Prior_Toy Nominal DefaultStep2 1
 
 RunData: Execute
 	bash RunFile.sh PbPbData Nominal_Power50Prior_Toy Nominal Nominal 0

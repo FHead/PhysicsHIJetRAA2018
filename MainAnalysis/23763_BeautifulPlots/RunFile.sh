@@ -73,7 +73,7 @@ do
          YLabel="#frac{1}{<T_{AA}>}#frac{1}{N_{evt}}#frac{d^{2}N_{jet}}{dp_{T}d#eta}"
       fi
 
-      NP="`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`Prior"
+      NP="`DHQuery GlobalSetting.dh PriorToUse ${Prefix}_R${R}_Centrality${C}_Default | tr -d '"'`Prior"
       PRC="${Prefix}_R${R}_Centrality${C}"
       PRCTS="${PRC}_${Type}${Suffix}"
       PRCN="${PRCTS}_${NP}.root"

@@ -11,9 +11,20 @@ Prepare:
 Clean:
 	rm -f Output/*root
 
+# RunFile.sh Parameters
+#    Prefix Suffix IsPP IterationPrefix PriorChoice IterationPriorChoice
+
 RunMC: Execute
 	bash RunFile.sh PbPbMCRho Nominal 0
-	bash RunFile.sh PPMC Nominal 1
+	bash RunFile.sh PPMC      Nominal 1
+
+RunDataStep1: Execute
+	bash RunFile.sh PbPbData Nominal 0 PbPbMCRho DefaultStep1
+	bash RunFile.sh PPData   Nominal 1 PPMC      DefaultStep1
+
+RunDataStep2: Execute
+	bash RunFile.sh PbPbData Nominal 0 PbPbData  DefaultStep2 DefaultStep1
+	bash RunFile.sh PPData   Nominal 1 PPData    DefaultStep2 DefaultStep1
 
 RunData: Execute
 	bash RunFile.sh PbPbData Nominal 0 PbPbMCRho Nominal

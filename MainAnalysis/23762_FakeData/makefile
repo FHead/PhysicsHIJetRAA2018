@@ -11,9 +11,20 @@ Prepare:
 Clean:
 	rm -f Output/*root
 
+# RunFile.sh arguments:
+#    Prefix Suffix YieldPrefix YieldSuffix PriorChoice Fraction IsPP
+
 RunMC: Execute
 	bash RunFile.sh PbPbMCRho Nominal PbPbData Nominal None 1.00 0
 	bash RunFile.sh PPMC      Nominal PPData   Nominal None 1.00 1
+
+RunDataStep1: Execute
+	bash RunFile.sh PbPbData Nominal PbPbData Nominal DefaultStep1   1.00 0
+	bash RunFile.sh PPData   Nominal PPData   Nominal DefaultStep1   1.00 1
+
+RunDataStep2: Execute
+	bash RunFile.sh PbPbData Nominal PbPbData Nominal DefaultStep2   1.00 0
+	bash RunFile.sh PPData   Nominal PPData   Nominal DefaultStep2   1.00 1
 
 RunData: Execute
 	bash RunFile.sh PbPbData Nominal PbPbData Nominal Nominal   1.00 0

@@ -1,14 +1,14 @@
 #!/bin/bash
 
-PP1NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R1_CentralityInclusive | tr -d '"'`Prior
-PP2NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R2_CentralityInclusive | tr -d '"'`Prior
-PP3NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R3_CentralityInclusive | tr -d '"'`Prior
-PP4NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R4_CentralityInclusive | tr -d '"'`Prior
-PP5NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R5_CentralityInclusive | tr -d '"'`Prior
-PP6NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R6_CentralityInclusive | tr -d '"'`Prior
-PP7NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R7_CentralityInclusive | tr -d '"'`Prior
-PP8NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R8_CentralityInclusive | tr -d '"'`Prior
-PP9NP=`DHQuery GlobalSetting.dh DefaultPrior PPData_R9_CentralityInclusive | tr -d '"'`Prior
+PP1NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R1_CentralityInclusive_Default | tr -d '"'`Prior
+PP2NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R2_CentralityInclusive_Default | tr -d '"'`Prior
+PP3NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R3_CentralityInclusive_Default | tr -d '"'`Prior
+PP4NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R4_CentralityInclusive_Default | tr -d '"'`Prior
+PP5NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R5_CentralityInclusive_Default | tr -d '"'`Prior
+PP6NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R6_CentralityInclusive_Default | tr -d '"'`Prior
+PP7NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R7_CentralityInclusive_Default | tr -d '"'`Prior
+PP8NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R8_CentralityInclusive_Default | tr -d '"'`Prior
+PP9NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R9_CentralityInclusive_Default | tr -d '"'`Prior
 
 PPR1=Input/PPData_R1_CentralityInclusive_Nominal_${PP1NP}.root
 PPR2=Input/PPData_R2_CentralityInclusive_Nominal_${PP2NP}.root
@@ -28,6 +28,9 @@ SysR59=CombinedSystematics/PPDataRatio_R5R9_CentralityInclusive.root
 SysR69=CombinedSystematics/PPDataRatio_R6R9_CentralityInclusive.root
 SysR79=CombinedSystematics/PPDataRatio_R7R9_CentralityInclusive.root
 SysR89=CombinedSystematics/PPDataRatio_R8R9_CentralityInclusive.root
+
+echo $PPR1
+echo $PPR9
 
 ./Execute --Output Plots/Base1.2.pdf \
    --BaseFileName ${PPR9} \
@@ -56,7 +59,7 @@ SysR78=CombinedSystematics/PPDataRatio_R7R8_CentralityInclusive.root
    --XMin 199 --XMax 1200
 
 ./Execute --Output Plots/Validation.pdf \
-   --BaseFileName Input/PPData_R8_CentralityInclusive_Nominal_Power50Prior.root \
+   --BaseFileName ${PPR8} \
    --BaseRLabel 8 \
    --FileName $PPR2,$PPR3,$PPR4,$PPR6,$PPR7 \
    --Systematics $SysR28,$SysR38,$SysR48,$SysR68,$SysR78 \
