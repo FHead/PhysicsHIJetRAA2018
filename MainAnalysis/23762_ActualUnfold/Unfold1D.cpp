@@ -7,11 +7,14 @@ using namespace std;
 #include "TFile.h"
 #include "TMatrixD.h"
 #include "TError.h"
+#include "TSpline.h"
+#include "TGraph.h"
 
 #include "RooUnfold.h"
 #include "RooUnfoldInvert.h"
 #include "RooUnfoldBayes.h"
 #include "RooUnfoldSvd.h"
+#include "TUnfoldDensity.h"
 
 #include "RootUtilities.h"
 #include "CommandLine.h"
@@ -44,6 +47,7 @@ int main(int argc, char *argv[])
    bool DoBayes            = CL.GetBool("DoBayes",       true);
    bool DoSVD              = CL.GetBool("DoSVD",         true);
    bool DoInvert           = CL.GetBool("DoInvert",      true);
+   bool DoTUnfold          = CL.GetBool("DoTUnfold",     true);
    bool DoFoldNormalize    = CL.GetBool("FoldNormalize", false);
    bool DoToyError         = CL.GetBool("DoToyError",    false);
    
@@ -56,6 +60,7 @@ int main(int argc, char *argv[])
    TH1D *HMeasured = (TH1D *)InputFile.Get(ResponseMeasured.c_str());
    TH1D *HTruth    = (TH1D *)InputFile.Get(ResponseTruth.c_str());
    TH2D *HResponse = (TH2D *)InputFile.Get(ResponseName.c_str());
+   TH2D *HRawResponse = (TH2D *)HResponse->Clone("HRawResponse");
 
    TH1D *HInput    = (TH1D *)InputFile.Get(DataName.c_str())->Clone();
 
@@ -71,6 +76,12 @@ int main(int argc, char *argv[])
    {
       string ExternalMCPriorFileName = CL.Get("ExternalPriorFile");
       HPrior = ConstructPriorCopyExternal(ExternalMCPriorFileName, ResponseTruth);
+   }
+   else if(PriorChoice == "External")
+   {
+      string ExternalPriorFileName  = CL.Get("ExternalPriorFile");
+      string ExternalPriorHistogram = CL.Get("ExternalPriorHistogram");
+      HPrior = ConstructPriorCopyExternal(ExternalPriorFileName, ExternalPriorHistogram);
    }
    else if(PriorChoice == "Flat")
    {
@@ -110,6 +121,8 @@ int main(int argc, char *argv[])
 
    vector<TH1 *> HUnfolded;
    vector<TH1 *> HRefolded;
+   vector<TGraph *> Graphs;
+   vector<TSpline *> Splines;
    map<string, TMatrixD> Covariance;
 
    RooUnfoldResponse *Response = new RooUnfoldResponse(HReco, HGen, HResponse);
@@ -158,6 +171,39 @@ int main(int argc, char *argv[])
       }
    }
 
+   if(DoTUnfold == true)
+   {
+      TUnfoldDensity Unfold((TH2 *)HRawResponse,
+         TUnfold::kHistMapOutputVert,
+         TUnfold::kRegModeCurvature,
+         TUnfold::kEConstraintArea,
+         TUnfoldDensity::kDensityModeBinWidth);
+      Unfold.SetInput(HInput);
+
+      TSpline *LogTauX, *LogTauY;
+      TGraph *LCurve;
+      int IBest = Unfold.ScanLcurve(100, 0, 0, &LCurve, &LogTauX, &LogTauY);
+
+      TH1 *H = Unfold.GetOutput("HTUnfold");
+      TH2 *HError = Unfold.GetEmatrixInput("HTUnfoldMatrix");
+      HUnfolded.push_back(H);
+
+      LCurve->SetName("GTUnfoldLCurve");
+      Graphs.push_back(LCurve);
+
+      LogTauX->SetName("STUnfoldTauX");
+      LogTauY->SetName("STUnfoldTauY");
+      Splines.push_back(LogTauX);
+      Splines.push_back(LogTauY);
+
+      double X, Y, T;
+      LogTauX->GetKnot(IBest, T, X);
+      LogTauY->GetKnot(IBest, T, Y);
+      // TGraph *GXY = new TGraph("GTUnfoldXY");
+      // GXY->SetPoint(0, X, Y);
+      // Graphs.push_back(GXY);
+   }
+
    if(DoFoldNormalize == true)
    {
       int Ignore = CL.GetInt("Ignore", 10);
@@ -175,14 +221,11 @@ int main(int argc, char *argv[])
    HResponse->Clone("HMCResponse")->Write();
    Response->Mresponse().Clone("HMCFilledResponse")->Write();
    HInput->Clone("HInput")->Write();
-   for(TH1 *H : HUnfolded)
-      if(H != nullptr)
-         H->Write();
-   for(TH1 *H : HRefolded)
-      if(H != nullptr)
-         H->Write();
-   for(auto I : Covariance)
-      I.second.Write(I.first.c_str());
+   for(TH1 *H : HUnfolded)     if(H != nullptr)   H->Write();
+   for(TH1 *H : HRefolded)     if(H != nullptr)   H->Write();
+   for(TGraph *G : Graphs)     if(G != nullptr)   G->Write();
+   for(TSpline *S : Splines)   if(S != nullptr)   S->Write();
+   for(auto I : Covariance)    I.second.Write(I.first.c_str());
 
    InputFile.Get("HGenPrimaryBinMin")->Clone()->Write();
    InputFile.Get("HGenPrimaryBinMax")->Clone()->Write();

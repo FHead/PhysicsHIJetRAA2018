@@ -42,6 +42,12 @@ do
       elif [[ "$Prior" == "ExternalMC" ]]; then
          PriorString="ExternalMC"
          PriorExtra="--ExternalPriorFile Input/${Prefix}_R${R}_Centrality${C}_Nominal.root"
+      elif [[ "$Prior" == "External" ]]; then
+         PriorString="External"
+         # Use nominal for now.  Can upgrade later if needed
+         PriorFile=`DHQuery GlobalSetting.dh ExternalPrior ${Prefix}_R${R}_Centrality${C}_Nominal_File | tr -d '"'`
+         PriorHistogram=`DHQuery GlobalSetting.dh ExternalPrior ${Prefix}_R${R}_Centrality${C}_Nominal_Histogram | tr -d '"'`
+         PriorExtra="--ExternalPriorFile $PriorFile --ExternalPriorHistogram $PriorHistogram"
       fi
 
       DoToyError=false
@@ -59,7 +65,7 @@ do
       ./Execute --Input $Location/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \
          --Prior $PriorString $PriorExtra --DoToyError $DoToyError \
-         --DoBayes true --DoSVD false --DoInvert false
+         --DoBayes true --DoSVD false --DoInvert false --DoTUnfold true
          # --FoldNormalize true --Ignore $Ignore --DoToyError $DoToyError
       ./ExecutePlot --Input Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \
          --Output Plots/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.pdf \

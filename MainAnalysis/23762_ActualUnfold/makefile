@@ -13,7 +13,7 @@ Clean:
 	rm -f Plots/*pdf
 
 Execute: Unfold1D.cpp
-	CompileRootMacro Unfold1D.cpp Execute
+	CompileRootMacro Unfold1D.cpp Execute -lUnfold
 
 ExecutePlot: Visualize.cpp
 	CompileRootMacro Visualize.cpp ExecutePlot
@@ -92,16 +92,16 @@ RunTest: Execute ExecutePlot
 	# 	--Prior Original
 	# ./ExecutePlot --Input TestOriginalPrior.root --Output TestOriginalPrior.pdf --Ignore 14
 	./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower5Prior.root \
-		--Prior Power --PriorK -5
-	./ExecutePlot --Input TestPower5Prior.root --Output TestPower5Prior.pdf --Ignore 14
+		--Prior Power --PriorK -5 --DoBayes true --DoSVD false --DoInvert false --DoTUnfold true
+	# ./ExecutePlot --Input TestPower5Prior.root --Output TestPower5Prior.pdf --Ignore 14
 	# ./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower6Prior.root \
 	# 	--Prior Power --PriorK -6
 	# ./ExecutePlot --Input TestPower6Prior.root --Output TestPower6Prior.pdf --Ignore 14
 	# ./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower7Prior.root \
 	# 	--Prior Power --PriorK -7 --DoFoldNormalize true --Ignore 14
 	# ./ExecutePlot --Input TestPower7Prior.root --Output TestPower7Prior.pdf --Ignore 14
-	./Execute --Input Input/PPData_R4_CentralityInclusive_Nominal.root --Output Meow.root \
-		--Prior Flat
-	./ExecutePlot --Input Meow.root --Output Meow.pdf --Ignore 10
+	# ./Execute --Input Input/PPData_R4_CentralityInclusive_Nominal.root --Output Meow.root \
+	# 	--Prior Flat
+	# ./ExecutePlot --Input Meow.root --Output Meow.pdf --Ignore 10
 
 
