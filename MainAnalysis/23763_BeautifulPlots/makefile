@@ -17,6 +17,12 @@ RunJetPT: Execute
 	bash RunFile.sh PbPbData Nominal "" 0 Gen
 	bash RunFile.sh PPData   Nominal "" 1 Gen
 
+RunJetPTReco: Execute
+	bash RunFile.sh PbPbData  Nominal ""  0 Reco
+	bash RunFile.sh PPData    Nominal ""  1 Reco
+	bash RunFile.sh PbPbMCRho Nominal Toy 0 Reco
+	bash RunFile.sh PPMC      Nominal Toy 1 Reco
+
 RunCheck: Execute
 	bash RunFile.sh PbPbData JERUp          "" 0 Gen
 	bash RunFile.sh PbPbData JERDown        "" 0 Gen
@@ -40,6 +46,12 @@ Execute: MakePaperPlot.cpp
 
 Deploy:
 	mkdir -p $(DeployBase)/Result/Spectra/
-	cp Plots/PbPbData*Nominal.pdf $(DeployBase)/Result/Spectra
-	cp Plots/PPData*Nominal.pdf $(DeployBase)/Result/Spectra
+	cp Plots/PbPbData*Nominal.pdf $(DeployBase)/Result/Spectra/
+	cp Plots/PPData*Nominal.pdf $(DeployBase)/Result/Spectra/
+	mkdir -p $(DeployBase)/Check/RefoldCheck/
+	cp Plots/PbPbData*Nominal_Reco.pdf $(DeployBase)/Check/RefoldCheck/
+	cp Plots/PPData*Nominal_Reco.pdf $(DeployBase)/Check/RefoldCheck/
+	mkdir -p $(DeployBase)/Check/ToyRefoldCheck/
+	cp Plots/PbPbMCRho*Toy_Reco.pdf $(DeployBase)/Check/ToyRefoldCheck/
+	cp Plots/PPMC*Toy_Reco.pdf $(DeployBase)/Check/ToyRefoldCheck/
 

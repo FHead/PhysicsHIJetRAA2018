@@ -38,7 +38,7 @@ double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -99999);
 double AddUp(TH1D *H, double XMin, double XMax, vector<double> Bins);
 vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
    double MinOverwrite, double MaxOverwrite, double XMin, double XMax,
-   string Tier, bool DoSelfNormalize = false, double Scale = 1);
+   string Tier, bool DoSelfNormalize = false, double Scale = 1, bool AbsoluteScale = true);
 
 int main(int argc, char *argv[])
 {
@@ -65,12 +65,15 @@ int main(int argc, char *argv[])
    double ExtraScale              = CL.GetDouble("ExtraScale", 1.00);
    int Underflow                  = CL.GetInt("Underflow");
    int Overflow                   = CL.GetInt("Overflow");
+   string DataLabel               = CL.Get("DataLabel", "Data");
 
    Assert(Tier == "Gen" || Tier == "Reco", "DataTier wrong!  Can only be Gen or Reco at the moment");
 
    vector<string> MCFileNames     = CL.GetStringVector("MCFile", vector<string>{InputFileName});
    vector<string> MCHistNames     = CL.GetStringVector("MCHistogram", vector<string>{"HMCTruth"});
    vector<string> MCLabels        = CL.GetStringVector("MCLabel", vector<string>{"PYTHIA6"});
+   vector<double> MCExtraScale    = CL.GetDoubleVector("MCExtraScale", vector<double>{1.00});
+   vector<bool> MCAbsoluteScale   = CL.GetBoolVector("MCAbsoluteScale", vector<bool>{true});
    vector<int> MCColors           = CL.GetIntVector("MCColors", vector<int>{0, 1, 3, 5, 4, 7});
    vector<bool> NormalizeMCToData = CL.GetBoolVector("NormalizeMCToData", vector<bool>{0, 0, 0, 0, 0, 0, 0, 0});
 
@@ -209,7 +212,8 @@ int main(int argc, char *argv[])
    for(int i = 0; i < MCCount; i++)
       GMC[i] = TranscribeMC(MCFileNames[i], MCHistNames[i],
          PrimaryMinOverwrite, PrimaryMaxOverwrite,
-         WorldXMin, WorldXMax, Tier, DoSelfNormalize, (NormalizeMCToData[i] ? PrimaryScale : -1));
+         WorldXMin, WorldXMax, Tier,
+         DoSelfNormalize, (NormalizeMCToData[i] ? PrimaryScale : MCExtraScale[i]), MCAbsoluteScale[i]);
    
    // for(TGraphAsymmErrors G : GResult)
    //    cout << "Total integral = " << CalculateIntegral(G, WorldXMin) << endl;
@@ -370,7 +374,7 @@ int main(int argc, char *argv[])
    Legend.SetTextSize(LegendSize);
    Legend.SetFillStyle(0);
    Legend.SetBorderSize(0);
-   Legend.AddEntry(&GSystematics[BinningCount-1], "Data", "plf");
+   Legend.AddEntry(&GSystematics[BinningCount-1], DataLabel.c_str(), "plf");
    for(int j = 0; j < MCCount; j++)
       if(GMC[j].size() > 0)
          Legend.AddEntry(&GMC[j][BinningCount-1], MCLabels[j].c_str(), "l");
@@ -792,7 +796,7 @@ double AddUp(TH1D *H, double XMin, double XMax, vector<double> Bins)
 
 vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
    double MinOverwrite, double MaxOverwrite, double XMin, double XMax,
-   string Tier, bool DoSelfNormalize, double Scale)
+   string Tier, bool DoSelfNormalize, double Scale, bool AbsoluteScale)
 {
    vector<TGraphAsymmErrors> G;
 
@@ -850,8 +854,16 @@ vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
 
          if(Scale > 0)
          {
-            GNew.SetPoint(i, X, Y * Scale / Total);
-            GNew.SetPointError(i, EXL, EXH, EYL * Scale / Total, EYH * Scale / Total);
+            if(AbsoluteScale == true)
+            {
+               GNew.SetPoint(i, X, Y * Scale / Total);
+               GNew.SetPointError(i, EXL, EXH, EYL * Scale / Total, EYH * Scale / Total);
+            }
+            else
+            {
+               GNew.SetPoint(i, X, Y * Scale);
+               GNew.SetPointError(i, EXL, EXH, EYL * Scale, EYH * Scale);
+            }
          }
          else
          {
@@ -885,10 +897,16 @@ vector<TGraphAsymmErrors> TranscribeMC(string FileName, string HistogramName,
    }
 
    double Total = AddUp(H, XMin, XMax, Bins1);
-   H->Scale(Scale / Total);
 
    if(DoSelfNormalize == true)
       SelfNormalize(H, Bins1, Bins2);
+   else if(Scale > 0)
+   {
+      if(AbsoluteScale == true)
+         H->Scale(Scale / Total);
+      else
+         H->Scale(Scale);
+   }
 
    G = Transcribe(H, Bins1, Bins2);
 

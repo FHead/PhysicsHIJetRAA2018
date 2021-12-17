@@ -68,43 +68,84 @@ do
 
       YLabel="default"
       if [[ "$IsPP" == "1" ]]; then
-         YLabel="d^2#sigma / dp_{T}d#eta (nb)"
+         YLabel="d^{2}#sigma / dp_{T}d#eta (nb)"
       else
          YLabel="#frac{1}{<T_{AA}>}#frac{1}{N_{evt}}#frac{d^{2}N_{jet}}{dp_{T}d#eta}"
       fi
 
       NP="`DHQuery GlobalSetting.dh DefaultPrior ${Prefix}_R${R}_Centrality${C} | tr -d '"'`Prior"
       PRC="${Prefix}_R${R}_Centrality${C}"
-      PRCN="${PRC}_${Type}${Suffix}_${NP}.root"
-      HPrimary=HUnfoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
-      Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
-      Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow_R${R}_Centrality${C}`
+      PRCTS="${PRC}_${Type}${Suffix}"
+      PRCN="${PRCTS}_${NP}.root"
+      
+      PRCTST=${PRCTS}
+      if [[ "$Tier" != "Gen" ]]; then
+         PRCTST=${PRCTS}_${Tier}
+      fi
+
+      if [[ "$Tier" == "Gen" ]]; then
+         HPrimary=HUnfoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
+         Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
+         Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow_R${R}_Centrality${C}`
+      else
+         HPrimary=HRefoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
+         Underflow=0
+         Overflow=0
+      fi
 
       MCFile="Input/${PRCN},HEPData/Graph_pp_CMSR${R}.root,HEPData/Graph_pp_ATLASR${R}.root"
       MCHist="HMCTruth,GHEPData,GHEPData"
       MCLabel="MC (normalize to data),CMS HIN-18-014 |#eta|<2.0 (pp),ATLAS (2019) |y|<2.8 (pp)"
       NormalizeMCToData="true,false,false"
+      MCExtraScale="1,1,1"
+      MCAbsoluteScale="true,true,true"
 
-      if [[ "$Suffix" == "_Toy" ]]; then
+      if [[ "$Tier" == "Gen" ]]; then
+         if [[ "$Suffix" == "_Toy" ]]; then
+            MCFile="Input/${PRCN}"
+            MCHist="HMCTruth"
+            MCLabel="Input"
+            NormalizeMCToData="true"
+            MCExtraScale="1"
+            MCAbsoluteScale="true"
+         fi
+         if [[ "$Type" != "Nominal" ]]; then
+            MCFile="DUMMY"
+            MCHist="DUMMY"
+            MCLabel="DUMMY"
+            NormalizeMCToData="false"
+            MCExtraScale="1"
+            MCAbsoluteScale="true"
+         fi
+      elif [[ "$Tier" == "Reco" ]]; then
          MCFile="Input/${PRCN}"
-         MCHist="HMCTruth"
+         MCHist="HInput"
          MCLabel="Input"
-         NormalizeMCToData="true"
+         NormalizeMCToData="false"
+         MCExtraScale="$ExtraScale"
+         MCAbsoluteScale="false"
       fi
 
-      if [[ "$Type" != "Nominal" ]]; then
-         MCFile="DUMMY"
-         MCHist="DUMMY"
-         MCLabel="DUMMY"
-         NormalizeMCToData="false"
+      SystematicsFile=Systematics/${PRC}.root
+      if [[ "$Tier" != "Gen" ]]; then
+         SystematicsFile=NULL
+      fi
+
+      DataLabel=Data
+      if [[ "$Tier" == "Gen" ]]; then
+         DataLabel="Data"
+      elif [[ "$Tier" == "Reco" ]]; then
+         DataLabel="Refolded"
       fi
 
       ./Execute \
          --Input Input/${PRCN} \
-         --Systematic Systematics/${PRC}.root \
-         --Output Plots/QualityPlots_${PRC}_${Type}${Suffix}.pdf --FinalOutput Plots/${PRC}_${Type}${Suffix}.pdf \
-         --RootOutput Root/${PRC}_${Type}${Suffix}.root \
+         --Systematic $SystematicsFile \
+         --Output Plots/QualityPlots_${PRCTST}.pdf --FinalOutput Plots/${PRCTST}.pdf \
+         --RootOutput Root/${PRCTST}.root \
+         --DataLabel "$DataLabel" \
          --MCFile "${MCFile}" --MCHistogram "${MCHist}" --MCLabel "${MCLabel}" \
+         --MCExtraScale "$MCExtraScale" --MCAbsoluteScale "$MCAbsoluteScale" \
          --Tier $Tier \
          --NormalizeMCToData ${NormalizeMCToData} \
          --PrimaryName $HPrimary \
@@ -112,9 +153,9 @@ do
          --Overflow $Overflow \
          --DoSelfNormalize false \
          --ExtraScale $ExtraScale \
-         --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.000000001 --WorldYMax 1 --WorldRMin 0.51 --WorldRMax 1.49 \
+         --WorldXMin 141 --WorldXMax 1500 --WorldYMin 0.000000001 --WorldYMax 3 --WorldRMin 0.51 --WorldRMax 1.49 \
          --LogX true --LogY true \
-         --XLabel "Jet p_{T} (GeV)" --YLabel ${YLabel} --Binning None \
+         --XLabel "Jet p_{T} (GeV)" --YLabel "${YLabel}" --Binning None \
          --LegendX 0.10 --LegendY 0.10 --LegendSize 0.04 \
          --XAxis 505 --YAxis 505 --RAxis 505 --MarkerModifier 0.5 \
          --Texts 0,0.65,0.9,"Anti-k_{T} jet R = $RValue",0,0.65,0.85,"|#eta_{jet}| < 2.0",0,0.65,0.8,"$CentralityString" \
