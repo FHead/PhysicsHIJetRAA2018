@@ -4,9 +4,9 @@ default: Prepare
 Prepare:
 	mkdir -p Output
 	rm -f Input UnfoldedInput
-	ln -sf ../23762_UnfoldPreparation/Output Input
-	ln -sf ../23762_ActualUnfold/Output UnfoldedInput
-	ln -sf ../GlobalSetting/GlobalSetting.dh
+	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput//Output Input
+	ln -sf $(ProjectBase)/MainAnalysis/23762_ActualUnfold/Output UnfoldedInput
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
 
 Clean:
 	rm -f Output/*root

@@ -5,9 +5,9 @@ default: RunRAA RunRRAA RunRCP Deploy
 
 Prepare:
 	rm -f SpectraRoot CombinedSystematics
-	ln -sf ../23763_BeautifulPlots/Root SpectraRoot
-	ln -sf ../GlobalSetting/GlobalSetting.dh .
-	ln -sf ../24165_SystematicsCombination/Output/ CombinedSystematics
+	ln -sf $(ProjectBase)/MainAnalysis/23763_BeautifulPlots/Root SpectraRoot
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
+	ln -sf $(ProjectBase)/MainAnalysis/24165_SystematicsCombination/Output/ CombinedSystematics
 	mkdir -p Plots Root
 
 Clean:

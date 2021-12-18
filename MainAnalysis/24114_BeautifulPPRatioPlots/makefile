@@ -2,12 +2,12 @@ default: RunJetPT
 
 Prepare:
 	rm -f OriginalInput Input Systematics HEPData CombinedSystematics
-	ln -sf ../23762_UnfoldPreparation/Output OriginalInput
-	ln -sf ../23762_ActualUnfold/Output Input
-	ln -sf ../23763_Systematics/Output Systematics
-	ln -sf ../GlobalSetting/GlobalSetting.dh
-	ln -sf ../24114_PPRatioHEPData/ HEPData
-	ln -sf ../24165_SystematicsCombination/Output/ CombinedSystematics
+	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput//Output OriginalInput
+	ln -sf $(ProjectBase)/MainAnalysis/23762_ActualUnfold/Output Input
+	ln -sf $(ProjectBase)/MainAnalysis/23763_Systematics/Output Systematics
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
+	ln -sf $(ProjectBase)/MainAnalysis/24114_PPRatioHEPData/ HEPData
+	ln -sf $(ProjectBase)/MainAnalysis/24165_SystematicsCombination/Output/ CombinedSystematics
 	mkdir -p Plots
 
 Clean:

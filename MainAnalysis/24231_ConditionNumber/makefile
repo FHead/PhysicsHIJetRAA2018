@@ -3,7 +3,7 @@ default: TestRun
 
 Prepare:
 	rm -f Input
-	ln -fs $(ProjectBase)/MainAnalysis/23762_UnfoldPreparation/Output Input
+	ln -fs $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput/Output Input
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
 
 Execute: EvaluateConditionNumber.cpp
