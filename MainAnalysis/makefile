@@ -58,6 +58,7 @@ RunPart2A:
 	# Also make sure that the ProjectBase is set correctly!              #
 	######################################################################
 	sleep 10
+	(cd 24236_RebinUnfoldInput         && make Prepare RunAll)
 	(cd 24232_LowerBoundDetermination  && make Prepare RunAll)
 	(cd 24233_UpperBoundDetermination  && make Prepare RunAll)
 	(cd 24165_PUBugCorrection          && make Prepare PlaceHolder)
