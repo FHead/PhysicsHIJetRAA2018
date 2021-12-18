@@ -3,9 +3,9 @@ default: Prepare
 
 Prepare:
 	rm -f PerfectInput Input
-	ln -sf ../23762_UnfoldPreparation/Output Input
-	ln -sf ../23762_PerfectRecoGeneration/Output PerfectInput
-	ln -sf ../GlobalSetting/GlobalSetting.dh
+	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput//Output Input
+	ln -sf $(ProjectBase)/MainAnalysis/23762_PerfectRecoGeneration/Output PerfectInput
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
 	mkdir -p Output
 
 Clean:

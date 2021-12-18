@@ -2,8 +2,8 @@ default: Prepare RunPP
 
 Prepare:
 	rm -f Input
-	ln -sf ../23762_ActualUnfold/Output Input
-	ln -sf ../GlobalSetting/GlobalSetting.dh
+	ln -sf $(ProjectBase)/MainAnalysis/23762_ActualUnfold/Output Input
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
 	mkdir -p Plots
 
 Clean:

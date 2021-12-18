@@ -2,11 +2,11 @@ default: RunJetPT RunJetPTClosure
 
 Prepare:
 	rm -f OriginalInput Input Systematics HEPData
-	ln -sf ../23762_UnfoldPreparation/Output OriginalInput
-	ln -sf ../23762_ActualUnfold/Output Input
-	ln -sf ../23763_Systematics/Output Systematics
-	ln -sf ../GlobalSetting/GlobalSetting.dh
-	ln -sf ../24113_HEPData/ HEPData
+	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput//Output OriginalInput
+	ln -sf $(ProjectBase)/MainAnalysis/23762_ActualUnfold/Output Input
+	ln -sf $(ProjectBase)/MainAnalysis/23763_Systematics/Output Systematics
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
+	ln -sf $(ProjectBase)/MainAnalysis/24113_HEPData/ HEPData
 	mkdir -p Plots Root
 
 Clean:

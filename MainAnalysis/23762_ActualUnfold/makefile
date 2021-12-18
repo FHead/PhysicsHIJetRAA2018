@@ -3,9 +3,9 @@ default: RunTest
 
 Prepare:
 	rm -f Input ToyInput
-	ln -sf ../23762_UnfoldPreparation/Output/ Input
-	ln -sf ../23762_FakeData/Output/ ToyInput
-	ln -sf ../GlobalSetting/GlobalSetting.dh
+	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput//Output/ Input
+	ln -sf $(ProjectBase)/MainAnalysis/23762_FakeData/Output/ ToyInput
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
 	mkdir -p Output Plots
 
 Clean:
@@ -38,6 +38,20 @@ RunDataStep2Toy: Execute ExecutePlot
 	bash RunFile.sh ToyInput PbPbData  Nominal_DefaultStep2Prior_Toy 0 DefaultStep2
 	bash RunFile.sh ToyInput PPData    Nominal_DefaultStep2Prior_Toy 1 DefaultStep2
 
+RunAAStep1: Execute ExecutePlot
+	bash RunFile.sh Input    PbPbData  JECUp                         0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  JECDown                       0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  JECQuench                     0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  JERUp                         0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  JERDown                       0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  FlatJER                       0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  NoJER                         0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  CentralityUp                  0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  CentralityDown                0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  MCCentrality                  0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  JECNoResidual                 0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  JECNoPhi                      0 DefaultStep1
+
 RunAA: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbMCRho Nominal                       0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECUp                         0 DefaultStep2
@@ -52,6 +66,12 @@ RunAA: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbData  MCCentrality                  0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JECNoResidual                 0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JECNoPhi                      0 DefaultStep2
+
+RunPPStep1: Execute ExecutePlot
+	bash RunFile.sh Input    PPData    JECUp                         1 DefaultStep1
+	bash RunFile.sh Input    PPData    JECDown                       1 DefaultStep1
+	bash RunFile.sh Input    PPData    JERUp                         1 DefaultStep1
+	bash RunFile.sh Input    PPData    JERDown                       1 DefaultStep1
 	
 RunPP: Execute ExecutePlot
 	bash RunFile.sh Input    PPMC      Nominal                       1 DefaultStep1

@@ -7,7 +7,7 @@ Prepare:
 	rm -f Input
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
 	# ln -sf $(ProjectBase)/MainAnalysis/23762_ActualUnfold/Output/ Input
-	ln -sf $(ProjectBase)/MainAnalysis/23762_UnfoldPreparation/Output/ Input
+	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput/Output/ Input
 
 TestRun: Execute
 	./Execute --DHFile GlobalSetting.dh --Base R1_Centrality50to90 \

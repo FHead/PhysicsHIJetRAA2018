@@ -2,10 +2,10 @@ default: Prepare TestIteration
 
 Prepare:
 	rm -f Input BinMapping OriginalInput
-	ln -sf ../23762_ActualUnfold/Output Input
-	ln -sf ../23762_UnfoldPreparation/Output BinMapping
-	ln -sf ../GlobalSetting/GlobalSetting.dh
-	ln -sf ../GlobalSetting/GlobalSystematics.dh
+	ln -sf $(ProjectBase)/MainAnalysis/23762_ActualUnfold/Output Input
+	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput//Output BinMapping
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSystematics.dh
 	mkdir -p Output Plot
 
 Clean:
