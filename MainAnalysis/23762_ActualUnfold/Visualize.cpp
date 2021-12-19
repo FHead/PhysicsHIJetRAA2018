@@ -15,8 +15,9 @@ using namespace std;
 #include "CommandLine.h"
 #include "RootUtilities.h"
 
+#include "BinHelper.h"
+
 int main(int argc, char *argv[]);
-TH1D *ForwardFold(TH1D *HGen, TH2D *HResponse);
 void AddResponsePlot(PdfFileHelper &PdfFile, TH2D *HResponse);
 
 int main(int argc, char *argv[])
@@ -164,42 +165,13 @@ int main(int argc, char *argv[])
    return 0;
 }
 
-TH1D *ForwardFold(TH1D *HGen, TH2D *HResponse)
-{
-   if(HGen == nullptr || HResponse == nullptr)
-      return nullptr;
-
-   static int Count = 0;
-   Count = Count + 1;
-
-   int NGen = HResponse->GetNbinsY();
-   int NReco = HResponse->GetNbinsX();
-
-   TH1D *HResult = new TH1D(Form("HFold%d", Count), "", NReco, 0, NReco);
-
-   for(int iG = 1; iG <= NGen; iG++)
-   {
-      double N = 0;
-      for(int iR = 1; iR <= NReco; iR++)
-         N = N + HResponse->GetBinContent(iR, iG);
-
-      if(N == 0)
-         continue;
-
-      for(int iR = 1; iR <= NReco; iR++)
-         HResult->AddBinContent(iR, HResponse->GetBinContent(iR, iG) * HGen->GetBinContent(iG) / N);
-   }
-
-   return HResult;
-}
-
 void AddResponsePlot(PdfFileHelper &PdfFile, TH2D *HResponse)
 {
    TH2D *H = (TH2D *)HResponse->Clone();
    H->Reset();
 
    int NGen = HResponse->GetNbinsY();
-   int NReco = HResponse->GetNbinsY();
+   int NReco = HResponse->GetNbinsX();
 
    for(int iG = 1; iG <= NGen; iG++)
    {
