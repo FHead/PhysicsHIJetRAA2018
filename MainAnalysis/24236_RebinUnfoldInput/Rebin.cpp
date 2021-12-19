@@ -2,6 +2,7 @@
 #include <vector>
 using namespace std;
 
+#include "TH2D.h"
 #include "TH1D.h"
 #include "TFile.h"
 
