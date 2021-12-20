@@ -83,12 +83,21 @@ do
          PRCTST=${PRCTS}_${Tier}
       fi
 
+      Method=`DHQuery GlobalSetting.dh MethodToUse ${State}_R${R}_Centrality${C}_Default | tr -d '"'`
       if [[ "$Tier" == "Gen" ]]; then
-         HPrimary=HUnfoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
+         if [[ "${Method}" == "Bayes" ]]; then
+            HPrimary=HUnfoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
+         elif [[ "$Method" == "TUnfold" ]]; then
+            HPrimary=HUnfoldedTUnfold
+         fi
          Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
          Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow_R${R}_Centrality${C}`
       else
-         HPrimary=HRefoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
+         if [[ "${Method}" == "Bayes" ]]; then
+            HPrimary=HRefoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
+         elif [[ "$Method" == "TUnfold" ]]; then
+            HPrimary=HRefoldedTUnfold
+         fi
          Underflow=0
          Overflow=0
       fi
