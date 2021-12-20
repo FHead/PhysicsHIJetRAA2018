@@ -9,6 +9,9 @@ using namespace std;
 #include "TError.h"
 #include "TSpline.h"
 #include "TGraph.h"
+#include "Math/Minimizer.h"
+#include "Math/Factory.h"
+#include "Math/Functor.h"
 
 #include "RooUnfold.h"
 #include "RooUnfoldInvert.h"
@@ -18,7 +21,9 @@ using namespace std;
 
 #include "RootUtilities.h"
 #include "CommandLine.h"
+#include "CustomAssert.h"
 
+class Spectrum;
 int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 void RemoveOutOfRange(TH1D *H);
@@ -30,6 +35,147 @@ TH1D *ConstructPriorFlat(vector<double> GenBins);
 TH1D *ConstructPriorPower(vector<double> GenBins, double K);
 void DoProjection(TH2D *HResponse, TH1D **HGen, TH1D **HReco);
 TH1D *ForwardFold(TH1 *HGen, TH2D *HResponse);
+
+class Spectrum
+{
+public:
+   vector<double> Prior;
+   vector<double> Reco;
+   vector<double> EReco;
+   vector<vector<double>> Matrix;
+public:
+   Spectrum()
+   {
+      Prior.clear();
+      Reco.clear();
+      EReco.clear();
+      Matrix.clear();
+   }
+   ~Spectrum() {}
+   bool SetPrior(TH1D *H)
+   {
+      if(H == nullptr)
+         return false;
+      int N = H->GetNbinsX();
+      Prior.resize(N);
+      for(int i = 0; i < N; i++)
+         Prior[i] = H->GetBinContent(i + 1);
+      return true;
+   }
+   bool SetReco(TH1D *H)
+   {
+      if(H == nullptr)
+         return false;
+      int N = H->GetNbinsX();
+      Reco.resize(N);
+      EReco.resize(N);
+      for(int i = 0; i < N; i++)
+      {
+         Reco[i] = H->GetBinContent(i + 1);
+         EReco[i] = H->GetBinError(i + 1);
+      }
+      return true;
+   }
+   bool SetMatrix(TH2D *H)
+   {
+      if(H == nullptr)
+         return false;
+      int NX = H->GetNbinsX();
+      int NY = H->GetNbinsY();
+      Matrix.resize(NX);
+      for(int iX = 0; iX < NX; iX++)
+      {
+         Matrix[iX].resize(NY);
+         for(int iY = 0; iY < NY; iY++)
+            Matrix[iX][iY] = H->GetBinContent(iX + 1, iY + 1);
+      }
+      return true;
+   }
+   bool Initialize()
+   {
+      int NG = Prior.size();
+      int NR = Reco.size();
+
+      Assert(NG > 0, "Fit: Please initialize gen");
+      Assert(NR > 0, "Fit: Please initialize reco");
+      Assert(NR == (int)Matrix.size(), "Fit: matrix size mismatch reco");
+      for(int i = 0; i < NR; i++)
+         Assert(NG == (int)Matrix[i].size(), "Fit: matrix size mismatch gen");
+
+      double SumR = 0;
+      for(int i = 0; i < NR; i++)
+         SumR = SumR + Reco[i];
+      double SumG = 0;
+      for(int i = 0; i < NG; i++)
+         SumG = SumG + Prior[i];
+      for(int i = 0; i < NG; i++)
+         Prior[i] = Prior[i] / SumG * SumR;
+
+      for(int i = 0; i < NG; i++)
+      {
+         double Sum = 0;
+         for(int j = 0; j < NR; j++)
+            Sum = Sum + Matrix[j][i];
+         for(int j = 0; j < NR; j++)
+            Matrix[j][i] = Matrix[j][i] / Sum;
+      }
+
+      return true;
+   }
+   double LogLikelihood(const double *Parameters)
+   {
+      int NReco = Reco.size();
+      int NGen = Prior.size();
+      vector<double> Folded(NReco, 0);
+      for(int iR = 0; iR < NReco; iR++)
+         for(int iG = 0; iG < NGen; iG++)
+            Folded[iR] = Folded[iR] + Prior[iG] * Parameters[iG] * Matrix[iR][iG];
+
+      double LL = 0;
+      for(int iR = 0; iR < NReco; iR++)
+      {
+         double D = Folded[iR] - Reco[iR];
+         double E = EReco[iR];
+         if(E == 0)
+            E = 1;
+         LL = LL + D * D / E * E;
+      }
+
+      // Regularization
+      for(int iG = 0; iG < NGen; iG++)
+      {
+         double R = log(Parameters[iG]);
+         LL = LL + 100 * R * R;
+      }
+      for(int iG = 0; iG < NGen - 1; iG++)
+      {
+         double R = log(Parameters[iG]) - log(Parameters[iG+1]);
+         LL = LL + 100 * R * R;
+      }
+
+      return LL;
+   }
+   const double *DoFit()
+   {
+      ROOT::Math::Minimizer *Minimizer = ROOT::Math::Factory::CreateMinimizer("Minuit", "Migrad");
+      Minimizer->SetMaxFunctionCalls(1000000);
+      Minimizer->SetMaxIterations(100000);
+      Minimizer->SetTolerance(0.00001);
+      Minimizer->SetPrintLevel(-1);
+
+      int N = Prior.size();
+
+      ROOT::Math::Functor F(this, &Spectrum::LogLikelihood, N);
+      Minimizer->SetFunction(F);
+
+      for(int i = 0; i < N; i++)
+         Minimizer->SetLimitedVariable(i, Form("S%d", i), 1.00, 0.1, 0.001, 1000);
+      for(int i = 0; i < 5; i++)
+         Minimizer->Minimize();
+
+      return Minimizer->X();
+   }
+};
 
 int main(int argc, char *argv[])
 {
@@ -48,6 +194,7 @@ int main(int argc, char *argv[])
    bool DoSVD              = CL.GetBool("DoSVD",         true);
    bool DoInvert           = CL.GetBool("DoInvert",      true);
    bool DoTUnfold          = CL.GetBool("DoTUnfold",     true);
+   bool DoFit              = CL.GetBool("DoFit",         true);
    bool DoFoldNormalize    = CL.GetBool("FoldNormalize", false);
    bool DoToyError         = CL.GetBool("DoToyError",    false);
    
@@ -63,6 +210,9 @@ int main(int argc, char *argv[])
    TH2D *HRawResponse = (TH2D *)HResponse->Clone("HRawResponse");
 
    TH1D *HInput    = (TH1D *)InputFile.Get(DataName.c_str())->Clone();
+
+   int NGen = HTruth->GetNbinsX();
+   int NReco = HInput->GetNbinsX();
 
    RemoveOutOfRange(HMeasured);
    RemoveOutOfRange(HTruth);
@@ -188,6 +338,14 @@ int main(int argc, char *argv[])
       TH2 *HError = Unfold.GetEmatrixInput("HTUnfoldMatrix");
       HUnfolded.push_back(H);
 
+      int ErrorNX = HError->GetNbinsX();
+      int ErrorNY = HError->GetNbinsY();
+      TMatrixD TUnfoldCovariance(ErrorNX, ErrorNY);
+      for(int iX = 0; iX < ErrorNX; iX++)
+         for(int iY = 0; iY < ErrorNY; iY++)
+            TUnfoldCovariance[iX][iY] = HError->GetBinContent(iX + 1, iY + 1);
+      Covariance.insert({"MTUnfold", TUnfoldCovariance});
+
       LCurve->SetName("GTUnfoldLCurve");
       Graphs.push_back(LCurve);
 
@@ -199,9 +357,28 @@ int main(int argc, char *argv[])
       double X, Y, T;
       LogTauX->GetKnot(IBest, T, X);
       LogTauY->GetKnot(IBest, T, Y);
-      // TGraph *GXY = new TGraph("GTUnfoldXY");
+      // TGraph *GXY = new TGraph("GTUnfoldXYTemp");
       // GXY->SetPoint(0, X, Y);
-      // Graphs.push_back(GXY);
+      // Graphs.push_back((TGraph *)GXY->Clone("GTUnfoldXY"));
+   }
+
+   if(DoFit == true)
+   {
+      Spectrum S;
+      S.SetPrior(HPrior);
+      S.SetReco(HInput);
+      S.SetMatrix(HResponse);
+      S.Initialize();
+      const double *X = S.DoFit();
+
+      TH1D *HUnfoldedFit = new TH1D("HUnfoldedFitTemp", "", NGen, 0, NGen);
+      for(int i = 0; i < NGen; i++)
+         HUnfoldedFit->SetBinContent(i + 1, X[i] * S.Prior[i]);
+      HUnfolded.push_back((TH1D *)HUnfoldedFit->Clone("HUnfoldedFit"));
+         
+      TH1D *HFold = ForwardFold(HUnfoldedFit, HResponse);
+      HFold->SetName("HRefoldedFit");
+      HRefolded.push_back(HFold);
    }
 
    if(DoFoldNormalize == true)
