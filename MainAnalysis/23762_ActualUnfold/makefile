@@ -82,11 +82,14 @@ RunPPStep2: Execute ExecutePlot
 	bash RunFile.sh Input    PPData    JERUp                         1 DefaultStep2
 	bash RunFile.sh Input    PPData    JERDown                       1 DefaultStep2
 
+RunSetDHFileStep1TUnfold:
+	bash SetPriorToUse.sh DefaultStep1 DefaultStep1 TUnfold
+
 RunSetDHFileStep1:
-	bash SetPriorToUse.sh DefaultStep1 DefaultStep1
+	bash SetPriorToUse.sh DefaultStep1 DefaultStep1 Bayes
 
 RunSetDHFileStep2:
-	bash SetPriorToUse.sh DefaultStep1 DefaultStep2
+	bash SetPriorToUse.sh DefaultStep1 DefaultStep2 Bayes
 
 RunDataToy: Execute ExecutePlot
 	bash RunFile.sh ToyInput PbPbData  Nominal_Power50Prior_Toy 0 Nominal
