@@ -58,6 +58,7 @@ RunPart2A:
 	# Also make sure that the ProjectBase is set correctly!              #
 	######################################################################
 	sleep 10
+	(cd 24236_RebinUnfoldInput         && make Prepare RunAll)
 	(cd 24232_LowerBoundDetermination  && make Prepare RunAll)
 	(cd 24233_UpperBoundDetermination  && make Prepare RunAll)
 	(cd 24165_PUBugCorrection          && make Prepare PlaceHolder)
@@ -78,8 +79,10 @@ RunPart2A:
 	(cd 23762_FakeData                 && make Prepare RunDataStep2)
 	(cd 23762_ActualUnfold             && make Prepare RunDataStep2Toy)
 	(cd 23772_UnfoldIteration          && make Prepare RunDataStep2)
-	(cd 23762_ActualUnfold             && make Prepare RunPP RunAA)
-	(cd 23762_ActualUnfold             && make Prepare RunSetDHFile)
+	(cd 23762_ActualUnfold             && make Prepare RunPPStep1 RunAAStep1)
+	(cd 23762_ActualUnfold             && make Prepare RunSetDHFileStep1)
+	# (cd 23762_ActualUnfold             && make Prepare RunPPStep2 RunAAStep2)
+	# (cd 23762_ActualUnfold             && make Prepare RunSetDHFileStep2)
 
 RunPart2AOld:
 	#########################################################################
@@ -120,7 +123,7 @@ RunPart2C:
 RunPart2D:
 	(cd 23763_BeautifulPlots           && make Prepare RunCheck RunJetPTReco)
 	(cd 24122_RAA                      && make Prepare RunRAACheck)
-	(cd 24231_ConditionNumber          && make Prepare RunAll)
+	(cd 24231_ConditionNumber          && make Prepare RunNominal RunNominalPlot)
 	(cd 23772_UnfoldIteration          && make Prepare RunPlot)
 
 RunPart2E:
@@ -132,3 +135,5 @@ RunPart2E:
 	(cd 24231_ConditionNumber          && make Deploy)
 	(cd 23772_UnfoldIteration          && make Deploy)
 
+RunPart2F:   # Things that are good to have but not essential in any way
+	(cd 24231_ConditionNumber          && make Prepare RunOther)

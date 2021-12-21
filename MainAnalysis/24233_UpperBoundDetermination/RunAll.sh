@@ -18,8 +18,8 @@ do
 
       ./Execute --DHFile GlobalSetting.dh --Base R${R}_Centrality${C} --NominalFile ${Nominal} \
          --MaxPT 1500 \
-         --DoRecoStat true --RecoStatLimit 5 \
-         --DoRecoStatResolution true --RecoStatResolutionShift 2 --ResolutionFile $JERFile
+         --DoRecoStat true --RecoStatLimit 2 \
+         --DoRecoStatResolution true --RecoStatResolutionShift 0 --ResolutionFile $JERFile
    done
 done
 

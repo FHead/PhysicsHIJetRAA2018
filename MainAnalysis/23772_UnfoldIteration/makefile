@@ -35,13 +35,18 @@ RunData: Execute
 	bash RunFile.sh PPData Nominal_Power50Prior_Toy Nominal Nominal 1
 	bash RunFile.sh PPData Nominal_Power50Prior_Toy Nominal Alternate 1
 
-TestRun: ExecuteLCurve
-	./ExecuteLCurve --Input Input/PPData_R4_CentralityInclusive_Nominal_Power50Prior_Toy_Power50Prior.root \
-		--Output PPData_R4_CentralityInclusive_Nominal_Power50Prior_Toy_Power50Prior.pdf \
-		--Ignore 10 --IgnoreReco 0
+TestRun: Execute
+	./Execute --Input Input/PPMC_R4_CentralityInclusive_Nominal_Toy_DefaultStep1Prior.root \
+		--Output PPMC_R4_CentralityInclusive_Nominal_Toy_DefaultStep1Prior.pdf \
+		--Ignore 12 --IgnoreReco 10 --DHFile Meow.dh \
+		--State Iterations --Key PPMC_R4_CentralityInclusive_Nominal_DefaultStep1Prior
+	./Execute --Input Input/PPData_R4_CentralityInclusive_Nominal_DefaultStep1Prior_Toy_DefaultStep1Prior.root \
+		--Output PPData_R4_CentralityInclusive_Nominal_DefaultStep1Prior_Toy_DefaultStep1Prior.pdf \
+		--Ignore 12 --IgnoreReco 10 --DHFile Meow.dh \
+		--State Iterations --Key PPData_R4_CentralityInclusive_Nominal_DefaultStep1Prior
 
 Execute: PlotIteration.cpp
-	CompileRootMacro PlotIteration.cpp Execute
+	CompileRootMacro PlotIteration.cpp Execute -I../../CommonCode/include
 
 ExecuteLCurve: PlotLCurve.cpp
 	CompileRootMacro PlotLCurve.cpp ExecuteLCurve -I../../CommonCode/include

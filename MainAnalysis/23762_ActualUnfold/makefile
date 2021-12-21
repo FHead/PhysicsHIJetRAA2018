@@ -16,7 +16,7 @@ Execute: Unfold1D.cpp
 	CompileRootMacro Unfold1D.cpp Execute -lUnfold
 
 ExecutePlot: Visualize.cpp
-	CompileRootMacro Visualize.cpp ExecutePlot
+	CompileRootMacro Visualize.cpp ExecutePlot -I../../CommonCode/include/
 
 RunMCToy: Execute ExecutePlot
 	bash RunFile.sh ToyInput PPMC      Nominal_Toy                   1 DefaultStep1
@@ -39,6 +39,7 @@ RunDataStep2Toy: Execute ExecutePlot
 	bash RunFile.sh ToyInput PPData    Nominal_DefaultStep2Prior_Toy 1 DefaultStep2
 
 RunAAStep1: Execute ExecutePlot
+	bash RunFile.sh Input    PbPbMCRho Nominal                       0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECUp                         0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECDown                       0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECQuench                     0 DefaultStep1
@@ -52,7 +53,7 @@ RunAAStep1: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbData  JECNoResidual                 0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECNoPhi                      0 DefaultStep1
 
-RunAA: Execute ExecutePlot
+RunAAStep2: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbMCRho Nominal                       0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECUp                         0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JECDown                       0 DefaultStep2
@@ -68,20 +69,24 @@ RunAA: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbData  JECNoPhi                      0 DefaultStep2
 
 RunPPStep1: Execute ExecutePlot
+	bash RunFile.sh Input    PPMC      Nominal                       1 DefaultStep1
 	bash RunFile.sh Input    PPData    JECUp                         1 DefaultStep1
 	bash RunFile.sh Input    PPData    JECDown                       1 DefaultStep1
 	bash RunFile.sh Input    PPData    JERUp                         1 DefaultStep1
 	bash RunFile.sh Input    PPData    JERDown                       1 DefaultStep1
 	
-RunPP: Execute ExecutePlot
+RunPPStep2: Execute ExecutePlot
 	bash RunFile.sh Input    PPMC      Nominal                       1 DefaultStep1
 	bash RunFile.sh Input    PPData    JECUp                         1 DefaultStep2
 	bash RunFile.sh Input    PPData    JECDown                       1 DefaultStep2
 	bash RunFile.sh Input    PPData    JERUp                         1 DefaultStep2
 	bash RunFile.sh Input    PPData    JERDown                       1 DefaultStep2
 
-RunSetDHFile:
-	bash SetPriorToUse.sh
+RunSetDHFileStep1:
+	bash SetPriorToUse.sh DefaultStep1 DefaultStep1
+
+RunSetDHFileStep2:
+	bash SetPriorToUse.sh DefaultStep1 DefaultStep2
 
 RunDataToy: Execute ExecutePlot
 	bash RunFile.sh ToyInput PbPbData  Nominal_Power50Prior_Toy 0 Nominal
@@ -129,7 +134,7 @@ RunTest: Execute ExecutePlot
 	#    --Prior Original
 	# ./ExecutePlot --Input TestOriginalPrior.root --Output TestOriginalPrior.pdf --Ignore 14
 	./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower5Prior.root \
-		--Prior Power --PriorK -5 --DoBayes true --DoSVD false --DoInvert false --DoTUnfold true
+		--Prior Power --PriorK -5 --DoBayes true --DoSVD false --DoInvert true --DoTUnfold true --DoFit true
 	# ./ExecutePlot --Input TestPower5Prior.root --Output TestPower5Prior.pdf --Ignore 14
 	# ./Execute --Input ToyInput/PPMC_R4_CentralityInclusive_Nominal_Toy.root --Output TestPower6Prior.root \
 	#    --Prior Power --PriorK -6

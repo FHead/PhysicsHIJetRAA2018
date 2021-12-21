@@ -18,11 +18,14 @@ do
    do
       Ignore=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
 
+      Ignore=10
+      IgnoreReco=25
+
       Prior=${PriorChoice}Prior
 
 	   ./Execute --Input Input/${Prefix}_R${R}_Centrality${C}_${Suffix}_${Prior}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${Prior}.pdf \
-         --Ignore ${Ignore} --Reference HMCTruth \
+         --Ignore ${Ignore} --IgnoreReco ${IgnoreReco} --Reference HMCTruth \
          --State Iterations --Key ${Prefix}_R${R}_Centrality${C}_${StateSuffix}_${Prior}
    done
 done

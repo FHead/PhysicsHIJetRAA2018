@@ -8,7 +8,7 @@ PriorChoice=$5
 IterationPriorChoice=$6
 
 if [[ "$IterationPriorChoice" == "" ]]; then
-   IterationPriorChoice=PriorChoice
+   IterationPriorChoice=$PriorChoice
 fi
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`

@@ -1,8 +1,12 @@
 *.dh
 Execute*
 *.dSYM/
-*Input
-Output
+HEPData
+Input
+ToyInput
+OriginalInput
+PerfectInput
+Output/
 Plots
 FinalPlots
 Systematics
