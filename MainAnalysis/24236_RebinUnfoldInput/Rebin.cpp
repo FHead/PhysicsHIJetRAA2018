@@ -14,6 +14,8 @@ using namespace std;
 
 int main(int argc, char *argv[]);
 bool CheckLineUp(const vector<double> &InputBins, const vector<double> &OutputBins);
+void ZeroOffdiagonal(TH2D *H, double ZeroMin, double ZeroMax,
+   const vector<double> &XBins, const vector<double> &YBins);
 TH1D *RebinHistogram1D(TH1D *HIn, const vector<double> &InputBins, const vector<double> &OutputBins);
 TH2D *RebinHistogram2D(TH2D *HIn,
    const vector<double> &InputXBins, const vector<double> &OutputXBins,
@@ -27,6 +29,10 @@ int main(int argc, char *argv[])
    string InputFileName  = CL.Get("Input");
    string OutputFileName = CL.Get("Output");
    string DHFileName     = CL.Get("DHFile");
+
+   bool DoZeroing        = CL.GetBool("DoZeroing", false);
+   double ZeroMin        = CL.GetDouble("ZeroMin", -1);
+   double ZeroMax        = CL.GetDouble("ZeroMax", -1);
 
    DataHelper DHFile(DHFileName);
 
@@ -88,8 +94,10 @@ int main(int argc, char *argv[])
 
    for(string HName : Histogram2D)
    {
-      TH2D *H = RebinHistogram2D((TH2D *)InputFile.Get(HName.c_str()),
-         InputMatchedBins, OutputMatchedBins, InputGenBins, OutputGenBins);
+      TH2D *HIn = (TH2D *)InputFile.Get(HName.c_str());
+      if(DoZeroing == true)
+         ZeroOffdiagonal(HIn, ZeroMin, ZeroMax, InputMatchedBins, InputGenBins);
+      TH2D *H = RebinHistogram2D(HIn, InputMatchedBins, OutputMatchedBins, InputGenBins, OutputGenBins);
       OutputFile.cd();
       H->Clone(HName.c_str())->Write();
    }
@@ -118,6 +126,32 @@ bool CheckLineUp(const vector<double> &InputBins, const vector<double> &OutputBi
          return false;
    }
    return true;
+}
+
+void ZeroOffdiagonal(TH2D *H, double ZeroMin, double ZeroMax,
+   const vector<double> &XBins, const vector<double> &YBins)
+{
+   if(H == nullptr)
+      return;
+
+   int NX = XBins.size() - 1;
+   int NY = YBins.size() - 1;
+
+   for(int iX = 0; iX < NX; iX++)
+   {
+      for(int iY = 0; iY < NY; iY++)
+      {
+         double X = (XBins[iX] + XBins[iX+1]) / 2;
+         double Y = (YBins[iY] + YBins[iY+1]) / 2;
+
+         double R = Y / X;
+
+         if(ZeroMin > 0 && R < ZeroMin)
+            H->SetBinContent(iX + 1, iY + 1, 0);
+         if(ZeroMax > 0 && R > ZeroMax)
+            H->SetBinContent(iX + 1, iY + 1, 0);
+      }
+   }
 }
 
 TH1D *RebinHistogram1D(TH1D *HIn, const vector<double> &InputBins, const vector<double> &OutputBins)
