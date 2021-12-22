@@ -18,6 +18,8 @@ bool CheckLineUp(const vector<double> &InputBins, const vector<double> &OutputBi
 void ZeroOffdiagonal(TH2D *H, double ZeroMin, double ZeroMax,
    const vector<double> &XBins, const vector<double> &YBins);
 void Earthquake(TH2D *H, double Magnitude);
+void ApplyBias(TH2D *H, double XPower, double YPower,
+   const vector<double> &XBins, const vector<double> &YBins);
 TH1D *RebinHistogram1D(TH1D *HIn, const vector<double> &InputBins, const vector<double> &OutputBins);
 TH2D *RebinHistogram2D(TH2D *HIn,
    const vector<double> &InputXBins, const vector<double> &OutputXBins,
@@ -37,6 +39,9 @@ int main(int argc, char *argv[])
    double ZeroMax             = DoZeroing ? CL.GetDouble("ZeroMax") : -1;
    bool DoEarthquake          = CL.GetBool("DoEarthquake", false);
    double EarthquakeMagnitude = DoEarthquake ? CL.GetDouble("EarthquakeMagnitude") : -1;
+   bool DoBias                = CL.GetBool("DoBias", false);
+   double GenBiasPower        = DoBias ? CL.GetDouble("GenBiasPower") : 0;
+   double RecoBiasPower       = DoBias ? CL.GetDouble("RecoBiasPower") : 0;
 
    DataHelper DHFile(DHFileName);
 
@@ -101,6 +106,8 @@ int main(int argc, char *argv[])
       TH2D *HIn = (TH2D *)InputFile.Get(HName.c_str());
       if(DoZeroing == true)
          ZeroOffdiagonal(HIn, ZeroMin, ZeroMax, InputMatchedBins, InputGenBins);
+      if(DoBias == true)
+         ApplyBias(HIn, RecoBiasPower, GenBiasPower, InputMatchedBins, InputGenBins);
       if(DoEarthquake == true)
          Earthquake(HIn, EarthquakeMagnitude);
       TH2D *H = RebinHistogram2D(HIn, InputMatchedBins, OutputMatchedBins, InputGenBins, OutputGenBins);
@@ -182,6 +189,30 @@ void Earthquake(TH2D *H, double Magnitude)
             V = 0;
 
          H->SetBinContent(iX, iY, V);
+      }
+   }
+}
+
+void ApplyBias(TH2D *H, double XPower, double YPower,
+   const vector<double> &XBins, const vector<double> &YBins)
+{
+   if(H == nullptr)
+      return;
+
+   int NX = XBins.size() - 1;
+   int NY = YBins.size() - 1;
+
+   for(int iX = 0; iX < NX; iX++)
+   {
+      for(int iY = 0; iY < NY; iY++)
+      {
+         double X = (XBins[iX] + XBins[iX+1]) / 2;
+         double Y = (YBins[iY] + YBins[iY+1]) / 2;
+
+         double Factor = pow(X, XPower) * pow(Y, YPower);
+
+         H->SetBinContent(iX + 1, iY + 1, H->GetBinContent(iX + 1, iY + 1) * Factor);
+         H->SetBinError(iX + 1, iY + 1, H->GetBinError(iX + 1, iY + 1) * Factor);
       }
    }
 }
