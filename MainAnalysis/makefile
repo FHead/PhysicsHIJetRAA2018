@@ -79,10 +79,10 @@ RunPart2A:
 	(cd 23762_FakeData                 && make Prepare RunDataStep2)
 	(cd 23762_ActualUnfold             && make Prepare RunDataStep2Toy)
 	(cd 23772_UnfoldIteration          && make Prepare RunDataStep2)
-	(cd 23762_ActualUnfold             && make Prepare RunPPStep1 RunAAStep1)
-	(cd 23762_ActualUnfold             && make Prepare RunSetDHFileStep1TUnfold)
 	# (cd 23762_ActualUnfold             && make Prepare RunPPStep1 RunAAStep1)
-	# (cd 23762_ActualUnfold             && make Prepare RunSetDHFileStep1)
+	# (cd 23762_ActualUnfold             && make Prepare RunSetDHFileStep1TUnfold)
+	(cd 23762_ActualUnfold             && make Prepare RunPPStep1 RunAAStep1)
+	(cd 23762_ActualUnfold             && make Prepare RunSetDHFileStep1)
 	# (cd 23762_ActualUnfold             && make Prepare RunPPStep2 RunAAStep2)
 	# (cd 23762_ActualUnfold             && make Prepare RunSetDHFileStep2)
 
