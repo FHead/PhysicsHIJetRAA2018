@@ -9,6 +9,7 @@ using namespace std;
 #include "CommandLine.h"
 #include "DataHelper.h"
 #include "CustomAssert.h"
+#include "Code/DrawRandom.h"
 
 #include "BinHelper.h"
 
@@ -16,6 +17,7 @@ int main(int argc, char *argv[]);
 bool CheckLineUp(const vector<double> &InputBins, const vector<double> &OutputBins);
 void ZeroOffdiagonal(TH2D *H, double ZeroMin, double ZeroMax,
    const vector<double> &XBins, const vector<double> &YBins);
+void Earthquake(TH2D *H, double Magnitude);
 TH1D *RebinHistogram1D(TH1D *HIn, const vector<double> &InputBins, const vector<double> &OutputBins);
 TH2D *RebinHistogram2D(TH2D *HIn,
    const vector<double> &InputXBins, const vector<double> &OutputXBins,
@@ -26,13 +28,15 @@ int main(int argc, char *argv[])
 {
    CommandLine CL(argc, argv);
 
-   string InputFileName  = CL.Get("Input");
-   string OutputFileName = CL.Get("Output");
-   string DHFileName     = CL.Get("DHFile");
+   string InputFileName       = CL.Get("Input");
+   string OutputFileName      = CL.Get("Output");
+   string DHFileName          = CL.Get("DHFile");
 
-   bool DoZeroing        = CL.GetBool("DoZeroing", false);
-   double ZeroMin        = CL.GetDouble("ZeroMin", -1);
-   double ZeroMax        = CL.GetDouble("ZeroMax", -1);
+   bool DoZeroing             = CL.GetBool("DoZeroing", false);
+   double ZeroMin             = DoZeroing ? CL.GetDouble("ZeroMin") : -1;
+   double ZeroMax             = DoZeroing ? CL.GetDouble("ZeroMax") : -1;
+   bool DoEarthquake          = CL.GetBool("DoEarthquake", false);
+   double EarthquakeMagnitude = DoEarthquake ? CL.GetDouble("EarthquakeMagnitude") : -1;
 
    DataHelper DHFile(DHFileName);
 
@@ -97,6 +101,8 @@ int main(int argc, char *argv[])
       TH2D *HIn = (TH2D *)InputFile.Get(HName.c_str());
       if(DoZeroing == true)
          ZeroOffdiagonal(HIn, ZeroMin, ZeroMax, InputMatchedBins, InputGenBins);
+      if(DoEarthquake == true)
+         Earthquake(HIn, EarthquakeMagnitude);
       TH2D *H = RebinHistogram2D(HIn, InputMatchedBins, OutputMatchedBins, InputGenBins, OutputGenBins);
       OutputFile.cd();
       H->Clone(HName.c_str())->Write();
@@ -146,10 +152,36 @@ void ZeroOffdiagonal(TH2D *H, double ZeroMin, double ZeroMax,
 
          double R = Y / X;
 
-         if(ZeroMin > 0 && R < ZeroMin)
+         if((ZeroMin > 0 && R < ZeroMin)
+            || (ZeroMax > 0 && R > ZeroMax))
+         {
             H->SetBinContent(iX + 1, iY + 1, 0);
-         if(ZeroMax > 0 && R > ZeroMax)
-            H->SetBinContent(iX + 1, iY + 1, 0);
+            H->SetBinError(iX + 1, iY + 1, 0);
+         }
+      }
+   }
+}
+
+void Earthquake(TH2D *H, double Magnitude)
+{
+   if(H == nullptr)
+      return;
+
+   int NX = H->GetNbinsX();
+   int NY = H->GetNbinsY();
+
+   for(int iX = 1; iX <= NX; iX++)
+   {
+      for(int iY = 1; iY <= NY; iY++)
+      {
+         double V = H->GetBinContent(iX, iY);
+         double E = H->GetBinError(iX, iY);
+
+         V = DrawGaussian(V, E * Magnitude);
+         if(V < 0)
+            V = 0;
+
+         H->SetBinContent(iX, iY, V);
       }
    }
 }
