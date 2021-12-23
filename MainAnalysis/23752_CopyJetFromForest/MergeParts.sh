@@ -1,8 +1,12 @@
 #!/bin/sh
 
-TempFolder=Output/Parts/
-mkdir -p $TempFolder
+TempFolder=$1
 
+if [[ "$TempFolder" == "" ]]; then
+   TempFolder=Output/Parts
+fi
+
+# mkdir -p $TempFolder
 # mv Output/*Part*root $TempFolder
 
 for Type in `ls $TempFolder | cut -d '_' -f 2 | sort | uniq`
@@ -11,5 +15,8 @@ do
    do
       echo ${Type} ${Bin}
       hadd -k -f Output/${Type}_${Bin} $TempFolder/*_${Type}_Part*_${Bin}
+
+      root -l -b -q Output/${Type}_${Bin}
+      ls -lh Output/${Type}_${Bin}
    done
 done
