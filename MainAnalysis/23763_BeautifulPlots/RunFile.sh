@@ -92,12 +92,20 @@ do
          fi
          Underflow=`DHQuery GlobalSetting.dh Binning PTUnderflow_R${R}_Centrality${C}`
          Overflow=`DHQuery GlobalSetting.dh Binning PTOverflow_R${R}_Centrality${C}`
-      else
+      elif [[ "$Tier" == "Reco" ]]; then
          if [[ "${Method}" == "Bayes" ]]; then
             HPrimary=HRefoldedBayes`DHQuery GlobalSetting.dh Iterations ${State}_R${R}_Centrality${C}_Nominal_${NP}`
          elif [[ "$Method" == "TUnfold" ]]; then
             HPrimary=HRefoldedTUnfold
          fi
+         Underflow=0
+         Overflow=0
+      elif [[ "$Tier" == "InputReco" ]]; then
+         HPrimary=HInput
+         Underflow=0
+         Overflow=0
+      elif [[ "$Tier" == "InputRecoGenBin" ]]; then
+         HPrimary=HInputGenBin
          Underflow=0
          Overflow=0
       fi
@@ -133,6 +141,20 @@ do
          NormalizeMCToData="false"
          MCExtraScale="$ExtraScale"
          MCAbsoluteScale="false"
+      elif [[ "$Tier" == "InputReco" ]]; then
+         MCFile="Input/${PRCN}"
+         MCHist="HMCMeasured"
+         MCLabel="MC"
+         NormalizeMCToData="true"
+         MCExtraScale="$ExtraScale"
+         MCAbsoluteScale="false"
+      elif [[ "$Tier" == "InputRecoGenBin" ]]; then
+         MCFile="Input/${PRCN}"
+         MCHist="HMCMeasuredGenBin"
+         MCLabel="MC"
+         NormalizeMCToData="true"
+         MCExtraScale="$ExtraScale"
+         MCAbsoluteScale="false"
       fi
 
       SystematicsFile=Systematics/${PRC}.root
@@ -145,6 +167,21 @@ do
          DataLabel="Data"
       elif [[ "$Tier" == "Reco" ]]; then
          DataLabel="Refolded"
+      elif [[ "$Tier" == "InputReco" ]]; then
+         DataLabel="Reco data"
+      elif [[ "$Tier" == "InputRecoGenBin" ]]; then
+         DataLabel="Reco data"
+      fi
+
+      BinningTier=Gen
+      if [[ "$Tier" == "Gen" ]]; then
+         BinningTier=Gen
+      elif [[ "$Tier" == "Reco" ]]; then
+         BinningTier=Reco
+      elif [[ "$Tier" == "InputReco" ]]; then
+         BinningTier=Reco
+      elif [[ "$Tier" == "InputRecoGenBin" ]]; then
+         BinningTier=Gen
       fi
 
       ./Execute \
@@ -155,7 +192,7 @@ do
          --DataLabel "$DataLabel" \
          --MCFile "${MCFile}" --MCHistogram "${MCHist}" --MCLabel "${MCLabel}" \
          --MCExtraScale "$MCExtraScale" --MCAbsoluteScale "$MCAbsoluteScale" \
-         --Tier $Tier \
+         --Tier $BinningTier \
          --NormalizeMCToData ${NormalizeMCToData} \
          --PrimaryName $HPrimary \
          --Underflow $Underflow \

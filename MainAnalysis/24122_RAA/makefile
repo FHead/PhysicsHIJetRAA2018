@@ -16,7 +16,9 @@ Clean:
 RunRAA: Execute
 	bash RunFile.sh PPData Nominal PbPbData Nominal
 
-RunRAACheck: Execute
+RunRAACheck: RunRAAVariationCheck RunRAARecoCheck
+
+RunRAAVariationCheck: Execute
 	bash RunFile.sh PPData Nominal PbPbData JERUp
 	bash RunFile.sh PPData Nominal PbPbData JERDown
 	bash RunFile.sh PPData Nominal PbPbData FlatJER
@@ -29,6 +31,21 @@ RunRAACheck: Execute
 	bash RunFile.sh PPData Nominal PbPbData CentralityUp
 	bash RunFile.sh PPData Nominal PbPbData CentralityDown
 	bash RunFile.sh PPData Nominal PbPbData MCCentrality
+	bash RunFile.sh PPData Nominal PbPbData NominalEarthquake 
+	bash RunFile.sh PPData Nominal PbPbData NominalCleaned
+	bash RunFile.sh PPData Nominal PbPbData NominalCleanedStrong
+	bash RunFile.sh PPData Nominal PbPbData NominalBinBiasUp
+	bash RunFile.sh PPData Nominal PbPbData NominalBinBiasDown
+
+RunRAARecoCheck: Execute
+	bash RunFile.sh PPData Nominal_Reco PbPbData Nominal_Reco
+	bash RunFile.sh PPData Nominal_InputReco PbPbData Nominal_InputReco
+	bash RunFile.sh PPData Nominal_InputReco PbPbData JECNoResidual_InputReco
+	bash RunFile.sh PPData Nominal_InputReco PbPbData JECNoPhi_InputReco
+	bash RunFile.sh PPData Nominal PbPbData Nominal_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData Nominal_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECNoResidual_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECNoPhi_InputRecoGenBin
 
 RunRCP: Execute
 	bash RunRCP.sh PPData Nominal PbPbData Nominal
@@ -64,5 +81,23 @@ Deploy:
 	cp Plots/RAA*_PPNominal_AACentralityDown.pdf $(DeployBase)/Check/RAA/CentralityVariation/
 	mkdir -p $(DeployBase)/Check/RAA/CentralityFromMC
 	cp Plots/RAA*_PPNominal_AAMCCentrality.pdf $(DeployBase)/Check/RAA/CentralityFromMC/
+	mkdir -p $(DeployBase)/Check/RAA/Cleaning
+	cp Plots/RAA*_PPNominal_AANominalCleaned.pdf $(DeployBase)/Check/RAA/Cleaning/
+	cp Plots/RAA*_PPNominal_AANominalCleanedStrong.pdf $(DeployBase)/Check/RAA/Cleaning/
+	mkdir -p $(DeployBase)/Check/RAA/BinBias
+	cp Plots/RAA*_PPNominal_AANominalBinBiasUp.pdf $(DeployBase)/Check/RAA/BinBias/
+	cp Plots/RAA*_PPNominal_AANominalBinBiasDown.pdf $(DeployBase)/Check/RAA/BinBias/
+	mkdir -p $(DeployBase)/Check/RAA/Earthquake
+	cp Plots/RAA*_PPNominal_AANominalEarthquake.pdf $(DeployBase)/Check/RAA/Earthquake/
+	mkdir -p $(DeployBase)/Check/RAA/Refolded
+	cp Plots/RAA*_PPNominal_Reco_AANominal_Reco.pdf $(DeployBase)/Check/RAA/Refolded/
+	mkdir -p $(DeployBase)/Check/RAA/RecoLevel
+	# cp Plots/RAA*_PPNominal_InputReco_AANominal_InputReco.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	# cp Plots/RAA*_PPNominal_InputReco_AAJECNoPhi_InputReco.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	# cp Plots/RAA*_PPNominal_InputReco_AAJECNoResidual_InputReco.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AANominal_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_AANominal_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECNoPhi_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECNoResidual_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 
 

@@ -22,20 +22,37 @@ RunJetPTReco: Execute
 	bash RunFile.sh PPData    Nominal ""  1 Reco
 	bash RunFile.sh PbPbMCRho Nominal Toy 0 Reco
 	bash RunFile.sh PPMC      Nominal Toy 1 Reco
+	bash RunFile.sh PbPbData  Nominal ""  0 InputReco
+	bash RunFile.sh PPData    Nominal ""  1 InputReco
+	bash RunFile.sh PbPbMCRho Nominal Toy 0 InputReco
+	bash RunFile.sh PPMC      Nominal Toy 1 InputReco
+	bash RunFile.sh PbPbData  Nominal ""  0 InputRecoGenBin
+	bash RunFile.sh PPData    Nominal ""  1 InputRecoGenBin
+	bash RunFile.sh PbPbMCRho Nominal Toy 0 InputRecoGenBin
+	bash RunFile.sh PPMC      Nominal Toy 1 InputRecoGenBin
 
 RunCheck: Execute
-	bash RunFile.sh PbPbData JERUp          "" 0 Gen
-	bash RunFile.sh PbPbData JERDown        "" 0 Gen
-	bash RunFile.sh PbPbData FlatJER        "" 0 Gen
-	bash RunFile.sh PbPbData NoJER          "" 0 Gen
-	bash RunFile.sh PbPbData JECUp          "" 0 Gen
-	bash RunFile.sh PbPbData JECDown        "" 0 Gen
-	bash RunFile.sh PbPbData JECQuench      "" 0 Gen
-	bash RunFile.sh PbPbData JECNoResidual  "" 0 Gen
-	bash RunFile.sh PbPbData JECNoPhi       "" 0 Gen
-	bash RunFile.sh PbPbData CentralityUp   "" 0 Gen
-	bash RunFile.sh PbPbData CentralityDown "" 0 Gen
-	bash RunFile.sh PbPbData MCCentrality   "" 0 Gen
+	bash RunFile.sh PbPbData JERUp              "" 0 Gen
+	bash RunFile.sh PbPbData JERDown            "" 0 Gen
+	bash RunFile.sh PbPbData FlatJER            "" 0 Gen
+	bash RunFile.sh PbPbData NoJER              "" 0 Gen
+	bash RunFile.sh PbPbData JECUp              "" 0 Gen
+	bash RunFile.sh PbPbData JECDown            "" 0 Gen
+	bash RunFile.sh PbPbData JECQuench          "" 0 Gen
+	bash RunFile.sh PbPbData JECNoResidual      "" 0 Gen
+	bash RunFile.sh PbPbData JECNoPhi           "" 0 Gen
+	bash RunFile.sh PbPbData CentralityUp       "" 0 Gen
+	bash RunFile.sh PbPbData CentralityDown     "" 0 Gen
+	bash RunFile.sh PbPbData MCCentrality       "" 0 Gen
+	bash RunFile.sh PbPbData NominalEarthquake  "" 0 Gen
+	bash RunFile.sh PbPbData NominalBinBiasUp   "" 0 Gen
+	bash RunFile.sh PbPbData NominalBinBiasDown "" 0 Gen
+	bash RunFile.sh PbPbData NominalCleaned     "" 0 Gen
+	bash RunFile.sh PbPbData NominalCleanedStrong "" 0 Gen
+	bash RunFile.sh PbPbData JECNoResidual      "" 0 InputReco
+	bash RunFile.sh PbPbData JECNoPhi           "" 0 InputReco
+	bash RunFile.sh PbPbData JECNoResidual      "" 0 InputRecoGenBin
+	bash RunFile.sh PbPbData JECNoPhi           "" 0 InputRecoGenBin
 
 RunJetPTClosure: Execute
 	bash RunFile.sh PbPbMCRho Nominal Toy 0 Gen
@@ -54,4 +71,9 @@ Deploy:
 	mkdir -p $(DeployBase)/Check/ToyRefoldCheck/
 	cp Plots/PbPbMCRho*Toy_Reco.pdf $(DeployBase)/Check/ToyRefoldCheck/
 	cp Plots/PPMC*Toy_Reco.pdf $(DeployBase)/Check/ToyRefoldCheck/
+	mkdir -p $(DeployBase)/Check/Spectra/MatrixCheck
+	cp Plots/PbPbData*NominalEarthquake.pdf  $(DeployBase)/Check/Spectra/MatrixCheck/
+	cp Plots/PbPbData*NominalBinBiasUp.pdf   $(DeployBase)/Check/Spectra/MatrixCheck/
+	cp Plots/PbPbData*NominalBinBiasDown.pdf $(DeployBase)/Check/Spectra/MatrixCheck/
+	cp Plots/PbPbData*NominalCleaned.pdf     $(DeployBase)/Check/Spectra/MatrixCheck/
 

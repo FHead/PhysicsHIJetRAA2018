@@ -4,6 +4,7 @@ PPState=$1
 PPSuffix=$2
 AAState=$3
 AASuffix=$4
+OutputTag=$5
 
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
@@ -34,8 +35,19 @@ do
    AALumi=`DHQuery GlobalSetting.dh Lumi ${AAState}_R${R}_Centrality0to10_BRIL | tr -d '"' | DivideConst 1000`
    AALumiUnit="nb^{-1}"
 
+   if [[ "$PPLumi" == "" ]]; then
+      PPLumi=0
+   fi
+   if [[ "$PbPbLumi" == "" ]]; then
+      PbPbLumi=0
+   fi
+
    RValue=`DHQuery GlobalSetting.dh JetR $R`
    YLabel="R_{AA} (R = $RValue)"
+
+   if [[ "$OutputTag" == "" ]]; then
+      OutputTag=PP${PPSuffix}_AA${AASuffix}
+   fi
 
    ./Execute \
       --PP ${PPFile},${PPFile},${PPFile},${PPFile} \
@@ -44,8 +56,8 @@ do
       --AAName $AACurve0,$AACurve1,$AACurve2,$AACurve3 \
       --Systematics ${SysFile0},${SysFile1},${SysFile2},${SysFile3} \
       --Labels "0-10%","10-30%","30-50%","50-90%" \
-      --FinalOutput Plots/RAAR${R}_PP${PPSuffix}_AA${AASuffix}.pdf \
-      --RootOutput Root/RAAR${R}_PP${PPSuffix}_AA${AASuffix}.root \
+      --FinalOutput Plots/RAAR${R}_${OutputTag}.pdf \
+      --RootOutput Root/RAAR${R}_${OutputTag}.root \
       --CurveLabel $CLabel0,$CLabel1,$CLabel2,$CLabel3 \
       --WorldXMin 158 --WorldXMax 1500 --WorldYMin 0.0 --WorldYMax 1.2 --LogX true --LogY false \
       --XLabel "Jet p_{T} (GeV)" --YLabel "$YLabel" \
