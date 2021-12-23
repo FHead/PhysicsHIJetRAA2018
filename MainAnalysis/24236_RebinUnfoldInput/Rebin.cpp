@@ -78,7 +78,8 @@ int main(int argc, char *argv[])
       {"Gen",     "HMCMatchedGenBin"},
       {"Reco",    "HMCReco"},
       {"Gen",     "HMCRecoGenBin"},
-      {"Reco",    "HDataReco"}
+      {"Reco",    "HDataReco"},
+      {"Gen",     "HDataRecoGenBin"}
    };
    vector<string> Histogram2D
    {
@@ -96,7 +97,13 @@ int main(int argc, char *argv[])
       if(HName.first == "Matched")
          InputBins = &InputMatchedBins, OutputBins = &OutputMatchedBins;
 
-      TH1D *H = RebinHistogram1D((TH1D *)InputFile.Get(HName.second.c_str()), *InputBins, *OutputBins);
+      string InputName = HName.second;
+
+      // Small hack for now before we have proper histograms from the fine version
+      if(InputName == "HDataRecoGenBin")
+         InputName = "HDataReco";
+
+      TH1D *H = RebinHistogram1D((TH1D *)InputFile.Get(InputName.c_str()), *InputBins, *OutputBins);
       OutputFile.cd();
       H->Clone(HName.second.c_str())->Write();
    }
@@ -154,8 +161,18 @@ void ZeroOffdiagonal(TH2D *H, double ZeroMin, double ZeroMax,
    {
       for(int iY = 0; iY < NY; iY++)
       {
-         double X = (XBins[iX] + XBins[iX+1]) / 2;
-         double Y = (YBins[iY] + YBins[iY+1]) / 2;
+         double XMin = XBins[iX];
+         double XMax = XBins[iX+1];
+         if(XMin < -9999)   XMin = XMax - 1;
+         if(XMax > 9999)    XMax = XMin + 1;
+         
+         double YMin = YBins[iY];
+         double YMax = YBins[iY+1];
+         if(YMin < -9999)   YMin = YMax - 1;
+         if(YMax > 9999)    YMax = YMin + 1;
+         
+         double X = (XMin + XMax) / 2;
+         double Y = (YMin + YMax) / 2;
 
          double R = Y / X;
 
@@ -206,8 +223,18 @@ void ApplyBias(TH2D *H, double XPower, double YPower,
    {
       for(int iY = 0; iY < NY; iY++)
       {
-         double X = (XBins[iX] + XBins[iX+1]) / 2;
-         double Y = (YBins[iY] + YBins[iY+1]) / 2;
+         double XMin = XBins[iX];
+         double XMax = XBins[iX+1];
+         if(XMin < -9999)   XMin = XMax - 1;
+         if(XMax > 9999)    XMax = XMin + 1;
+         
+         double YMin = YBins[iY];
+         double YMax = YBins[iY+1];
+         if(YMin < -9999)   YMin = YMax - 1;
+         if(YMax > 9999)    YMax = YMin + 1;
+         
+         double X = (XMin + XMax) / 2;
+         double Y = (YMin + YMax) / 2;
 
          double Factor = pow(X, XPower) * pow(Y, YPower);
 
