@@ -67,7 +67,7 @@ do
       ./Execute --Input $Location/${Prefix}_R${R}_Centrality${C}_${Suffix}.root \
          --Output Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \
          --Prior $PriorString $PriorExtra --DoToyError $DoToyError \
-         --DoBayes true --DoSVD false --DoInvert true --DoTUnfold true --DoFit false
+         --DoBayes true --DoSVD false --DoInvert true --DoTUnfold true --DoFit true
          # --FoldNormalize true --Ignore $Ignore --DoToyError $DoToyError
       ./ExecutePlot --Input Output/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.root \
          --Output Plots/${Prefix}_R${R}_Centrality${C}_${Suffix}_${OutputSuffix}.pdf \

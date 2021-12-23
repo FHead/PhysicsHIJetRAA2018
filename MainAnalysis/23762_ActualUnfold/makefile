@@ -52,6 +52,11 @@ RunAAStep1: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbData  MCCentrality                  0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECNoResidual                 0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECNoPhi                      0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  NominalEarthquake             0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  NominalCleaned                0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  NominalCleanedStrong          0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  NominalBinBiasUp              0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  NominalBinBiasDown            0 DefaultStep1
 
 RunAAStep2: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbMCRho Nominal                       0 DefaultStep1
@@ -67,6 +72,10 @@ RunAAStep2: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbData  MCCentrality                  0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JECNoResidual                 0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JECNoPhi                      0 DefaultStep2
+	bash RunFile.sh Input    PbPbData  NominalEarthquake             0 DefaultStep2
+	bash RunFile.sh Input    PbPbData  NominalCleaned                0 DefaultStep2
+	bash RunFile.sh Input    PbPbData  NominalBinBiasUp              0 DefaultStep2
+	bash RunFile.sh Input    PbPbData  NominalBinBiasDown            0 DefaultStep2
 
 RunPPStep1: Execute ExecutePlot
 	bash RunFile.sh Input    PPMC      Nominal                       1 DefaultStep1

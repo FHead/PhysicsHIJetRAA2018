@@ -162,7 +162,7 @@ public:
       Minimizer->SetMaxFunctionCalls(1000000);
       Minimizer->SetMaxIterations(100000);
       Minimizer->SetTolerance(0.00001);
-      Minimizer->SetPrintLevel(1);
+      Minimizer->SetPrintLevel(-1);
 
       int N = Prior.size();
 
@@ -416,6 +416,8 @@ int main(int argc, char *argv[])
    for(TGraph *G : Graphs)     if(G != nullptr)   G->Write();
    for(TSpline *S : Splines)   if(S != nullptr)   S->Write();
    for(auto I : Covariance)    I.second.Write(I.first.c_str());
+   InputFile.Get("HMCRecoGenBin")->Clone("HMCMeasuredGenBin")->Write();
+   InputFile.Get("HDataRecoGenBin")->Clone("HInputGenBin")->Write();
 
    InputFile.Get("HGenPrimaryBinMin")->Clone()->Write();
    InputFile.Get("HGenPrimaryBinMax")->Clone()->Write();
