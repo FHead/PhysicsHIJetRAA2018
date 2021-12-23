@@ -13,6 +13,7 @@ using namespace std;
 #include "CommandLine.h"
 #include "ProgressBar.h"
 
+#include "BinHelper.h"
 #include "JetCorrector.h"
 
 enum ObservableType {ObservableNone, ObservableJetPT};
@@ -21,6 +22,7 @@ enum ObservableStep {Gen, Reco, Matched};
 class Messenger;
 int main(int argc, char *argv[]);
 void FillMinMax(TH1D &HMin1, TH1D &HMax1, TH1D &HMin2, TH1D &HMax2, vector<double> &Bin1, vector<double> &Bin2);
+vector<double> GetFineBins(double Min, double Max = 1500);
 
 class Messenger
 {
@@ -51,6 +53,7 @@ private:
    vector<float>         *MatchedJetAngle;
    vector<float>         *MatchedJetWeight;
    double                 MaxMatchedJetAngle;
+   bool                   UseJEU;
    bool                   UseJERSF;
    SingleJetCorrector     JERSF;
 public:
@@ -89,6 +92,7 @@ public:
       MatchedJetAngle = nullptr;
       MatchedJetWeight = nullptr;
       MaxMatchedJetAngle = -1;
+      UseJEU = true;
       UseJERSF = false;
 
       Tree = InputTree;
@@ -119,6 +123,10 @@ public:
       Tree->SetBranchAddress("MatchedJetJEU", &MatchedJetJEU);
       Tree->SetBranchAddress("MatchedJetAngle", &MatchedJetAngle);
       Tree->SetBranchAddress("MatchedJetWeight", &MatchedJetWeight);
+   }
+   void SetUseJEU(bool Value)
+   {
+      UseJEU = Value;
    }
    void InitializeJERSF(string FileName)
    {
@@ -179,13 +187,19 @@ public:
       if(Type == ObservableJetPT && Step == Reco && Item < RecoJetPT->size())
       {
          double Value = (*RecoJetPT)[Item];
-         Value = Value * (1 + Shift * (*RecoJetJEU)[Item] / (*RecoJetJEC)[Item]);
+         if(UseJEU == true)
+            Value = Value * (1 + Shift * (*RecoJetJEU)[Item] / (*RecoJetJEC)[Item]);
+         else
+            Value = Value * (1 + Shift);
          return Value;
       }
       if(Type == ObservableJetPT && Step == Matched && Item < MatchedJetPT->size())
       {
          double Value = (*MatchedJetPT)[Item];
-         Value = Value * (1 + Shift * (*MatchedJetJEU)[Item] / (*MatchedJetJEC)[Item]);
+         if(UseJEU == true)
+            Value = Value * (1 + Shift * (*MatchedJetJEU)[Item] / (*MatchedJetJEC)[Item]);
+         else
+            Value = Value * (1 + Shift);
          double SmearAmount = GetSmear(Value, (*MatchedJetEta)[Item], Smear);
          Value = (Value - (*GenJetPT)[Item]) * (SmearAmount + 1) + (*GenJetPT)[Item];
          return Value;
@@ -212,12 +226,13 @@ public:
          return Smear;
       }
       
-      if(Smear == 0)
-         return Parameters[0] - 1;
-      if(Smear < 0)
-         return min(Parameters[1], Parameters[2]) - 1;
-      if(Smear > 0)
-         return max(Parameters[1], Parameters[2]) - 1;
+      double Mean = Parameters[0] - 1;
+      double Low = min(Parameters[1], Parameters[2]) - 1;
+      double High = max(Parameters[1], Parameters[2]) - 1;
+
+      if(Smear == 0)   return Mean;
+      if(Smear < 0)    return Mean + Smear * (Mean - Low);   // Note Smear < 0, Mean - Low > 0, so it works out
+      if(Smear > 0)    return Mean + Smear * (High - Mean);
 
       // it should never reach here!
       return 0;
@@ -286,24 +301,24 @@ int main(int argc, char *argv[])
    double MCFraction     = CL.GetDouble("MCFraction", 1.00);
    double DataFraction   = CL.GetDouble("DataFraction", 1.00);
 
-   vector<double> Default{0.0, 1.0};
+   // vector<double> Default{0.0, 1.0};
+   string Default = "0.0,1.0";
+
    string Primary                 = CL.Get("Observable", "JetP");
    int PrimaryIndex               = CL.GetInt("ObservableIndex", -1);
-   vector<double> PrimaryGenBins  = CL.GetDoubleVector("ObservableGenBins", Default);
-   vector<double> PrimaryRecoBins = CL.GetDoubleVector("ObservableRecoBins", Default);
+   string PrimaryGenBinString     = CL.Get("ObservableGenBins", Default);
+   string PrimaryRecoBinString    = CL.Get("ObservableRecoBins", Default);
    double PrimaryShift            = CL.GetDouble("ObservableShift", 0);
    double PrimarySmear            = CL.GetDouble("ObservableSmear", 0);
    string Binning                 = CL.Get("Binning", "None");
    int BinningIndex               = CL.GetInt("BinningIndex", -1);
-   vector<double> BinningGenBins  = CL.GetDoubleVector("BinningGenBins", Default);
-   vector<double> BinningRecoBins = CL.GetDoubleVector("BinningRecoBins", Default);
+   string BinningGenBinString     = CL.Get("BinningGenBins", Default);
+   string BinningRecoBinString    = CL.Get("BinningRecoBins", Default);
    double BinningShift            = CL.GetDouble("BinningShift", 0);
    double BinningSmear            = CL.GetDouble("BinningSmear", 0);
    bool CheckMatchAngle           = CL.GetBool("CheckMatchAngle", true);
    double MaxMatchAngle           = CL.GetDouble("MaxMatchAngle", 0.2);
 
-   bool UseJERSFFile              = CL.GetBool("UseJERSFFile", false);
-   
    double PrimaryGenMin           = CL.GetDouble("ObservableGenMin", -99999);
    double PrimaryGenMax           = CL.GetDouble("ObservableGenMax", +99999);
    double PrimaryRecoMin          = CL.GetDouble("ObservableRecoMin", -99999);
@@ -313,6 +328,19 @@ int main(int argc, char *argv[])
    double BinningRecoMin          = CL.GetDouble("BinningRecoMin", -99999);
    double BinningRecoMax          = CL.GetDouble("BinningRecoMax", +99999);
 
+   vector<double> PrimaryGenBins, PrimaryRecoBins, BinningGenBins, BinningRecoBins;
+   if(PrimaryGenBinString == "fine")   PrimaryGenBins = GetFineBins(PrimaryGenMin);
+   else                                PrimaryGenBins  = ParseList(PrimaryGenBinString);
+   if(PrimaryRecoBinString == "fine")  PrimaryRecoBins = GetFineBins(PrimaryRecoMin);
+   else                                PrimaryRecoBins  = ParseList(PrimaryRecoBinString);
+   if(BinningGenBinString == "fine")   BinningGenBins = GetFineBins(BinningGenMin);
+   else                                BinningGenBins  = ParseList(BinningGenBinString);
+   if(BinningRecoBinString == "fine")  BinningRecoBins = GetFineBins(BinningRecoMin);
+   else                                BinningRecoBins  = ParseList(BinningRecoBinString);
+
+   bool UseJEU                    = CL.GetBool("UseJEU", true);
+   bool UseJERSFFile              = CL.GetBool("UseJERSFFile", false);
+   
    bool DoFlooring                = CL.GetBool("Flooring", false);
 
    sort(PrimaryGenBins.begin(), PrimaryGenBins.end());
@@ -365,6 +393,7 @@ int main(int argc, char *argv[])
    TH2D HResponseNoWeight("HResponseNoWeight", ";Matched;Gen", MatchedBinCount, 0, MatchedBinCount, GenBinCount, 0, GenBinCount);
    TH2D HResponse("HResponse", ";Matched;Gen", MatchedBinCount, 0, MatchedBinCount, GenBinCount, 0, GenBinCount);
    TH1D HDataReco("HDataReco", ";Reco", RecoBinCount, 0, RecoBinCount);
+   TH1D HDataRecoGenBin("HDataRecoGenBin", ";Gen", GenBinCount, 0, GenBinCount);
 
    TH1D HGenPrimaryBinMin("HGenPrimaryBinMin", ";Gen;Min", GenBinCount, 0, GenBinCount);
    TH1D HGenPrimaryBinMax("HGenPrimaryBinMax", ";Gen;Max", GenBinCount, 0, GenBinCount);
@@ -389,6 +418,7 @@ int main(int argc, char *argv[])
    Messenger MMC(FMC);
    if(CheckMatchAngle == true)
       MMC.SetMaxMatchedJetAngle(MaxMatchAngle);
+   MMC.SetUseJEU(UseJEU);
    if(UseJERSFFile == true)
       MMC.InitializeJERSF(CL.Get("JERSF"));
 
@@ -512,6 +542,11 @@ int main(int argc, char *argv[])
             PrimaryType, PrimaryIndex, iJ, PrimaryRecoBins, 0, 1, 1, PrimaryRecoMin, PrimaryRecoMax,
             BinningType, BinningIndex, iJ, BinningRecoBins, 0, 1, 1, BinningRecoMin, BinningRecoMax);
          HDataReco.Fill(RecoBin, MData.GetEventWeight() * MData.GetJetWeight(Reco, iJ));
+         
+         int RecoGenBin = MData.GetCompositeBin(Reco,
+            PrimaryType, PrimaryIndex, iJ, PrimaryGenBins, 0, 1, 1, PrimaryGenMin, PrimaryGenMax,
+            BinningType, BinningIndex, iJ, BinningGenBins, 0, 1, 1, BinningGenMin, BinningGenMax);
+         HDataRecoGenBin.Fill(RecoGenBin, MData.GetEventWeight() * MData.GetJetWeight(Reco, iJ));
       }
    }
    
@@ -564,6 +599,7 @@ int main(int argc, char *argv[])
    HResponseNoWeight.Write();
    HResponse.Write();
    HDataReco.Write();
+   HDataRecoGenBin.Write();
    HGenPrimaryBinMin.Write();
    HGenPrimaryBinMax.Write();
    HGenBinningBinMin.Write();
@@ -615,6 +651,13 @@ void FillMinMax(TH1D &HMin1, TH1D &HMax1, TH1D &HMin2, TH1D &HMax2, vector<doubl
    }
 }
 
+vector<double> GetFineBins(double Min, double Max)
+{
+   vector<double> Result;
+   for(int i = (int)Min + 1; i < (int)Max; i++)
+      Result.push_back(i);
+   return Result;
+}
 
 
 

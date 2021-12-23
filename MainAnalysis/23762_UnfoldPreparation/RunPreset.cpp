@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
    string Prefix             = CL.Get("Prefix");
    string Suffix             = CL.Get("Suffix");
 
+   bool UseJEU               = CL.GetBool("UseJEU", true);
    bool UseJERSFFile         = CL.GetBool("UseJERSFFile", false);
    string JERSFFile          = CL.Get("JERSF", "none");
 
@@ -75,6 +76,7 @@ int main(int argc, char *argv[])
             << " --ObservableShift " << JetShift
             << " --ObservableSmear " << JetSmear
             << " --Flooring " << Flooring
+            << " --UseJEU " << UseJEU
             << " --UseJERSFFile " << UseJERSFFile << " --JERSF " << JERSFFile
             << " --CheckMatchAngle true --MaxMatchAngle " << DHFile["JetRMatch"][R].GetDouble()
             << ";" << endl;
@@ -90,8 +92,12 @@ map<string, string> GetBinnings()
 {
    map<string, string> Binnings;
 
-   Binnings["GenBins"] = "20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1100,1200,1300,1400,1500";
-   Binnings["RecoBins"] = "20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,220,240,260,280,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000,1100,1200,1300,1400,1500";
+   string List = "";
+   for(int i = 81; i<= 1499; i++)
+      List = List + to_string(i) + ",";
+
+   Binnings["GenBins"] = List;
+   Binnings["RecoBins"] = List;
 
    return Binnings;
 }
