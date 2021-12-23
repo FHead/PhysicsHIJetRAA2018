@@ -86,15 +86,34 @@ int main(int argc, char *argv[])
       F.SetParError(i, FLog.GetParError(i));
    }
 
+   int Extra1 = Order1 + Order2 + 1;
+   int Extra2 = Order1 + Order2 + 2;
+   string ExtendedFormula =
+      Form("(x<[%d])*(-999)+(x>[%d])*(-999)+(x>=[%d]&&x<=[%d])*(%s)", Extra1, Extra2, Extra1, Extra2,
+         Formula.c_str());
+
+   TF1 F2("F2", Form("exp(%s)", ExtendedFormula.c_str()), 0, 1500);
+   for(int i = 0; i <= Order1 + Order2; i++)
+   {
+      F2.SetParameter(i, FLog.GetParameter(i));
+      F2.SetParError(i, FLog.GetParError(i));
+   }
+   F2.SetParameter(Extra1, MinMax.first * 0.7);
+   F2.SetParameter(Extra2, MinMax.second * 1.1);
+
    DataHelper DHFile(DHFileName);
 
-   DHFile[State][KeyBase+"_Formula"] = "exp(" + Formula + ")";
-   DHFile[State][KeyBase+"_NPar"] = Order1 + Order2 + 1;
+   DHFile[State][KeyBase+"_RawFormula"] = "exp(" + Formula + ")";
+   DHFile[State][KeyBase+"_Formula"] = "exp(" + ExtendedFormula + ")";
+   DHFile[State][KeyBase+"_RawNPar"] = Order1 + Order2 + 1;
+   DHFile[State][KeyBase+"_NPar"] = Order1 + Order2 + 1 + 2;
    for(int i = 0; i <= Order1 + Order2; i++)
    {
       DHFile[State][KeyBase+"_P"+to_string(i)] = F.GetParameter(i);
       DHFile[State][KeyBase+"_E"+to_string(i)] = F.GetParError(i);
    }
+   DHFile[State][KeyBase+"_P"+to_string(Order1+Order2+1)] = MinMax.first * 0.7;
+   DHFile[State][KeyBase+"_P"+to_string(Order1+Order2+2)] = MinMax.second * 1.1;
    DHFile[State][KeyBase+"_MinUE"] = MinMax.first;
    DHFile[State][KeyBase+"_MaxUE"] = MinMax.second;
 
@@ -129,6 +148,18 @@ int main(int argc, char *argv[])
    Canvas.SetLogy(false);
    PdfFile.AddCanvas(Canvas);
 
+   TGraph GF2;
+   for(double X = 0; X < 1500; X = X + 0.1)
+   {
+      double Y = F2.Eval(X);
+      if(Y != Y || Y > 1000)
+         Y = 1000;
+      GF2.SetPoint(GF2.GetN(), X, Y);
+   }
+   GF2.Draw("ap");
+   Canvas.SetLogy(false);
+   PdfFile.AddCanvas(Canvas);
+
    File.Close();
 
    PdfFile.AddTimeStampPage();
@@ -155,6 +186,9 @@ pair<double, double> GetMinMax(TGraphAsymmErrors *G)
       if(X - EXL < MinMax.first)    MinMax.first = X - EXL;
       if(X + EXH > MinMax.second)   MinMax.second = X + EXH;
    }
+
+   if(MinMax.first < 2)
+      MinMax.first = 0;
 
    return MinMax;
 }
