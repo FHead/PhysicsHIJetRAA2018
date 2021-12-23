@@ -11,9 +11,12 @@ IsMC=$4
 IsPP=$5
 Recluster=$6
 RTag=$7
-DoPhiResidual=$8
-DoExclusion=$9
-Centrality=${10}
+MinPT=$8
+DoPhiResidual=$9
+DoDataResidual=${10}
+DoExclusion=${11}
+Centrality=${12}
+CentralityTable=${13}
 
 echo "Runing with the following"
 echo "  Input = $InputFile"
@@ -23,9 +26,12 @@ echo "  IsMC = $IsMC (1 = yes, 0 = no)"
 echo "  IsPP = $IsPP (0 = PbPb, 1 = NonUL pp, 2 = UL pp)"
 echo "  Recluster = $Recluster (0 = no, 1 = yes)"
 echo "  RTag = $RTag (what radius?  Goes from 1-9)"
+echo "  MinPT = $MinPT (in GeV)"
 echo "  DoPhiResidual = $DoPhiResidual (0 = no, 1 = yes)"
+echo "  DoDataResidual = $DoDataResidual (0 = no, 1 = yes)"
 echo "  DoExclusion = $DoExclusion (0 = no, 1 = yes)"
 echo "  Centrality = $Centrality"
+echo "  CentralityTable = $CentralityTable"
 echo
 
 Fraction=1
@@ -33,19 +39,27 @@ Fraction=1
 JetR=`DHQuery GlobalSetting.dh Global JetR | sed 's/"//g'`
 
 DoRhoWeight=0
+RhoSuffix=
 if [[ "$Centrality" == "default" ]]; then
    if [[ "$IsPP" != "0" ]]; then
       Centrality="Inclusive"
    else
       Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
    fi
-elif [[ "$Centrality" == "rho" ]]; then
+elif [[ "$Centrality" == "rho"* ]]; then
+   DoRhoWeight=1
+   if [[ "$Centrality" == "rhoup" ]]; then
+      RhoSuffix="_CentralityUp"
+   elif [[ "$Centrality" == "rhodown" ]]; then
+      RhoSuffix="_CentralityDown"
+   else
+      RhoSuffix=
+   fi
    if [[ "$IsPP" != "0" ]]; then
       Centrality="Inclusive"
    else
       Centrality=`DHQuery GlobalSetting.dh Global Centrality | sed 's/"//g'`
    fi
-   DoRhoWeight=1
 fi
 
 RValue=`DHQuery GlobalSetting.dh JetR $RTag`
@@ -68,17 +82,25 @@ elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "2" ]]; then
    JECTag="Summer20UL17_ppRef5TeV_RAAV1_DATA"
 fi
 
-if [[ "$IsMC" == "1" ]] && [[ "$DoPhiResidual" == 1 ]]; then
-   JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt","$JECBase/$PhiTag/PhiCorrectionGen_AK${RTag}PF.txt"
-elif [[ "$IsMC" == "0" ]] && [[ "$DoPhiResidual" == 1 ]]; then
-   JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt","$JECBase/$PhiTag/PhiCorrectionGen_AK${RTag}PF.txt","$JECBase/$JECTag/${JECTag}_L2L3Residual_AK${RTag}PF.txt"
-elif [[ "$IsMC" == "1" ]] && [[ "$DoPhiResidual" == 0 ]]; then
-   JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt"
-elif [[ "$IsMC" == "0" ]] && [[ "$DoPhiResidual" == 0 ]]; then
-   JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt","$JECBase/$JECTag/${JECTag}_L2L3Residual_AK${RTag}PF.txt"
+JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt"
+if [[ "$DoPhiResidual" == 1 ]]; then
+   JEC="$JEC,$JECBase/$PhiTag/PhiCorrectionGen_AK${RTag}PF.txt"
+fi
+if [[ "$DoDataResidual" == 1 ]]; then
+   JEC="$JEC,$JECBase/$JECTag/${JECTag}_L2L3Residual_AK${RTag}PF.txt"
 fi
 
-Exclusion=`DHQuery GlobalSetting.dh Binning JetExclusion`
+# if [[ "$DoDataResidual" == "0" ]] && [[ "$DoPhiResidual" == 1 ]]; then
+#    JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt","$JECBase/$PhiTag/PhiCorrectionGen_AK${RTag}PF.txt"
+# elif [[ "$DoDataResidual" == "1" ]] && [[ "$DoPhiResidual" == 1 ]]; then
+#    JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt","$JECBase/$PhiTag/PhiCorrectionGen_AK${RTag}PF.txt","$JECBase/$JECTag/${JECTag}_L2L3Residual_AK${RTag}PF.txt"
+# elif [[ "$DoDataResidual" == "0" ]] && [[ "$DoPhiResidual" == 0 ]]; then
+#    JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt"
+# elif [[ "$DoDataResidual" == "1" ]] && [[ "$DoPhiResidual" == 0 ]]; then
+#    JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt","$JECBase/$JECTag/${JECTag}_L2L3Residual_AK${RTag}PF.txt"
+# fi
+
+Exclusion=`DHQuery GlobalSetting.dh Binning JetExclusion | tr -d '"'`
 if [[ "$DoExclusion" == 0 ]]; then
    Exclusion="99,100,99,100"
 fi
@@ -106,11 +128,32 @@ do
    if [[ "$CTag" == "Inclusive" ]]; then
       CheckCentrality=false
    fi
+   
+   ReEvaluateCentrality=true
+   CentralityShift=0
+   if [[ $CentralityTable == "default" ]]; then
+      ReEvaluateCentrality=false
+      CentralityShift=0
+   elif [[ $CentralityTable == "MC" ]]; then
+      ReEvaluateCentrality=true
+      CentralityShift=100
+   elif [[ $CentralityTable == "Data" ]]; then
+      ReEvaluateCentrality=true
+      CentralityShift=0
+   elif [[ $CentralityTable == "DataUp" ]]; then
+      ReEvaluateCentrality=true
+      CentralityShift=1
+   elif [[ $CentralityTable == "DataDown" ]]; then
+      ReEvaluateCentrality=true
+      CentralityShift=-1
+   fi
 
    RhoKey="none"
    if [[ "$DoRhoWeight" == 1 ]]; then
-      RhoKey="R${RTag}_Centrality${CTag}"
+      RhoKey="R${RTag}_Centrality${CTag}$RhoSuffix"
       CheckCentrality=false
+      ReEvaluateCentrality=false
+      CentralityShift=0
    fi
 
    echo "Running R = $RValue, Centrality = $CTag"
@@ -120,15 +163,8 @@ do
       Stored=false
    fi
 
-   PTMin=15
-   GenPTMin=10
-   if [[ "$IsPP" == 0 ]] && [[ "$DoPhiResidual" == 0 ]] && [[ "$IsMC" == 1 ]]; then
-      PTMin=0
-      GenPTMin=0
-   elif [[ "$IsPP" == 0 ]] && [[ "$RhoKey" != "none" ]] && [[ "$IsMC" == 1 ]]; then
-      PTMin=40
-      GenPTMin=40
-   fi
+   PTMin=$MinPT
+   GenPTMin=$MinPT
 
    Jet="akCs4PFJetAnalyzer/t"
    if [[ "$IsPP" == 0 ]]; then
@@ -150,6 +186,16 @@ do
    fi
 
    mkdir -p /tmp/chenyi/
+   echo ./Execute --Input $InputFile --Output /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root \
+       --JetR $RValue --Jet "${Jet}" --JEC ${JEC} --JEU ${JEU} \
+       --Fraction $Fraction --Exclusion "$Exclusion" \
+       --UseStoredGen $Stored --UseStoredReco $Stored --DoRecoSubtraction false --Trigger $Trigger \
+       --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
+       --PTMin $PTMin --GenPTMin $GenPTMin \
+       --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
+       --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey --CutUE true \
+       --ReEvaluateCentrality $ReEvaluateCentrality --CentralityShift $CentralityShift \
+       --DoJetID true --JetIDKeyBase ${JetIDTag}_R${RTag}_Centrality${CTag}
    ./Execute --Input $InputFile --Output /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root \
       --JetR $RValue --Jet "${Jet}" --JEC ${JEC} --JEU ${JEU} \
       --Fraction $Fraction --Exclusion "$Exclusion" \
@@ -157,7 +203,8 @@ do
       --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
       --PTMin $PTMin --GenPTMin $GenPTMin \
       --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
-      --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey \
+      --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey --CutUE true \
+      --ReEvaluateCentrality $ReEvaluateCentrality --CentralityShift $CentralityShift \
       --DoJetID true --JetIDKeyBase ${JetIDTag}_R${RTag}_Centrality${CTag}
    mv /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root Output/${Tag}_R${RTag}_Centrality${CTag}.root
 done
