@@ -32,19 +32,28 @@ do
       MCPRCN="Input/${MCPRC}_Nominal_${MCNP}.root"
       MCPRCToy="Input/${MCPRC}_Nominal_Toy_${MCNP}.root"
 
-      NominalIteration=`DHQuery GlobalSetting.dh Iterations ${Prefix}_R${R}_Centrality${C}_Nominal_${NP}`
-      HNominal=HUnfoldedBayes${NominalIteration}
+      Method=`DHQuery GlobalSetting.dh MethodToUse ${Prefix}_R${R}_Centrality${C}_Default | tr -d '"'`
+      if [[ "$Method" == "Bayes" ]]; then
+         NominalIteration=`DHQuery GlobalSetting.dh Iterations ${Prefix}_R${R}_Centrality${C}_Nominal_${NP}`
+         HNominal=HUnfoldedBayes${NominalIteration}
 
-      MCIteration=`DHQuery GlobalSetting.dh Iterations ${MCPrefix}_R${R}_Centrality${C}_Nominal_${MCNP}`
-      HMCNominal=HUnfoldedBayes${MCIteration}
-      
-      PriorIteration=`DHQuery GlobalSetting.dh Iterations ${Prefix}_R${R}_Centrality${C}_Nominal_${AP}`
-      HPrior=HUnfoldedBayes${PriorIteration}
-      
-      IterationUp=`./ExecuteIteration --Input ${PRCN} --Mode Next --Iteration $NominalIteration`
-      IterationDown=`./ExecuteIteration --Input ${PRCN} --Mode Previous --Iteration $NominalIteration`
-      HIterationUp=HUnfoldedBayes${IterationUp}
-      HIterationDown=HUnfoldedBayes${IterationDown}
+         MCIteration=`DHQuery GlobalSetting.dh Iterations ${MCPrefix}_R${R}_Centrality${C}_Nominal_${MCNP}`
+         HMCNominal=HUnfoldedBayes${MCIteration}
+
+         PriorIteration=`DHQuery GlobalSetting.dh Iterations ${Prefix}_R${R}_Centrality${C}_Nominal_${AP}`
+         HPrior=HUnfoldedBayes${PriorIteration}
+
+         IterationUp=`./ExecuteIteration --Input ${PRCN} --Mode Next --Iteration $NominalIteration`
+         IterationDown=`./ExecuteIteration --Input ${PRCN} --Mode Previous --Iteration $NominalIteration`
+         HIterationUp=HUnfoldedBayes${IterationUp}
+         HIterationDown=HUnfoldedBayes${IterationDown}
+      elif [[ "$Method" == "TUnfold" ]]; then
+         HNominal=HUnfoldedTUnfold
+         HMCNominal=HUnfoldedTUnfold
+         HPrior=HUnfoldedTUnfold
+         HIterationUp=HUnfoldedTUnfold
+         HIterationDown=HUnfoldedTUnfold
+      fi
 
       ./Execute \
          --BaseInput ${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${MCPRCToy},${PRCN},${PRCN},${PRCN} \
@@ -75,7 +84,7 @@ do
          --Input Output/${PRC}.root --Output Plot/${PRC}.pdf \
          --Variations HJECUp,HJECDown,HJERUp,HJERDown,HIterationUp,HIterationDown,HPrior,HIteration,HCentralityDown,HCentralityDown,HJECQuench \
          --Labels "JEC Up","JEC Down","JER Up","JER Down","Iteration Up","Iteration Down","Prior","Iteration","Centrality Up","Centrality Down","Quench"
+      done
    done
-done
 
 

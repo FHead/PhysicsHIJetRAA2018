@@ -17,6 +17,7 @@ using namespace std;
 #include "RooUnfoldInvert.h"
 #include "RooUnfoldBayes.h"
 #include "RooUnfoldSvd.h"
+#include "TUnfold.h"
 #include "TUnfoldDensity.h"
 
 #include "RootUtilities.h"
@@ -28,7 +29,7 @@ int main(int argc, char *argv[]);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 void RemoveOutOfRange(TH1D *H);
 void RemoveOutOfRange(TH2D *HResponse);
-void ReweightResponse(TH2D *HResponse, TH1D *HPrior);
+void ReweightResponse(TH2D *HResponse, TH1D *HPrior, bool NormalizePrior = true);
 TH1D *ConstructPriorCopy(TH1D *HMC);
 TH1D *ConstructPriorCopyExternal(string FileName, string HistName);
 TH1D *ConstructPriorFlat(vector<double> GenBins);
@@ -153,7 +154,7 @@ public:
          LL = LL + 100 * R * R;
       }
 
-      return LL;
+      return 0.5 * LL;
    }
    const double *DoFit()
    {
@@ -161,7 +162,7 @@ public:
       Minimizer->SetMaxFunctionCalls(1000000);
       Minimizer->SetMaxIterations(100000);
       Minimizer->SetTolerance(0.00001);
-      Minimizer->SetPrintLevel(-1);
+      Minimizer->SetPrintLevel(1);
 
       int N = Prior.size();
 
@@ -169,7 +170,7 @@ public:
       Minimizer->SetFunction(F);
 
       for(int i = 0; i < N; i++)
-         Minimizer->SetLimitedVariable(i, Form("S%d", i), 1.00, 0.1, 0.001, 1000);
+         Minimizer->SetLimitedVariable(i, Form("S%d", i), 1.00, 0.001, 0.001, 1000);
       for(int i = 0; i < 5; i++)
          Minimizer->Minimize();
 
@@ -217,6 +218,7 @@ int main(int argc, char *argv[])
    RemoveOutOfRange(HMeasured);
    RemoveOutOfRange(HTruth);
    RemoveOutOfRange(HResponse);
+   RemoveOutOfRange(HRawResponse);
    RemoveOutOfRange(HInput);
 
    TH1D *HPrior = nullptr;
@@ -279,7 +281,8 @@ int main(int argc, char *argv[])
 
    if(DoBayes == true)
    {
-      vector<int> Iterations{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150, 200, 250};
+      // vector<int> Iterations{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150, 200, 250};
+      vector<int> Iterations{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 80, 90, 100, 125, 150, 200, 250};
       for(int I : Iterations)
       {
          RooUnfoldBayes BayesUnfold(Response, HInput, I);
@@ -305,7 +308,8 @@ int main(int argc, char *argv[])
    
    if(DoSVD == true)
    {
-      vector<double> SVDRegularization{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150};
+      // vector<double> SVDRegularization{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150};
+      vector<double> SVDRegularization{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 80, 90, 100, 125, 150, 200, 250};
       for(double D : SVDRegularization)
       {
          if(D >= HGen->GetNbinsX())
@@ -325,17 +329,22 @@ int main(int argc, char *argv[])
    {
       TUnfoldDensity Unfold((TH2 *)HRawResponse,
          TUnfold::kHistMapOutputVert,
-         TUnfold::kRegModeCurvature,
-         TUnfold::kEConstraintArea,
+         TUnfold::kRegModeDerivative,   // Size, Curvature, Derivative
+         TUnfold::kEConstraintNone,     // None, Area
          TUnfoldDensity::kDensityModeBinWidth);
+      // TUnfold Unfold((TH2 *)HResponse,
+      //    TUnfold::kHistMapOutputVert,
+      //    TUnfold::kRegModeCurvature,
+      //    TUnfold::kEConstraintArea);
       Unfold.SetInput(HInput);
+      Unfold.SetBias(HPrior);
 
       TSpline *LogTauX, *LogTauY;
       TGraph *LCurve;
       int IBest = Unfold.ScanLcurve(100, 0, 0, &LCurve, &LogTauX, &LogTauY);
 
-      TH1 *H = Unfold.GetOutput("HTUnfold");
-      TH2 *HError = Unfold.GetEmatrixInput("HTUnfoldMatrix");
+      TH1 *H = Unfold.GetOutput("HUnfoldedTUnfold");
+      TH2 *HError = Unfold.GetEmatrixInput("HUnfoldedTUnfold");
       HUnfolded.push_back(H);
 
       int ErrorNX = HError->GetNbinsX();
@@ -344,7 +353,7 @@ int main(int argc, char *argv[])
       for(int iX = 0; iX < ErrorNX; iX++)
          for(int iY = 0; iY < ErrorNY; iY++)
             TUnfoldCovariance[iX][iY] = HError->GetBinContent(iX + 1, iY + 1);
-      Covariance.insert({"MTUnfold", TUnfoldCovariance});
+      Covariance.insert({"MUnfoldedTUnfold", TUnfoldCovariance});
 
       LCurve->SetName("GTUnfoldLCurve");
       Graphs.push_back(LCurve);
@@ -357,9 +366,13 @@ int main(int argc, char *argv[])
       double X, Y, T;
       LogTauX->GetKnot(IBest, T, X);
       LogTauY->GetKnot(IBest, T, Y);
-      // TGraph *GXY = new TGraph("GTUnfoldXYTemp");
-      // GXY->SetPoint(0, X, Y);
-      // Graphs.push_back((TGraph *)GXY->Clone("GTUnfoldXY"));
+      // TGraph GXY("GTUnfoldXYTemp");
+      // GXY.SetPoint(0, X, Y);
+      // Graphs.push_back((TGraph *)GXY.Clone("GTUnfoldXY"));
+         
+      TH1D *HFold = ForwardFold(H, HResponse);
+      HFold->SetName("HRefoldedTUnfold");
+      HRefolded.push_back(HFold);
    }
 
    if(DoFit == true)
@@ -495,14 +508,15 @@ void RemoveOutOfRange(TH2D *HResponse)
    }
 }
 
-void ReweightResponse(TH2D *HResponse, TH1D *HPrior)
+void ReweightResponse(TH2D *HResponse, TH1D *HPrior, bool NormalizePrior)
 {
    if(HResponse == nullptr)
       return;
    if(HPrior == nullptr)
       return;
 
-   HPrior->Scale(1 / HPrior->Integral());
+   if(NormalizePrior == true)
+      HPrior->Scale(1 / HPrior->Integral());
 
    int NX = HResponse->GetNbinsX();
    int NY = HResponse->GetNbinsY();

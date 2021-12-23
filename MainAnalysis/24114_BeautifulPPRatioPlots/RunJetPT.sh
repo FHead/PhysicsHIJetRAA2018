@@ -29,9 +29,6 @@ SysR69=CombinedSystematics/PPDataRatio_R6R9_CentralityInclusive.root
 SysR79=CombinedSystematics/PPDataRatio_R7R9_CentralityInclusive.root
 SysR89=CombinedSystematics/PPDataRatio_R8R9_CentralityInclusive.root
 
-echo $PPR1
-echo $PPR9
-
 ./Execute --Output Plots/Base1.2.pdf \
    --BaseFileName ${PPR9} \
    --BaseRLabel 9 \
