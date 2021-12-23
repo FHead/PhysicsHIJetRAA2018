@@ -6,9 +6,6 @@ mkdir -p root
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
-JetR="1 2 3 4 5 8 9"
-JetR="6 7"
-
 OrderDHFile=Order.dh
 
 # default for everyone
@@ -43,6 +40,16 @@ do
       ./ExecuteFit --Input graph/Output_R${R}_Centrality${C}.root \
          --Output pdf/Fit_R${R}_Centrality${C}.pdf \
          --DHFile GlobalSettingTemp.dh --Key R${R}_Centrality${C} \
+         --Order1 ${Order1} --Order2 ${Order2} \
+         --PinSmall $PinSmall --PinLarge $PinLarge
+      ./ExecuteFit --Input graph/OutputCentralityUp_R${R}_Centrality${C}.root \
+         --Output pdf/FitCentralityUp_R${R}_Centrality${C}.pdf \
+         --DHFile GlobalSettingTemp.dh --Key R${R}_Centrality${C}_CentralityUp \
+         --Order1 ${Order1} --Order2 ${Order2} \
+         --PinSmall $PinSmall --PinLarge $PinLarge
+      ./ExecuteFit --Input graph/OutputCentralityDown_R${R}_Centrality${C}.root \
+         --Output pdf/FitCentralityDown_R${R}_Centrality${C}.pdf \
+         --DHFile GlobalSettingTemp.dh --Key R${R}_Centrality${C}_CentralityDown \
          --Order1 ${Order1} --Order2 ${Order2} \
          --PinSmall $PinSmall --PinLarge $PinLarge
    done

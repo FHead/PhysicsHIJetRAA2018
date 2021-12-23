@@ -6,8 +6,8 @@ mkdir -p graph
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
-# JetR="1 2 3 4 5 8 9"
-JetR="6 7"
+# JetR="8 9"
+# Centrality="0to10"
 
 OrderDHFile=Order.dh
 
@@ -55,6 +55,14 @@ do
       ./ExecuteMatch --Input root/Output_R${R}_Centrality${C}.root \
          --Output pdf/Output_R${R}_Centrality${C}.pdf \
          --RootOutput graph/Output_R${R}_Centrality${C}.root \
+		   --BinCount $BinCount --BinMagnification $BinMagnification --SkipFinalBin $Skip
+      ./ExecuteMatch --Input root/OutputCentralityUp_R${R}_Centrality${C}.root \
+         --Output pdf/OutputCentralityUp_R${R}_Centrality${C}.pdf \
+         --RootOutput graph/OutputCentralityUp_R${R}_Centrality${C}.root \
+		   --BinCount $BinCount --BinMagnification $BinMagnification --SkipFinalBin $Skip
+      ./ExecuteMatch --Input root/OutputCentralityDown_R${R}_Centrality${C}.root \
+         --Output pdf/OutputCentralityDown_R${R}_Centrality${C}.pdf \
+         --RootOutput graph/OutputCentralityDown_R${R}_Centrality${C}.root \
 		   --BinCount $BinCount --BinMagnification $BinMagnification --SkipFinalBin $Skip
    done
 done
