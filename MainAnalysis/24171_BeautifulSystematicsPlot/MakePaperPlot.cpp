@@ -620,7 +620,11 @@ double GetTotalGlobalUncertainty(string DHFileName, string FileName)
 
    vector<string> Keys = DHFile[State].GetListOfKeys();
    for(string Key : Keys)
+   {
+      if(Key.rfind("Global_", 0) == string::npos)
+         continue;
       Variance = Variance + DHFile[State][Key].GetDouble() * DHFile[State][Key].GetDouble();
+   }
 
    return sqrt(Variance);
 }

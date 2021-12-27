@@ -8,7 +8,7 @@ Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/23763_Systematics/Output/ Systematics
 	ln -sf $(ProjectBase)/MainAnalysis/24165_SystematicsCombination/Output/ CombinedSystematics
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
-	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSystematics.dh .
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/Systematics.dh .
 	mkdir -p Plots FinalPlots
 
 Clean:

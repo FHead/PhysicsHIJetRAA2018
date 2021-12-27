@@ -3,12 +3,12 @@
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
-PPVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior"
-PPSystematicGroups="1,1,2,2,3,3"
-PPLabels="JES,JER,Unfolding"
-AAVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior,HCentralityUp,HCentralityDown,HJECQuench"
-AASystematicGroups="1,1,2,2,3,3,5,5,4"
-AALabels="JES,JER,Unfolding,Quench,Centrality"
+PPVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior,HEarthquake,HBinBiasUp,HBinBiasDown"
+PPSystematicGroups="1,1,2,2,3,3,4,4,4"
+PPLabels="JES,JER,Unfolding,Matrix"
+AAVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior,HCentralityUp,HCentralityDown,HJECQuench,HEarthquake,HBinBiasUp,HBinBiasDown"
+AASystematicGroups="1,1,2,2,3,3,5,5,4,6,6,6"
+AALabels="JES,JER,Unfolding,Quench,Centrality,Matrix"
 
 # Run pp spectrum
 echo Running pp spectrum plots
@@ -20,7 +20,7 @@ do
    ./Execute --Input Systematics/PPData_R${R}_CentralityInclusive.root \
       --Output Plots/PPData_R${R}_CentralityInclusive.pdf \
       --FinalOutput FinalPlots/PPData_R${R}_CentralityInclusive.pdf \
-      --Global GlobalSystematics.dh \
+      --Global Systematics.dh \
       --GenPrimaryMin 0 --GenPrimaryMax 1600 \
       --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
       --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
