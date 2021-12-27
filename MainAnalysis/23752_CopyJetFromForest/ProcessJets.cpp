@@ -48,6 +48,8 @@ int main(int argc, char *argv[])
    vector<string> InputFileNames = CL.GetStringVector("Input", vector<string>{"SampleExample/HiForestAOD.root"});
    string OutputFileName         = CL.Get("Output", "Output/JetTreeAOD.root");
 
+   bool KeepSkippedEvent         = CL.GetBool("KeepSkippedEvent", true);
+
    string DHFileName             = CL.Get("DHFile", "GlobalSetting.dh");
    string DHKeyBase              = CL.Get("RhoKeyBase", "none");
    bool CutUE                    = CL.GetBool("CutUE", false);
@@ -561,7 +563,8 @@ int main(int argc, char *argv[])
             MatchedJetWeight[iG]    = RecoJetWeight[BestIndex];
          }
 
-         OutputTree.Fill();
+         if(SkipEvent == false || KeepSkippedEvent == true)
+            OutputTree.Fill();
       }
 
       Bar.Update(EntryCount);

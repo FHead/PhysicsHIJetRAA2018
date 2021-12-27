@@ -185,10 +185,17 @@ do
       JetIDTag=${JetIDTag}MC
    fi
 
+   KeepSkipped=true
+   if [[ "$IsMC" == 0 ]]; then
+      KeepSkipped=true
+   else
+      KeepSkipped=false
+   fi
+
    mkdir -p /tmp/chenyi/
    echo ./Execute --Input $InputFile --Output /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root \
        --JetR $RValue --Jet "${Jet}" --JEC ${JEC} --JEU ${JEU} \
-       --Fraction $Fraction --Exclusion "$Exclusion" \
+       --Fraction $Fraction --Exclusion "$Exclusion" --KeepSkippedEvent $KeepSkipped \
        --UseStoredGen $Stored --UseStoredReco $Stored --DoRecoSubtraction false --Trigger $Trigger \
        --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
        --PTMin $PTMin --GenPTMin $GenPTMin \
@@ -198,7 +205,7 @@ do
        --DoJetID true --JetIDKeyBase ${JetIDTag}_R${RTag}_Centrality${CTag}
    ./Execute --Input $InputFile --Output /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root \
       --JetR $RValue --Jet "${Jet}" --JEC ${JEC} --JEU ${JEU} \
-      --Fraction $Fraction --Exclusion "$Exclusion" \
+      --Fraction $Fraction --Exclusion "$Exclusion" --KeepSkippedEvent $KeepSkipped \
       --UseStoredGen $Stored --UseStoredReco $Stored --DoRecoSubtraction false --Trigger $Trigger \
       --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
       --PTMin $PTMin --GenPTMin $GenPTMin \
