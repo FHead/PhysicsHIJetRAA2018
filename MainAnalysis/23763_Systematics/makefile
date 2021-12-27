@@ -5,7 +5,7 @@ Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/23762_ActualUnfold/Output Input
 	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput//Output BinMapping
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
-	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSystematics.dh
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/Systematics.dh
 	mkdir -p Output Plot
 
 Clean:

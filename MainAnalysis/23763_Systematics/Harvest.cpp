@@ -8,8 +8,10 @@ using namespace std;
 #include "CustomAssert.h"
 #include "CommandLine.h"
 #include "RootUtilities.h"
+#include "DataHelper.h"
 
 int main(int argc, char *argv[]);
+vector<string> DetectVariations(DataHelper &DHFile, string State);
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 void SelfNormalize(TH1D *H, int NormalizationGroupSize = -1);
 void AddQuadrature(TH1D &HTotalPlus, TH1D &HTotalMinus, TH1D &HNominal, TH1D &HVariation);
@@ -24,17 +26,52 @@ int main(int argc, char *argv[])
 
    CommandLine CL(argc, argv);
 
-   vector<string> BaseFileNames      = CL.GetStringVector("BaseInput");
-   vector<string> FileNames          = CL.GetStringVector("Input");
-   vector<string> BaseHistogramNames = CL.GetStringVector("BaseHistogram");
-   vector<string> HistogramNames     = CL.GetStringVector("Histogram");
-   vector<string> Labels             = CL.GetStringVector("Label");
-   vector<int> Groupings             = CL.GetIntVector("Group");
-   vector<int> Bridging              = CL.GetIntVector("Bridging");
-   vector<double> ExtraScaling       = CL.GetDoubleVector("ExtraScaling");
+   bool ReadFromDHFile = CL.GetBool("ReadFromDHFile");
    string BinMappingFileName         = CL.Get("BinMapping");
    string OutputFileName             = CL.Get("Output");
    vector<bool> DoSelfNormalize      = CL.GetBoolVector("DoSelfNormalize", vector<bool>{false});
+
+   vector<string> BaseFileNames;
+   vector<string> FileNames;
+   vector<string> BaseHistogramNames;
+   vector<string> HistogramNames;
+   vector<string> Labels;
+   vector<int> Groupings;
+   vector<int> Bridging;
+   vector<double> ExtraScaling;
+
+   if(ReadFromDHFile == true)
+   {
+      string DHFileName = CL.Get("DHFile");
+      string State      = CL.Get("State");
+
+      DataHelper DHFile(DHFileName);
+
+      vector<string> Sources = DetectVariations(DHFile, State);
+
+      for(string S : Sources)
+      {
+         BaseFileNames.push_back(DHFile[State][S+"_BaseFile"].GetString());
+         BaseHistogramNames.push_back(DHFile[State][S+"_BaseHistogram"].GetString());
+         FileNames.push_back(DHFile[State][S+"_VariantFile"].GetString());
+         HistogramNames.push_back(DHFile[State][S+"_VariantHistogram"].GetString());
+         Labels.push_back(DHFile[State][S+"_Label"].GetString());
+         Groupings.push_back(DHFile[State][S+"_Include"].GetInteger());
+         Bridging.push_back(DHFile[State][S+"_Bridging"].GetInteger());
+         ExtraScaling.push_back(DHFile[State][S+"_ExtraScaling"].GetDouble());
+      }
+   }
+   else
+   {
+      BaseFileNames      = CL.GetStringVector("BaseInput");
+      FileNames          = CL.GetStringVector("Input");
+      BaseHistogramNames = CL.GetStringVector("BaseHistogram");
+      HistogramNames     = CL.GetStringVector("Histogram");
+      Labels             = CL.GetStringVector("Label");
+      Groupings          = CL.GetIntVector("Group");
+      Bridging           = CL.GetIntVector("Bridging");
+      ExtraScaling       = CL.GetDoubleVector("ExtraScaling");
+   }
 
    Assert(FileNames.size() > 0, "No file names specified");
    Assert(FileNames.size() == HistogramNames.size(), "Inconsistent file name and histogram name");
@@ -133,6 +170,52 @@ int main(int argc, char *argv[])
    OutputFile.Close();
 
    return 0;
+}
+
+vector<string> DetectVariations(DataHelper &DHFile, string State)
+{
+   vector<string> Result;
+
+   Assert(DHFile.Exist(State), "State does not exist in the DHFile");
+
+   vector<string> Keys = DHFile[State].GetListOfKeys();
+   for(string &Key : Keys)
+   {
+      int Location = Key.rfind("_");
+      if(Location == string::npos)   // unrelated
+         continue;
+      Result.push_back(Key.substr(0, Location));
+   }
+
+   sort(Result.begin(), Result.end());
+   Result.erase(unique(Result.begin(), Result.end()), Result.end());
+
+   for(int i = 0; i < (int)Result.size(); i++)
+   {
+      string Source = Result[i];
+
+      int ExistCount = 0;
+      if(DHFile[State].Exist(Source + "_BaseFile") == true)           ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_BaseHistogram") == true)      ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_VariantFile") == true)        ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_VariantHistogram") == true)   ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_Label") == true)              ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_Include") == true)            ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_Bridging") == true)           ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_ExtraScaling") == true)       ExistCount = ExistCount + 1;
+
+      if(ExistCount == 0)   // unrelated stuff
+      {
+         Result.erase(Result.begin() + i);
+         i = i - 1;
+         continue;
+      }
+
+      if(ExistCount < 8)
+         cerr << "Warning: source " << Source << " incomplete!" << endl;
+   }
+
+   return Result;
 }
 
 vector<double> DetectBins(TH1D *HMin, TH1D *HMax)

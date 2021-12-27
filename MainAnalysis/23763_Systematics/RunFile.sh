@@ -55,29 +55,171 @@ do
          HIterationDown=HUnfoldedTUnfold
       fi
 
+      State=$PRC
+
+      DHRemove Systematics.dh $PRC
+
+      DHSet Systematics.dh $PRC JECUp_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC JECUp_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC JECUp_VariantFile      string  Input/${PRC}_JECUp_${NP}.root
+      DHSet Systematics.dh $PRC JECUp_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC JECUp_Label            string  JECUp
+      DHSet Systematics.dh $PRC JECUp_Include          int     1
+      DHSet Systematics.dh $PRC JECUp_Bridging         int     0
+      DHSet Systematics.dh $PRC JECUp_ExtraScaling     float   1
+      
+      DHSet Systematics.dh $PRC JECDown_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC JECDown_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC JECDown_VariantFile      string  Input/${PRC}_JECDown_${NP}.root
+      DHSet Systematics.dh $PRC JECDown_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC JECDown_Label            string  JECDown
+      DHSet Systematics.dh $PRC JECDown_Include          int     1
+      DHSet Systematics.dh $PRC JECDown_Bridging         int     0
+      DHSet Systematics.dh $PRC JECDown_ExtraScaling     float   1
+
+      DHSet Systematics.dh $PRC JECQuench_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC JECQuench_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC JECQuench_VariantFile      string  Input/${PRC}_JECQuench_${NP}.root
+      DHSet Systematics.dh $PRC JECQuench_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC JECQuench_Label            string  JECQuench
+      DHSet Systematics.dh $PRC JECQuench_Include          int     1
+      DHSet Systematics.dh $PRC JECQuench_Bridging         int     0
+      DHSet Systematics.dh $PRC JECQuench_ExtraScaling     float   1
+
+      DHSet Systematics.dh $PRC JERUp_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC JERUp_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC JERUp_VariantFile      string  Input/${PRC}_JERUp_${NP}.root
+      DHSet Systematics.dh $PRC JERUp_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC JERUp_Label            string  JERUp
+      DHSet Systematics.dh $PRC JERUp_Include          int     1
+      DHSet Systematics.dh $PRC JERUp_Bridging         int     0
+      DHSet Systematics.dh $PRC JERUp_ExtraScaling     float   1
+      
+      DHSet Systematics.dh $PRC JERDown_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC JERDown_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC JERDown_VariantFile      string  Input/${PRC}_JERDown_${NP}.root
+      DHSet Systematics.dh $PRC JERDown_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC JERDown_Label            string  JERDown
+      DHSet Systematics.dh $PRC JERDown_Include          int     1
+      DHSet Systematics.dh $PRC JERDown_Bridging         int     0
+      DHSet Systematics.dh $PRC JERDown_ExtraScaling     float   1
+
+      DHSet Systematics.dh $PRC IterationUp_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC IterationUp_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC IterationUp_VariantFile      string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC IterationUp_VariantHistogram string  ${HIterationUp}
+      DHSet Systematics.dh $PRC IterationUp_Label            string  IterationUp
+      DHSet Systematics.dh $PRC IterationUp_Include          int     0
+      DHSet Systematics.dh $PRC IterationUp_Bridging         int     0
+      DHSet Systematics.dh $PRC IterationUp_ExtraScaling     float   1
+      
+      DHSet Systematics.dh $PRC IterationDown_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC IterationDown_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC IterationDown_VariantFile      string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC IterationDown_VariantHistogram string  ${HIterationDown}
+      DHSet Systematics.dh $PRC IterationDown_Label            string  IterationDown
+      DHSet Systematics.dh $PRC IterationDown_Include          int     0
+      DHSet Systematics.dh $PRC IterationDown_Bridging         int     0
+      DHSet Systematics.dh $PRC IterationDown_ExtraScaling     float   1
+
+      DHSet Systematics.dh $PRC Prior_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC Prior_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC Prior_VariantFile      string  Input/${PRC}_Nominal_${AP}.root
+      DHSet Systematics.dh $PRC Prior_VariantHistogram string  ${HPrior}
+      DHSet Systematics.dh $PRC Prior_Label            string  Prior
+      DHSet Systematics.dh $PRC Prior_Include          int     0
+      DHSet Systematics.dh $PRC Prior_Bridging         int     0
+      DHSet Systematics.dh $PRC Prior_ExtraScaling     float   1
+      
+      DHSet Systematics.dh $PRC Iteration_BaseFile         string  Input/${MCPRC}_Nominal_Toy_${MCNP}.root
+      DHSet Systematics.dh $PRC Iteration_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC Iteration_VariantFile      string  Input/${MCPRC}_Nominal_Toy_${MCNP}.root
+      DHSet Systematics.dh $PRC Iteration_VariantHistogram string  ${HMCNominal}
+      DHSet Systematics.dh $PRC Iteration_Label            string  Iteration
+      DHSet Systematics.dh $PRC Iteration_Include          int     1
+      DHSet Systematics.dh $PRC Iteration_Bridging         int     0
+      DHSet Systematics.dh $PRC Iteration_ExtraScaling     float   1
+
+      DHSet Systematics.dh $PRC CentralityUp_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC CentralityUp_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC CentralityUp_VariantFile      string  Input/${PRC}_CentralityUp_${NP}.root
+      DHSet Systematics.dh $PRC CentralityUp_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC CentralityUp_Label            string  CentralityUp
+      DHSet Systematics.dh $PRC CentralityUp_Include          int     1
+      DHSet Systematics.dh $PRC CentralityUp_Bridging         int     0
+      DHSet Systematics.dh $PRC CentralityUp_ExtraScaling     float   1
+      
+      DHSet Systematics.dh $PRC CentralityDown_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC CentralityDown_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC CentralityDown_VariantFile      string  Input/${PRC}_CentralityDown_${NP}.root
+      DHSet Systematics.dh $PRC CentralityDown_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC CentralityDown_Label            string  CentralityDown
+      DHSet Systematics.dh $PRC CentralityDown_Include          int     1
+      DHSet Systematics.dh $PRC CentralityDown_Bridging         int     0
+      DHSet Systematics.dh $PRC CentralityDown_ExtraScaling     float   1
+
+      DHSet Systematics.dh $PRC BinBiasUp_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC BinBiasUp_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC BinBiasUp_VariantFile      string  Input/${PRC}_NominalBinBiasUp_${NP}.root
+      DHSet Systematics.dh $PRC BinBiasUp_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC BinBiasUp_Label            string  BinBiasUp
+      DHSet Systematics.dh $PRC BinBiasUp_Include          int     1
+      DHSet Systematics.dh $PRC BinBiasUp_Bridging         int     0
+      DHSet Systematics.dh $PRC BinBiasUp_ExtraScaling     float   1
+      
+      DHSet Systematics.dh $PRC BinBiasDown_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC BinBiasDown_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC BinBiasDown_VariantFile      string  Input/${PRC}_NominalBinBiasDown_${NP}.root
+      DHSet Systematics.dh $PRC BinBiasDown_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC BinBiasDown_Label            string  BinBiasDown
+      DHSet Systematics.dh $PRC BinBiasDown_Include          int     1
+      DHSet Systematics.dh $PRC BinBiasDown_Bridging         int     0
+      DHSet Systematics.dh $PRC BinBiasDown_ExtraScaling     float   1
+
+      DHSet Systematics.dh $PRC Earthquake_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC Earthquake_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC Earthquake_VariantFile      string  Input/${PRC}_NominalEarthquake_${NP}.root
+      DHSet Systematics.dh $PRC Earthquake_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC Earthquake_Label            string  Earthquake
+      DHSet Systematics.dh $PRC Earthquake_Include          int     1
+      DHSet Systematics.dh $PRC Earthquake_Bridging         int     0
+      DHSet Systematics.dh $PRC Earthquake_ExtraScaling     float   1
+      
+      DHSet Systematics.dh $PRC Cleaned_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC Cleaned_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC Cleaned_VariantFile      string  Input/${PRC}_NominalCleaned_${NP}.root
+      DHSet Systematics.dh $PRC Cleaned_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC Cleaned_Label            string  Cleaned
+      DHSet Systematics.dh $PRC Cleaned_Include          int     0
+      DHSet Systematics.dh $PRC Cleaned_Bridging         int     0
+      DHSet Systematics.dh $PRC Cleaned_ExtraScaling     float   1
+
+      DHSet Systematics.dh $PRC CleanedStrong_BaseFile         string  Input/${PRC}_Nominal_${NP}.root
+      DHSet Systematics.dh $PRC CleanedStrong_BaseHistogram    string  ${HNominal}
+      DHSet Systematics.dh $PRC CleanedStrong_VariantFile      string  Input/${PRC}_NominalCleanedStrong_${NP}.root
+      DHSet Systematics.dh $PRC CleanedStrong_VariantHistogram string  ${HNominal}
+      DHSet Systematics.dh $PRC CleanedStrong_Label            string  CleanedStrong
+      DHSet Systematics.dh $PRC CleanedStrong_Include          int     0
+      DHSet Systematics.dh $PRC CleanedStrong_Bridging         int     0
+      DHSet Systematics.dh $PRC CleanedStrong_ExtraScaling     float   1
+
       ./Execute \
-         --BaseInput ${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${PRCN},${MCPRCToy},${PRCN},${PRCN},${PRCN} \
-         --Input Input/${PRC}_JECUp_${NP}.root,Input/${PRC}_JECDown_${NP}.root,Input/${PRC}_JERUp_${NP}.root,Input/${PRC}_JERDown_${NP}.root,${PRCN},${PRCN},Input/${PRC}_Nominal_${AP}.root,${MCPRCToy},Input/${PRC}_CentralityUp_${NP}.root,Input/${PRC}_CentralityDown_${NP}.root,Input/${PRC}_JECQuench_${NP}.root \
-         --BaseHistogram ${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HNominal},${HMCNominal},${HNominal},${HNominal},${HNominal} \
-         --Histogram ${HNominal},${HNominal},${HNominal},${HNominal},${HIterationUp},${HIterationDown},${HPrior},${HNominal},${HNominal},${HNominal},${HNominal} \
-         --Label JECUp,JECDown,JERUp,JERDown,IterationUp,IterationDown,Prior,Iteration,CentralityUp,CentralityDown,JECQuench \
-         --Group 1,1,1,1,0,0,1,1,1,1,1 \
-         --Bridging 0,0,0,0,0,0,0,0,0,0,0 \
-         --ExtraScaling 1,1,1,1,1,1,1,1,1,1,1 \
+         --ReadFromDHFile true \
+         --DHFile Systematics.dh --State $PRC \
          --BinMapping BinMapping/${PRC}_Nominal.root \
          --DoSelfNormalize false \
          --Output Output/${PRC}.root
-
+      
       if [[ $IsPP == 0 ]]; then
          TAA=`DHQuery GlobalSetting.dh TAA $C`
          TAAError=`DHQuery GlobalSetting.dh TAAErrorUp $C`
          TAARelativeError=`echo $TAAError | DivideConst $TAA`
-         DHSet GlobalSystematics.dh $PRC TAA float $TAARelativeError
-         DHSet GlobalSystematics.dh $PRC NMB float 0.0126
-         DHSet GlobalSystematics.dh $PRC PbPbSelection float 0.01
+         DHSet Systematics.dh $PRC Global_TAA float $TAARelativeError
+         DHSet Systematics.dh $PRC Global_NMB float 0.0126
+         DHSet Systematics.dh $PRC Global_PbPbSelection float 0.01
       else
-         DHSet GlobalSystematics.dh $PRC Luminosity float 0.019
-         DHSet GlobalSystematics.dh $PRC PPSelection float 0.01
+         DHSet Systematics.dh $PRC Global_Luminosity float 0.019
+         DHSet Systematics.dh $PRC Global_PPSelection float 0.01
       fi
 
       ./ExecutePlot \
