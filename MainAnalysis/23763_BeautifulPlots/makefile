@@ -44,6 +44,7 @@ RunCheck: Execute
 	bash RunFile.sh PbPbData CentralityUp       "" 0 Gen
 	bash RunFile.sh PbPbData CentralityDown     "" 0 Gen
 	bash RunFile.sh PbPbData MCCentrality       "" 0 Gen
+	bash RunFile.sh PbPbData StoredCentrality   "" 0 Gen
 	bash RunFile.sh PbPbData NominalEarthquake  "" 0 Gen
 	bash RunFile.sh PbPbData NominalBinBiasUp   "" 0 Gen
 	bash RunFile.sh PbPbData NominalBinBiasDown "" 0 Gen
@@ -53,6 +54,8 @@ RunCheck: Execute
 	bash RunFile.sh PbPbData JECNoPhi           "" 0 InputReco
 	bash RunFile.sh PbPbData JECNoResidual      "" 0 InputRecoGenBin
 	bash RunFile.sh PbPbData JECNoPhi           "" 0 InputRecoGenBin
+	bash RunFile.sh PbPbData MCCentrality       "" 0 InputRecoGenBin
+	bash RunFile.sh PbPbData StoredCentrality   "" 0 InputRecoGenBin
 
 RunJetPTClosure: Execute
 	bash RunFile.sh PbPbMCRho Nominal Toy 0 Gen
