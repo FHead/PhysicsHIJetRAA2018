@@ -31,6 +31,7 @@ RunRAAVariationCheck: Execute
 	bash RunFile.sh PPData Nominal PbPbData CentralityUp
 	bash RunFile.sh PPData Nominal PbPbData CentralityDown
 	bash RunFile.sh PPData Nominal PbPbData MCCentrality
+	bash RunFile.sh PPData Nominal PbPbData StoredCentrality
 	bash RunFile.sh PPData Nominal PbPbData NominalEarthquake 
 	bash RunFile.sh PPData Nominal PbPbData NominalCleaned
 	bash RunFile.sh PPData Nominal PbPbData NominalCleanedStrong
@@ -44,6 +45,7 @@ RunRAARecoCheck: Execute
 	bash RunFile.sh PPData Nominal_InputReco PbPbData JECNoPhi_InputReco
 	bash RunFile.sh PPData Nominal PbPbData Nominal_InputRecoGenBin
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData Nominal_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData StoredCentrality_InputRecoGenBin
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECNoResidual_InputRecoGenBin
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECNoPhi_InputRecoGenBin
 
@@ -79,6 +81,7 @@ Deploy:
 	mkdir -p $(DeployBase)/Check/RAA/CentralityVariation
 	cp Plots/RAA*_PPNominal_AACentralityUp.pdf $(DeployBase)/Check/RAA/CentralityVariation/
 	cp Plots/RAA*_PPNominal_AACentralityDown.pdf $(DeployBase)/Check/RAA/CentralityVariation/
+	cp Plots/RAA*_PPNominal_AAStoredCentrality.pdf $(DeployBase)/Check/RAA/CentralityFromMC/
 	mkdir -p $(DeployBase)/Check/RAA/CentralityFromMC
 	cp Plots/RAA*_PPNominal_AAMCCentrality.pdf $(DeployBase)/Check/RAA/CentralityFromMC/
 	mkdir -p $(DeployBase)/Check/RAA/Cleaning
@@ -96,8 +99,10 @@ Deploy:
 	# cp Plots/RAA*_PPNominal_InputReco_AAJECNoPhi_InputReco.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	# cp Plots/RAA*_PPNominal_InputReco_AAJECNoResidual_InputReco.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AANominal_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
-	cp Plots/RAA*_PPNominal_AANominal_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAStoredCentrality_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECNoPhi_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECNoResidual_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	mkdir -p $(DeployBase)/Check/RAA/RecoGenMix
+	cp Plots/RAA*_PPNominal_AANominal_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 
 
