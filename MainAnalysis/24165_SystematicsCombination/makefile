@@ -1,5 +1,5 @@
 
-DH = CancellationSetting.dh
+DH = Systematics.dh
 
 default: Prepare TestRun
 
@@ -8,7 +8,6 @@ Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/$(DH) .
 	ln -sf $(ProjectBase)/MainAnalysis/23763_Systematics/Output Input
-	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSystematics.dh .
 	mkdir -p Output/
 
 Clean:

@@ -31,10 +31,9 @@ int main(int argc, char *argv[])
    string OutputFileName  = CL.Get("Output");
    string DHFileName      = CL.Get("DHFile");
    string State           = CL.Get("State");
-   vector<string> Include = CL.GetStringVector("Include");
-   string GlobalDHFile    = CL.Get("Global");
+   // vector<string> Include = CL.GetStringVector("Include");
 
-   CombineGlobal(GlobalDHFile, FileName1, FileName2, OutputFileName);
+   CombineGlobal(DHFileName, FileName1, FileName2, OutputFileName);
 
    DataHelper DHFile(DHFileName);
 
@@ -42,6 +41,9 @@ int main(int argc, char *argv[])
    TFile F2(FileName2.c_str());
    TFile FO(OutputFileName.c_str(), "RECREATE");
 
+   string State1 = GuessState(FileName1);
+   string State2 = GuessState(FileName2);
+   
    CopyEssentialHistograms(F1, FO);
 
    vector<string> VariationList1 = DiscoverVariationList(F1);
@@ -67,17 +69,26 @@ int main(int argc, char *argv[])
       if(DHFile[State].Exist(Name+"_Correlation"))
          Correlation = DHFile[State][Name+"_Correlation"].GetDouble();
 
-      bool Combined = CombineUncertainty(F1, F2, FO, Name, MODE_RATIO, Correlation);
+      bool Combined = CombineUncertainty(F1, F2, FO, "H" + Name, MODE_RATIO, Correlation);
 
-      if(Combined == true
-         && (find(Include.begin(), Include.end(), Name) != Include.end()
-            || find(Include.begin(), Include.end(), "H" + Name) != Include.end()))
+      // If any of the two says "include", include it in the combined
+      bool Include = false;
+      if(DHFile[State1][Name+"_Include"].GetInteger() > 0)
+         Include = true;
+      if(DHFile[State2][Name+"_Include"].GetInteger() > 0)
+         Include = true;
+
+      if(Combined == true && Include == true)
       {
-         TH1D *HBase      = (TH1D *)FO.Get((Name + "Base").c_str());
-         TH1D *HVariation = (TH1D *)FO.Get(Name.c_str());
+         TH1D *HBase      = (TH1D *)FO.Get(("H" + Name + "Base").c_str());
+         TH1D *HVariation = (TH1D *)FO.Get(("H" + Name).c_str());
          AddQuadrature(*HTotalPlus, *HTotalMinus, *HBase, *HVariation);
       }
+      if(Combined == true)
+         DHFile[State][Name+"_Include"] = (int)Include;
    }
+
+   DHFile.SaveToFile();
 
    FO.cd();
 
@@ -115,7 +126,6 @@ vector<string> DiscoverVariationList(TFile &F)
       "HMatchedPrimaryBinMin", "HMatchedPrimaryBinMax", "HMatchedBinningBinMin", "HMatchedBinningBinMax",
       "HTotalPlus", "HTotalMinus"
    };
-   
 
    vector<string> HistogramList;
    TIter Iter(F.GetListOfKeys());
@@ -140,7 +150,7 @@ vector<string> DiscoverVariationList(TFile &F)
       if(find(HistogramList.begin(), HistogramList.end(), Name + "Base") == HistogramList.end())
          continue;
 
-      Result.push_back(Name);
+      Result.push_back(Name.substr(1));   // remove the 'H' in front of histogram names
    }
 
    return Result;
@@ -253,8 +263,12 @@ void CombineGlobal(string DHFileName, string FileName1, string FileName2, string
    vector<string> Keys2 = DHFile[State2].GetListOfKeys();
 
    vector<string> AllKeys;
-   AllKeys.insert(AllKeys.end(), Keys1.begin(), Keys1.end());
-   AllKeys.insert(AllKeys.end(), Keys2.begin(), Keys2.end());
+   for(string Key : Keys1)
+      if(Key.rfind("Global_", 0) != string::npos)
+         AllKeys.push_back(Key);
+   for(string Key : Keys2)
+      if(Key.rfind("Global_", 0) != string::npos)
+         AllKeys.push_back(Key);
    sort(AllKeys.begin(), AllKeys.end());
    AllKeys.erase(unique(AllKeys.begin(), AllKeys.end()), AllKeys.end());
 
