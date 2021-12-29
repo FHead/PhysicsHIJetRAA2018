@@ -14,6 +14,6 @@ Tag=`basename $Input | sed "s/_Nominal//" | sed "s/_JSON.txt//"`
 
 echo $Tag $BrilValue $PhysicsValue
 
-DHSet GlobalSetting.dh Lumi ${Tag}_BRIL double $BrilValue
-DHSet GlobalSetting.dh Lumi ${Tag}_PHYSICS double $PhysicsValue
+DHSet GlobalSetting.dh Lumi ${Tag/Fine}_BRIL double $BrilValue
+DHSet GlobalSetting.dh Lumi ${Tag/Fine}_PHYSICS double $PhysicsValue
 
