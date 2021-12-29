@@ -49,6 +49,9 @@ int main(int argc, char *argv[])
    string OutputFileName         = CL.Get("Output", "Output/JetTreeAOD.root");
 
    bool KeepSkippedEvent         = CL.GetBool("KeepSkippedEvent", true);
+   bool DontStoreReco            = CL.GetBool("DontStoreReco", false);
+   bool DontStoreGen             = CL.GetBool("DontStoreGen", false);
+   bool DontStoreMatch           = CL.GetBool("DontStoreMatch", false);
 
    string DHFileName             = CL.Get("DHFile", "GlobalSetting.dh");
    string DHKeyBase              = CL.Get("RhoKeyBase", "none");
@@ -177,36 +180,45 @@ int main(int argc, char *argv[])
    OutputTree.Branch("Event",               &Event,          "Event/L");
    OutputTree.Branch("Centrality",          &Centrality,     "Centrality/D");
    OutputTree.Branch("NRecoJets",           &NRecoJets,      "NRecoJets/I");
-   OutputTree.Branch("RecoJetPT",           &RecoJetPT);
-   OutputTree.Branch("RecoJetEta",          &RecoJetEta);
-   OutputTree.Branch("RecoJetPhi",          &RecoJetPhi);
-   OutputTree.Branch("RecoJetMass",         &RecoJetMass);
-   OutputTree.Branch("RecoJetJEC",          &RecoJetJEC);
-   OutputTree.Branch("RecoJetJEU",          &RecoJetJEU);
-   OutputTree.Branch("RecoJetRho",          &RecoJetRho);
-   OutputTree.Branch("RecoJetUE",           &RecoJetUE);
-   OutputTree.Branch("RecoJetWeight",       &RecoJetWeight);
-   OutputTree.Branch("RecoJetPhiWeight",    &RecoJetPhiWeight);
-   OutputTree.Branch("RecoJetRhoWeight",    &RecoJetRhoWeight);
+   if(DontStoreReco == false)
+   {
+      OutputTree.Branch("RecoJetPT",           &RecoJetPT);
+      OutputTree.Branch("RecoJetEta",          &RecoJetEta);
+      OutputTree.Branch("RecoJetPhi",          &RecoJetPhi);
+      OutputTree.Branch("RecoJetMass",         &RecoJetMass);
+      OutputTree.Branch("RecoJetJEC",          &RecoJetJEC);
+      OutputTree.Branch("RecoJetJEU",          &RecoJetJEU);
+      OutputTree.Branch("RecoJetRho",          &RecoJetRho);
+      OutputTree.Branch("RecoJetUE",           &RecoJetUE);
+      OutputTree.Branch("RecoJetWeight",       &RecoJetWeight);
+      OutputTree.Branch("RecoJetPhiWeight",    &RecoJetPhiWeight);
+      OutputTree.Branch("RecoJetRhoWeight",    &RecoJetRhoWeight);
+   }
    OutputTree.Branch("NGenJets",            &NGenJets,       "NGenJets/I");
-   OutputTree.Branch("GenJetPT",            &GenJetPT);
-   OutputTree.Branch("GenJetEta",           &GenJetEta);
-   OutputTree.Branch("GenJetPhi",           &GenJetPhi);
-   OutputTree.Branch("GenJetMass",          &GenJetMass);
-   OutputTree.Branch("GenJetWeight",        &GenJetWeight);
-   OutputTree.Branch("GenJetPhiWeight",     &GenJetPhiWeight);
-   OutputTree.Branch("MatchedJetPT",        &MatchedJetPT);
-   OutputTree.Branch("MatchedJetEta",       &MatchedJetEta);
-   OutputTree.Branch("MatchedJetPhi",       &MatchedJetPhi);
-   OutputTree.Branch("MatchedJetMass",      &MatchedJetMass);
-   OutputTree.Branch("MatchedJetAngle",     &MatchedJetAngle);
-   OutputTree.Branch("MatchedJetJEC",       &MatchedJetJEC);
-   OutputTree.Branch("MatchedJetJEU",       &MatchedJetJEU);
-   OutputTree.Branch("MatchedJetRho",       &MatchedJetRho);
-   OutputTree.Branch("MatchedJetUE",        &MatchedJetUE);
-   OutputTree.Branch("MatchedJetWeight",    &MatchedJetWeight);
-   OutputTree.Branch("MatchedJetPhiWeight", &MatchedJetPhiWeight);
-   OutputTree.Branch("MatchedJetRhoWeight", &MatchedJetRhoWeight);
+   if(DontStoreGen == false)
+   {
+      OutputTree.Branch("GenJetPT",            &GenJetPT);
+      OutputTree.Branch("GenJetEta",           &GenJetEta);
+      OutputTree.Branch("GenJetPhi",           &GenJetPhi);
+      OutputTree.Branch("GenJetMass",          &GenJetMass);
+      OutputTree.Branch("GenJetWeight",        &GenJetWeight);
+      OutputTree.Branch("GenJetPhiWeight",     &GenJetPhiWeight);
+      if(DontStoreMatch == false)
+      {
+         OutputTree.Branch("MatchedJetPT",        &MatchedJetPT);
+         OutputTree.Branch("MatchedJetEta",       &MatchedJetEta);
+         OutputTree.Branch("MatchedJetPhi",       &MatchedJetPhi);
+         OutputTree.Branch("MatchedJetMass",      &MatchedJetMass);
+         OutputTree.Branch("MatchedJetAngle",     &MatchedJetAngle);
+         OutputTree.Branch("MatchedJetJEC",       &MatchedJetJEC);
+         OutputTree.Branch("MatchedJetJEU",       &MatchedJetJEU);
+         OutputTree.Branch("MatchedJetRho",       &MatchedJetRho);
+         OutputTree.Branch("MatchedJetUE",        &MatchedJetUE);
+         OutputTree.Branch("MatchedJetWeight",    &MatchedJetWeight);
+         OutputTree.Branch("MatchedJetPhiWeight", &MatchedJetPhiWeight);
+         OutputTree.Branch("MatchedJetRhoWeight", &MatchedJetRhoWeight);
+      }
+   }
 
    for(string InputFileName : InputFileNames)
    {
@@ -230,7 +242,7 @@ int main(int argc, char *argv[])
       for(int iE = 0; iE < EntryCount; iE++)
       {
          Bar.Update(iE);
-         if(EntryCount < 500 || (iE % (EntryCount / 300)) == 0)
+         if(EntryCount < 200 || (iE % (EntryCount / 150)) == 0)
             Bar.Print();
 
          MEvent.GetEntry(iE);
@@ -561,6 +573,22 @@ int main(int argc, char *argv[])
             MatchedJetPhiWeight[iG] = RecoJetPhiWeight[BestIndex];
             MatchedJetRhoWeight[iG] = RecoJetRhoWeight[BestIndex];
             MatchedJetWeight[iG]    = RecoJetWeight[BestIndex];
+         }
+
+         if(DontStoreReco == true)
+         {
+            NRecoJets = 0;
+            RecoJetPT.resize(NRecoJets);
+            RecoJetEta.resize(NRecoJets);
+            RecoJetPhi.resize(NRecoJets);
+            RecoJetMass.resize(NRecoJets);
+            RecoJetJEC.resize(NRecoJets);
+            RecoJetJEU.resize(NRecoJets);
+            RecoJetRho.resize(NRecoJets);
+            RecoJetUE.resize(NRecoJets);
+            RecoJetWeight.resize(NRecoJets);
+            RecoJetPhiWeight.resize(NRecoJets);
+            RecoJetRhoWeight.resize(NRecoJets);
          }
 
          if(SkipEvent == false || KeepSkippedEvent == true)

@@ -12,11 +12,12 @@ IsPP=$5
 Recluster=$6
 RTag=$7
 MinPT=$8
-DoPhiResidual=$9
-DoDataResidual=${10}
-DoExclusion=${11}
-Centrality=${12}
-CentralityTable=${13}
+SkipReco=$9
+DoPhiResidual=${10}
+DoDataResidual=${11}
+DoExclusion=${12}
+Centrality=${13}
+CentralityTable=${14}
 
 echo "Runing with the following"
 echo "  Input = $InputFile"
@@ -27,6 +28,7 @@ echo "  IsPP = $IsPP (0 = PbPb, 1 = NonUL pp, 2 = UL pp)"
 echo "  Recluster = $Recluster (0 = no, 1 = yes)"
 echo "  RTag = $RTag (what radius?  Goes from 1-9)"
 echo "  MinPT = $MinPT (in GeV)"
+echo "  SkipReco = $SkipReco (0 = no, 1 = yes)"
 echo "  DoPhiResidual = $DoPhiResidual (0 = no, 1 = yes)"
 echo "  DoDataResidual = $DoDataResidual (0 = no, 1 = yes)"
 echo "  DoExclusion = $DoExclusion (0 = no, 1 = yes)"
@@ -66,7 +68,8 @@ RValue=`DHQuery GlobalSetting.dh JetR $RTag`
 
 JECBase="$ProjectBase/CommonCode/jec/"
 JECTag="Autumn18_HI_RAAV2_MC"
-PhiTag="Phi_24151"
+# PhiTag="Phi_24151"
+PhiTag="Phi_24252"
 
 if [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "0" ]]; then
    JECTag="Autumn18_HI_RAAV2_MC"
@@ -84,7 +87,9 @@ fi
 
 JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt"
 if [[ "$DoPhiResidual" == 1 ]]; then
-   JEC="$JEC,$JECBase/$PhiTag/PhiCorrectionGen_AK${RTag}PF.txt"
+   # JEC="$JEC,$JECBase/$PhiTag/PhiCorrectionGen_AK${RTag}PF.txt"
+   JEC="$JEC,$JECBase/$PhiTag/PhiCorrectionGenLowNoThreshold_AK${RTag}PF.txt"
+   # JEC="$JEC,$JECBase/$PhiTag/PhiCorrectionGenLowNoThresholdScale_AK${RTag}PF.txt"
 fi
 if [[ "$DoDataResidual" == 1 ]]; then
    JEC="$JEC,$JECBase/$JECTag/${JECTag}_L2L3Residual_AK${RTag}PF.txt"
@@ -186,10 +191,15 @@ do
    fi
 
    KeepSkipped=true
-   if [[ "$IsMC" == 0 ]]; then
-      KeepSkipped=true
-   else
+   if [[ "$IsMC" == 1 ]]; then
       KeepSkipped=false
+   else
+      KeepSkipped=true
+   fi
+
+   if [[ "$IsMC" == "0" ]]; then
+      SkipGen=true
+      SkipMatch=true
    fi
 
    mkdir -p /tmp/chenyi/
@@ -198,7 +208,7 @@ do
        --Fraction $Fraction --Exclusion "$Exclusion" --KeepSkippedEvent $KeepSkipped \
        --UseStoredGen $Stored --UseStoredReco $Stored --DoRecoSubtraction false --Trigger $Trigger \
        --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-       --PTMin $PTMin --GenPTMin $GenPTMin \
+       --PTMin $PTMin --GenPTMin $GenPTMin --DontStoreReco $SkipReco --DontStoreGen $SkipGen --DontStoreMatch $SkipMatch\
        --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
        --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey --CutUE true \
        --ReEvaluateCentrality $ReEvaluateCentrality --CentralityShift $CentralityShift \
@@ -208,7 +218,7 @@ do
       --Fraction $Fraction --Exclusion "$Exclusion" --KeepSkippedEvent $KeepSkipped \
       --UseStoredGen $Stored --UseStoredReco $Stored --DoRecoSubtraction false --Trigger $Trigger \
       --CheckCentrality $CheckCentrality --CentralityMin $CMin --CentralityMax $CMax \
-      --PTMin $PTMin --GenPTMin $GenPTMin \
+      --PTMin $PTMin --GenPTMin $GenPTMin --DontStoreReco $SkipReco --DontStoreGen $SkipGen --DontStoreMatch $SkipMatch \
       --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
       --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey --CutUE true \
       --ReEvaluateCentrality $ReEvaluateCentrality --CentralityShift $CentralityShift \

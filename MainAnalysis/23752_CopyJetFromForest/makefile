@@ -26,7 +26,7 @@ TestRun: Execute
 	# bash RunFileOneR.sh `ls $(PbPbData4)/*.root | head -n2 | tr '\n' ','` MeowTestRunMC2 HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 4 1 1 0to10 1
 	# bash RunFileOneR.sh `ls $(PbPbMC4)/*.root | head -n2 | tr '\n' ','` MeowTestRunMCRho None 1 0 0 4 0 1 1 rho default
 	# bash RunFileOneR.sh `ls $(PbPbMC4)/*.root | head -n2 | tr '\n' ','` MeowTestRunMCRhoUp None 1 0 0 4 0 1 1 rhoup default
-	bash RunFileOneR.sh `ls $(PbPbMC4)/*.root | head -n2 | tr '\n' ','` MeowTestRunMCRhoDown None 1 0 0 4 0 1 1 rhodown default
+	bash RunFileOneR.sh `ls $(PbPbMC4)/*.root | head -n2 | tr '\n' ','` MeowTestRunMCRhoDownNoSkip None 1 0 0 4 0 0 1 1 rhodown default
 	# bash RunFileOneR.sh `ls $(PPData4)/*.root | head -n2 | tr '\n' ','` MeowTestRunPPData HLT_HIAK4PFJet80 0 1 1 4 0 0 default
 
 ULTreeValidation: Execute

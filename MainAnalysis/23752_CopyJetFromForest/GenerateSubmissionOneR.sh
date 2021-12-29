@@ -7,8 +7,10 @@ ToRunList="$1"
 ToRunR="$2"
 
 # Available arguments: 
-# PPMC                     = nominal PP MC
-# PPData                   = nominal PP data
+# PPMC                     = nominal PP MC (UL)
+# PPData                   = nominal PP data (UL)
+# PPMCEOY                  = nominal PP MC (EOY)
+# PPDataEOY                = nominal PP data (EOY)
 # PbPbMC                   = PbPb MC with MC centrality table
 # PbPbMCInclusive          = don't split centrality
 # PbPbMCRho                = use rho to weight to data
@@ -23,9 +25,13 @@ ToRunR="$2"
 # PbPbDataCentralityDown   = centrality variation
 # PbPbDataStoredCentrality = nominal data with stored centrality
 
-ToRunList="PbPbData PbPbDataStoredCentrality PbPbDataNoResidual PbPbDataNoPhiResidual PbPbDataCentralityUp PbPbDataCentralityDown"
+# ToRunList="PbPbData PbPbDataStoredCentrality PbPbDataNoResidual PbPbDataNoPhiResidual PbPbDataCentralityUp PbPbDataCentralityDown"
+# ToRunList="PbPbMCRho PbPbMCRhoCentralityUp PbPbMCRhoCentralityDown"
+ToRunList="PPData"
+# ToRunList="PbPbMCRhoNoPhiResidual"
+# ToRunList="PbPbMC PbPbMCInclusive"
 ToRunR="1 2 3 4 5 6 7 8 9"
-Group=50
+Group=25
 
 echo "Setting up submission to run on the following list"
 echo "$ToRunList"
@@ -48,7 +54,9 @@ do
    for RTag in ${ToRunR}
    do
       LocationKey=$i
-      if [[ "$i" == "PbPbMC"* ]]; then
+      if [[ "$i" == "PbPbMCJEC"* ]]; then
+         LocationKey="PbPbMCJEC"
+      elif [[ "$i" == "PbPbMC"* ]]; then
          LocationKey="PbPbMC"
       elif [[ "$i" == "PbPbData"* ]]; then
          LocationKey="PbPbData"
@@ -61,42 +69,45 @@ do
          # echo $j
          Count=`echo $Count | AddConst 1`
 
-         # Arguments = InputFile Tag Trigger IsMC IsPP Recluster RTag MinPT
+         # Arguments = InputFile Tag Trigger IsMC IsPP Recluster RTag MinPT SkipReco
          #    DoPhiResidual DoDataResidual DoExclusion Centrality CentralityTable
          # ExtraArguments start from the Trigger
-         ExtraArguments="None 1 1 1 $RTag 40 0 0 0 default default"
+         ExtraArguments="None 1 1 1 $RTag 40 0 0 0 0 default default"
          if [[ "$i" == "PPMC" ]]; then
-            # ExtraArguments="None 1 1 1 $RTag 0 0 0 0 default default"   # NonUL
-            ExtraArguments="None 1 2 1 $RTag 0 0 0 0 default default"   # UL
+            ExtraArguments="None 1 2 1 $RTag 0 0 0 0 0 default default"   # UL
          elif [[ "$i" == "PPData" ]]; then
-            # ExtraArguments="HLT_HIAK4PFJet80 0 1 1 $RTag 40 0 1 0 default default"   # if PP Data NonUL recluster
-            ExtraArguments="HLT_HIAK4PFJet80 0 2 0 $RTag 40 0 1 0 default default"   # if PP Data UL don't recluster
+            ExtraArguments="HLT_HIAK4PFJet80 0 2 0 $RTag 40 0 0 1 0 default default"   # if PP Data UL don't recluster
+         elif [[ "$i" == "PPMCEOY" ]]; then
+            ExtraArguments="None 1 1 1 $RTag 40 0 0 0 0 default default"   # NonUL
+         elif [[ "$i" == "PPDataEOY" ]]; then
+            ExtraArguments="HLT_HIAK4PFJet80 0 1 1 $RTag 40 0 1 0 default default"   # recluster
+            # ExtraArguments="HLT_HIAK4PFJet80 0 1 0 $RTag 40 0 1 0 default default"   # don't recluster
          elif [[ "$i" == "PbPbMC" ]]; then
-            ExtraArguments="None 1 0 0 $RTag 60 1 0 1 default MC"
+            ExtraArguments="None 1 0 0 $RTag 60 0 1 0 1 default MC"
          elif [[ "$i" == "PbPbMCInclusive" ]]; then
-            ExtraArguments="None 1 0 0 $RTag 60 1 0 1 Inclusive default"
+            ExtraArguments="None 1 0 0 $RTag 60 0 1 0 1 Inclusive default"
          elif [[ "$i" == "PbPbMCRho" ]]; then
-            ExtraArguments="None 1 0 0 $RTag 60 1 0 1 rho default"
+            ExtraArguments="None 1 0 0 $RTag 60 0 1 0 1 rho default"
          elif [[ "$i" == "PbPbMCRhoCentralityUp" ]]; then
-            ExtraArguments="None 1 0 0 $RTag 60 1 0 1 rhoup default"
+            ExtraArguments="None 1 0 0 $RTag 60 0 1 0 1 rhoup default"
          elif [[ "$i" == "PbPbMCRhoCentralityDown" ]]; then
-            ExtraArguments="None 1 0 0 $RTag 60 1 0 1 rhodown default"
+            ExtraArguments="None 1 0 0 $RTag 60 0 1 0 1 rhodown default"
          elif [[ "$i" == "PbPbMCRhoNoPhiResidual" ]]; then
-            ExtraArguments="None 1 0 0 $RTag 60 0 0 1 rho default"
+            ExtraArguments="None 1 0 0 $RTag 60 0 0 0 1 rho default"
          elif [[ "$i" == "PbPbMCJEC" ]]; then
-            ExtraArguments="None 1 0 0 $RTag 0 0 0 0 Inclusive default"
+            ExtraArguments="None 1 0 0 $RTag 0 1 0 0 0 Inclusive default"
          elif [[ "$i" == "PbPbData" ]]; then
-            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 1 1 1 default Data"
+            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 0 1 1 1 default Data"
          elif [[ "$i" == "PbPbDataStoredCentrality" ]]; then
-            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 1 1 1 default default"
+            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 0 1 1 1 default default"
          elif [[ "$i" == "PbPbDataNoResidual" ]]; then
-            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 1 0 1 default Data"
+            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 0 1 0 1 default Data"
          elif [[ "$i" == "PbPbDataNoPhiResidual" ]]; then
-            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 0 1 1 default Data"
+            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 0 0 1 1 default Data"
          elif [[ "$i" == "PbPbDataCentralityUp" ]]; then
-            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 1 1 1 default DataUp"
+            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 0 1 1 1 default DataUp"
          elif [[ "$i" == "PbPbDataCentralityDown" ]]; then
-            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 1 1 1 default DataDown"
+            ExtraArguments="HLT_HIPuAK4CaloJet100Eta5p1 0 0 0 $RTag 60 0 1 1 1 default DataDown"
          fi
 
          echo "Arguments = $j Run_${i}_Part${Count} $ExtraArguments" >> ${File}
