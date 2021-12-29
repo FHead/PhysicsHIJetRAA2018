@@ -140,8 +140,8 @@ int main(int argc, char *argv[])
    for(double X = 0; X < 1500; X = X + 0.1)
    {
       double Y = F.Eval(X);
-      if(Y != Y || Y > 1000)
-         Y = 1000;
+      if(Y != Y || Y > 10000)
+         Y = 10000;
       GF.SetPoint(GF.GetN(), X, Y);
    }
    GF.Draw("ap");
@@ -152,8 +152,8 @@ int main(int argc, char *argv[])
    for(double X = 0; X < 1500; X = X + 0.1)
    {
       double Y = F2.Eval(X);
-      if(Y != Y || Y > 1000)
-         Y = 1000;
+      if(Y != Y || Y > 10000)
+         Y = 10000;
       GF2.SetPoint(GF2.GetN(), X, Y);
    }
    GF2.Draw("ap");
