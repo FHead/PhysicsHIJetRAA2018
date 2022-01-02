@@ -16,8 +16,6 @@ echo >> $Submit
 JetR=`DHQuery GlobalSetting.dh Global JetR`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr ' ' ','`
 
-Centrality="50to70,70to90"
-
 for R in $JetR
 do
    PPJERSF=$ProjectBase/CommonCode/jer/Summer19UL17_JRV3_MC/Summer19UL17_JRV3_MC_SF_AK4PF.txt
