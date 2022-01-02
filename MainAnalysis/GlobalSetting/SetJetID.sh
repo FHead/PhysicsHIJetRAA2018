@@ -36,7 +36,7 @@ done
 
 for i in 1 2 3 4 5 6 7 8 9
 do
-   for j in 0to10 10to30 30to50 50to90
+   for j in 0to10 10to30 30to50 50to90 50to70 70to90
    do
       # PP Style
       # DHSet ${DH} JetID PbPbData_R${i}_Centrality${j}_NHFMinCut float -999

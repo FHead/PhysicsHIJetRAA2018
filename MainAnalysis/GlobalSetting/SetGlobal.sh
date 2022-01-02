@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DHSet GlobalSetting.dh "Global" "JetR" string "1 2 3 4 5 6 7 8 9"
-DHSet GlobalSetting.dh "Global" "Centrality" string "0to10 10to30 30to50 50to90"
+DHSet GlobalSetting.dh "Global" "Centrality" string "0to10 10to30 30to50 50to90 50to70 70to90"
 DHSet GlobalSetting.dh "JetR" "1" float 0.15
 DHSet GlobalSetting.dh "JetR" "2" float 0.20
 DHSet GlobalSetting.dh "JetR" "3" float 0.30
@@ -24,10 +24,55 @@ DHSet GlobalSetting.dh "CentralityMin" "0to10" float 0.00
 DHSet GlobalSetting.dh "CentralityMin" "10to30" float 0.10
 DHSet GlobalSetting.dh "CentralityMin" "30to50" float 0.30
 DHSet GlobalSetting.dh "CentralityMin" "50to90" float 0.50
+DHSet GlobalSetting.dh "CentralityMin" "50to70" float 0.50
+DHSet GlobalSetting.dh "CentralityMin" "70to90" float 0.70
 DHSet GlobalSetting.dh "CentralityMin" "Inclusive" float -999
 DHSet GlobalSetting.dh "CentralityMax" "0to10" float 0.10
 DHSet GlobalSetting.dh "CentralityMax" "10to30" float 0.30
 DHSet GlobalSetting.dh "CentralityMax" "30to50" float 0.50
 DHSet GlobalSetting.dh "CentralityMax" "50to90" float 0.90
+DHSet GlobalSetting.dh "CentralityMax" "50to70" float 0.70
+DHSet GlobalSetting.dh "CentralityMax" "70to90" float 0.90
 DHSet GlobalSetting.dh "CentralityMax" "Inclusive" float 999
+# Fine centrality bins
+DHSet GlobalSetting.dh "CentralityMin"  "0to5"   float 0.00
+DHSet GlobalSetting.dh "CentralityMin"  "5to10"  float 0.05
+DHSet GlobalSetting.dh "CentralityMin" "10to15"  float 0.10
+DHSet GlobalSetting.dh "CentralityMin" "15to20"  float 0.15
+DHSet GlobalSetting.dh "CentralityMin" "20to25"  float 0.20
+DHSet GlobalSetting.dh "CentralityMin" "25to30"  float 0.25
+DHSet GlobalSetting.dh "CentralityMin" "30to35"  float 0.30
+DHSet GlobalSetting.dh "CentralityMin" "35to40"  float 0.35
+DHSet GlobalSetting.dh "CentralityMin" "40to45"  float 0.40
+DHSet GlobalSetting.dh "CentralityMin" "45to50"  float 0.45
+DHSet GlobalSetting.dh "CentralityMin" "50to55"  float 0.50
+DHSet GlobalSetting.dh "CentralityMin" "55to60"  float 0.55
+DHSet GlobalSetting.dh "CentralityMin" "60to65"  float 0.60
+DHSet GlobalSetting.dh "CentralityMin" "65to70"  float 0.65
+DHSet GlobalSetting.dh "CentralityMin" "70to75"  float 0.70
+DHSet GlobalSetting.dh "CentralityMin" "75to80"  float 0.75
+DHSet GlobalSetting.dh "CentralityMin" "80to85"  float 0.80
+DHSet GlobalSetting.dh "CentralityMin" "85to90"  float 0.85
+DHSet GlobalSetting.dh "CentralityMin" "90to95"  float 0.90
+DHSet GlobalSetting.dh "CentralityMin" "95to100" float 0.95
+DHSet GlobalSetting.dh "CentralityMax"  "0to5"   float 0.05
+DHSet GlobalSetting.dh "CentralityMax"  "5to10"  float 0.10
+DHSet GlobalSetting.dh "CentralityMax" "10to15"  float 0.15
+DHSet GlobalSetting.dh "CentralityMax" "15to20"  float 0.20
+DHSet GlobalSetting.dh "CentralityMax" "20to25"  float 0.25
+DHSet GlobalSetting.dh "CentralityMax" "25to30"  float 0.30
+DHSet GlobalSetting.dh "CentralityMax" "30to35"  float 0.35
+DHSet GlobalSetting.dh "CentralityMax" "35to40"  float 0.40
+DHSet GlobalSetting.dh "CentralityMax" "40to45"  float 0.45
+DHSet GlobalSetting.dh "CentralityMax" "45to50"  float 0.50
+DHSet GlobalSetting.dh "CentralityMax" "50to55"  float 0.55
+DHSet GlobalSetting.dh "CentralityMax" "55to60"  float 0.60
+DHSet GlobalSetting.dh "CentralityMax" "60to65"  float 0.65
+DHSet GlobalSetting.dh "CentralityMax" "65to70"  float 0.70
+DHSet GlobalSetting.dh "CentralityMax" "70to75"  float 0.75
+DHSet GlobalSetting.dh "CentralityMax" "75to80"  float 0.80
+DHSet GlobalSetting.dh "CentralityMax" "80to85"  float 0.85
+DHSet GlobalSetting.dh "CentralityMax" "85to90"  float 0.90
+DHSet GlobalSetting.dh "CentralityMax" "90to95"  float 0.95
+DHSet GlobalSetting.dh "CentralityMax" "95to100" float 1.00 
 
