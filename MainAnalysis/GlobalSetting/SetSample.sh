@@ -25,16 +25,18 @@ do
    DHSet GlobalSetting.dh Sample PbPbMCJEC${R} string ${EOSHI2018}/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/HINPbPbSpring21MiniAOD-FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/20211221DefaultPbPbMCForJetRAANoThreshold/211221_182709/
 
    # PP NonUL Data
-   DHSet GlobalSetting.dh SampleOverview PPDataEOY$R string "HighEGJet (EOY), PF candidates, AOD, 2021 Nov 15"
-   DHSet GlobalSetting.dh Sample PPDataEOY${R} string ${EOSHI2017}/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+   # DHSet GlobalSetting.dh SampleOverview PPDataEOY$R string "HighEGJet (EOY), PF candidates, AOD, 2021 Nov 15"
+   # DHSet GlobalSetting.dh Sample PPDataEOY${R} string ${EOSHI2017}/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211115FullRunHighEGJetNoTrackTree/211115_214540/
+   DHSet GlobalSetting.dh SampleOverview PPDataEOY$R string "HighEGJet (EOY), jets, AOD, 2021 Dec 21"
+   DHSet GlobalSetting.dh Sample PPDataEOY${R} string ${EOSHI2017}/HighEGJet/Run2017G-17Nov2017-v2/AOD/HighEGJet/20211221ULFullRunClusterHighEGJet
 
    # PP Data UL
-   DHSet GlobalSetting.dh SampleOverview PPData$R string "HighEGJet (UL), Jets 40 GeV, MINIAOD, 2021 Dec 1"
-   DHSet GlobalSetting.dh Sample PPData${R} string ${EOSHI2017}/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
+   # DHSet GlobalSetting.dh SampleOverview PPData$R string "HighEGJet (UL), Jets 40 GeV, MINIAOD, 2021 Dec 1"
+   # DHSet GlobalSetting.dh Sample PPData${R} string ${EOSHI2017}/HighEGJet/Run2017G-UL2017_MiniAODv2-v1/MINIAOD/HighEGJet/20211201FullRunULHighEGJetHighTreshold
    
    # PP Data UL AOD
-   # DHSet GlobalSetting.dh SampleOverview PPData$R string "HighEGJet (UL), Jets 40 GeV, AOD, 2021 Dec 22"
-   # DHSet GlobalSetting.dh Sample PPData${R} string ${EOSHI2017}/HighEGJet/Run2017G-09Aug2019_UL2017-v1/AOD/HighEGJet/20211222ULFullRunClusterHighEGJet/211222_095621/
+   DHSet GlobalSetting.dh SampleOverview PPData$R string "HighEGJet (UL), Jets 40 GeV, AOD, 2021 Dec 22"
+   DHSet GlobalSetting.dh Sample PPData${R} string ${EOSHI2017}/HighEGJet/Run2017G-09Aug2019_UL2017-v1/AOD/HighEGJet/20211222ULFullRunClusterHighEGJet/211222_095621/
 
    # PP NonUL MC
    DHSet GlobalSetting.dh SampleOverview PPMCEOY$R string "QCD (EOY), PF candidates, AOD, 2021 Aug 24"
