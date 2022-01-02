@@ -13,7 +13,9 @@ echo "should_transfer_files = NO" >> $Submit
 echo "+JobFlavour           = \"workday\"" >> $Submit
 echo >> $Submit
 
-for R in 1 2 3 4 5 6 7 8 9
+JetR=`DHQuery GlobalSetting.dh Global JetR`
+
+for R in $JetR
 do
    PPJERSF=$ProjectBase/CommonCode/jer/Summer19UL17_JRV3_MC/Summer19UL17_JRV3_MC_SF_AK4PF.txt
    PbPbJERSF=$ProjectBase/CommonCode/jer/Autumn18_RunD_V7b_MC/Autumn18_RunD_V7b_MC_SF_AK4PF.txt
@@ -23,7 +25,7 @@ do
    echo "Output    = Log/PbPbMCNominal${R}.out" >> $Submit
    echo "Error     = Log/PbPbMCNominal${R}.err" >> $Submit
    echo "Log       = Log/PbPbMCNominal${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PbPb Data
@@ -31,7 +33,7 @@ do
    echo "Output    = Log/PbPbDataNominal${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataNominal${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataNominal${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PbPb Data, JEC up
@@ -39,7 +41,7 @@ do
    echo "Output    = Log/PbPbDataJECUp${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataJECUp${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataJECUp${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PbPb Data, JEC down
@@ -47,7 +49,7 @@ do
    echo "Output    = Log/PbPbDataJECDown${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataJECDown${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataJECDown${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PbPb Data, JEC Quench
@@ -55,7 +57,7 @@ do
    echo "Output    = Log/PbPbDataJECQuench${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataJECQuench${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataJECQuench${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PbPb Data, JEC No residual (MC as usual with phi, data also with phi)
@@ -71,7 +73,7 @@ do
    echo "Output    = Log/PbPbDataJECNoPhi${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataJECNoPhi${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataJECNoPhi${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PbPb Data, JER up
@@ -79,7 +81,7 @@ do
    echo "Output    = Log/PbPbDataJERUp${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataJERUp${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataJERUp${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PbPb Data, JER down
@@ -87,7 +89,7 @@ do
    echo "Output    = Log/PbPbDataJERDown${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataJERDown${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataJERDown${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PbPb Data, no JER
@@ -95,7 +97,7 @@ do
    echo "Output    = Log/PbPbDataNoJER${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataNoJER${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataNoJER${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
  
    # PbPb Data, Flat JER smearing
@@ -103,7 +105,7 @@ do
    echo "Output    = Log/PbPbDataFlatJER${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataFlatJER${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataFlatJER${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
  
    # PbPb Data, Centrality up
@@ -111,7 +113,7 @@ do
    echo "Output    = Log/PbPbDataCentralityUp${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataCentralityUp${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataCentralityUp${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PbPb Data, Centrality down
@@ -119,7 +121,7 @@ do
    echo "Output    = Log/PbPbDataCentralityDown${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataCentralityDown${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataCentralityDown${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PbPb Data, MC Centrality
@@ -127,7 +129,7 @@ do
    echo "Output    = Log/PbPbDataMCCentrality${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataMCCentrality${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataMCCentrality${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PbPb Data, Stored Centrality
@@ -135,7 +137,7 @@ do
    echo "Output    = Log/PbPbDataStoredCentrality${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataStoredCentrality${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataStoredCentrality${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PbPb Data, No Jet ID
@@ -143,7 +145,7 @@ do
    echo "Output    = Log/PbPbDataNoJetID${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataNoJetID${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataNoJetID${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PP MC
