@@ -18,6 +18,7 @@ DoDataResidual=${11}
 DoExclusion=${12}
 Centrality=${13}
 CentralityTable=${14}
+DoJetID=${15}
 
 echo "Runing with the following"
 echo "  Input = $InputFile"
@@ -34,6 +35,7 @@ echo "  DoDataResidual = $DoDataResidual (0 = no, 1 = yes)"
 echo "  DoExclusion = $DoExclusion (0 = no, 1 = yes)"
 echo "  Centrality = $Centrality"
 echo "  CentralityTable = $CentralityTable"
+echo "  JetID = $DoJetID (0 = no, 1 = yes)"
 echo
 
 Fraction=1
@@ -200,6 +202,9 @@ do
    if [[ "$IsMC" == "0" ]]; then
       SkipGen=true
       SkipMatch=true
+   else
+      SkipGen=false
+      SkipMatch=false
    fi
 
    mkdir -p /tmp/chenyi/
@@ -212,7 +217,7 @@ do
        --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
        --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey --CutUE true \
        --ReEvaluateCentrality $ReEvaluateCentrality --CentralityShift $CentralityShift \
-       --DoJetID true --JetIDKeyBase ${JetIDTag}_R${RTag}_Centrality${CTag}
+       --DoJetID $DoJetID --JetIDKeyBase ${JetIDTag}_R${RTag}_Centrality${CTag}
    ./Execute --Input $InputFile --Output /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root \
       --JetR $RValue --Jet "${Jet}" --JEC ${JEC} --JEU ${JEU} \
       --Fraction $Fraction --Exclusion "$Exclusion" --KeepSkippedEvent $KeepSkipped \
@@ -222,7 +227,7 @@ do
       --DoBaselineCutPP $BaselineCutPP --DoBaselineCutAA $BaselineCutAA \
       --DHFile GlobalSetting.dh --RhoKeyBase $RhoKey --CutUE true \
       --ReEvaluateCentrality $ReEvaluateCentrality --CentralityShift $CentralityShift \
-      --DoJetID true --JetIDKeyBase ${JetIDTag}_R${RTag}_Centrality${CTag}
+      --DoJetID $DoJetID --JetIDKeyBase ${JetIDTag}_R${RTag}_Centrality${CTag}
    mv /tmp/chenyi/${Tag}_R${RTag}_Centrality${CTag}.root Output/${Tag}_R${RTag}_Centrality${CTag}.root
 done
 
