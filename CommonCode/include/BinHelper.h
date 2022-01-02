@@ -13,6 +13,7 @@ std::vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 std::vector<double> ParseList(std::string List);
 TH1D *ForwardFold(TH1D *HGen, TH2D *HResponse);
 std::vector<int> ListIterations(std::string FileName);
+vector<string> DetectVariations(DataHelper &DHFile, string State);
 
 std::vector<double> DetectBins(TH1D *HMin, TH1D *HMax)
 {
@@ -132,4 +133,51 @@ vector<int> ListIterations(string FileName)
 
    return Result;
 }
+
+std::vector<std::string> DetectVariations(DataHelper &DHFile, std::string std::State)
+{
+   std::vector<std::string> Result;
+
+   Assert(DHFile.Exist(State), "State does not exist in the DHFile");
+
+   std::vector<std::string> Keys = DHFile[State].GetListOfKeys();
+   for(std::string &Key : Keys)
+   {
+      int Location = Key.rfind("_");
+      if(Location == std::string::npos)   // unrelated
+         continue;
+      Result.push_back(Key.substr(0, Location));
+   }
+
+   sort(Result.begin(), Result.end());
+   Result.erase(unique(Result.begin(), Result.end()), Result.end());
+
+   for(int i = 0; i < (int)Result.size(); i++)
+   {
+      std::string Source = Result[i];
+
+      int ExistCount = 0;
+      if(DHFile[State].Exist(Source + "_BaseFile") == true)           ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_BaseHistogram") == true)      ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_VariantFile") == true)        ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_VariantHistogram") == true)   ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_Label") == true)              ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_Include") == true)            ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_Bridging") == true)           ExistCount = ExistCount + 1;
+      if(DHFile[State].Exist(Source + "_ExtraScaling") == true)       ExistCount = ExistCount + 1;
+
+      if(ExistCount == 0)   // unrelated stuff
+      {
+         Result.erase(Result.begin() + i);
+         i = i - 1;
+         continue;
+      }
+
+      if(ExistCount < 8)
+         cerr << "Warning: source " << Source << " incomplete!" << endl;
+   }
+
+   return Result;
+}
+
 
