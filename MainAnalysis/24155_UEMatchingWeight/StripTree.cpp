@@ -13,6 +13,8 @@ using namespace std;
 #include "SetStyle.h"
 #include "ProgressBar.h"
 
+#define MAX 25000
+
 struct Jet
 {
    double UE;
@@ -89,21 +91,25 @@ void ReadData(string FileName, vector<Jet> &Data, double JetMinPT, bool UseMatch
 {
    TFile File(FileName.c_str());
 
-   TTree *Tree = (TTree *)File.Get("UnfoldingTree");
+   TTree *Tree = (TTree *)File.Get("UnfoldingTreeFlat");
    if(Tree == nullptr)
    {
       File.Close();
       return;
    }
 
-   vector<float> Ones;
-
    double EventWeight;
    int NRecoJets;
-   vector<float> *RecoJetPT        = nullptr;
-   vector<float> *RecoJetUE        = nullptr;
-   vector<float> *RecoJetWeight    = nullptr;
-   vector<float> *RecoJetPhiWeight = nullptr;
+   float RecoJetPT[MAX];
+   float RecoJetUE[MAX];
+   float RecoJetWeight[MAX];
+   float RecoJetPhiWeight[MAX];
+
+   for(int i = 0; i < MAX; i++)
+   {
+      RecoJetWeight[i] = 1;
+      RecoJetPhiWeight[i] = 1;
+   }
 
    Tree->SetBranchAddress("EventWeight",      &EventWeight);
    if(UseMatch == false)
@@ -113,12 +119,8 @@ void ReadData(string FileName, vector<Jet> &Data, double JetMinPT, bool UseMatch
       Tree->SetBranchAddress("RecoJetUE",           &RecoJetUE);
       if(Tree->GetBranch("RecoJetWeight") != nullptr)
          Tree->SetBranchAddress("RecoJetWeight",       &RecoJetWeight);
-      else
-         RecoJetWeight = &Ones;
       if(Tree->GetBranch("RecoJetWeight") != nullptr)
          Tree->SetBranchAddress("RecoJetPhiWeight",    &RecoJetPhiWeight);
-      else
-         RecoJetPhiWeight = &Ones;
    }
    else
    {
@@ -127,12 +129,8 @@ void ReadData(string FileName, vector<Jet> &Data, double JetMinPT, bool UseMatch
       Tree->SetBranchAddress("MatchedJetUE",        &RecoJetUE);
       if(Tree->GetBranch("MatchJetWeight") != nullptr)
          Tree->SetBranchAddress("MatchJetWeight",       &RecoJetWeight);
-      else
-         RecoJetWeight = &Ones;
       if(Tree->GetBranch("MatchJetWeight") != nullptr)
          Tree->SetBranchAddress("MatchJetPhiWeight",    &RecoJetPhiWeight);
-      else
-         RecoJetPhiWeight = &Ones;
    }
 
    int EntryCount = Tree->GetEntries();
@@ -148,17 +146,15 @@ void ReadData(string FileName, vector<Jet> &Data, double JetMinPT, bool UseMatch
          Bar.Print();
       }
 
-      Ones.resize(NRecoJets, 1);
-
       for(int iJ = 0; iJ < NRecoJets; iJ++)
       {
-         if((*RecoJetPT)[iJ] < JetMinPT)
+         if(RecoJetPT[iJ] < JetMinPT)
             continue;
 
-         double UE = (*RecoJetUE)[iJ];
+         double UE = RecoJetUE[iJ];
          double Weight = EventWeight;
-         Weight = Weight * (*RecoJetWeight)[iJ];
-         Weight = Weight * (*RecoJetPhiWeight)[iJ];
+         Weight = Weight * RecoJetWeight[iJ];
+         Weight = Weight * RecoJetPhiWeight[iJ];
 
          Data.push_back(Jet{UE, Weight});
       }
