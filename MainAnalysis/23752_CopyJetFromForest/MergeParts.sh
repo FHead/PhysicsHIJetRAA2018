@@ -11,7 +11,7 @@ fi
 
 for Type in `ls $TempFolder | cut -d '_' -f 2 | sort | uniq`
 do
-   for Bin in `ls $TempFolder/*${Type}* | cut -d '_' -f 4-5 | sort | uniq`
+   for Bin in `ls $TempFolder/*_${Type}_* | cut -d '_' -f 4-5 | sort | uniq`
    do
       echo ${Type} ${Bin}
       hadd -k -f Output/${Type}_${Bin} $TempFolder/*_${Type}_Part*_${Bin}
