@@ -45,6 +45,13 @@ Execute: ProcessJets.cpp
 		`$(FastJet) --cxxflags --libs` \
 		-L$(FJContrib)/lib -I$(FJContrib)/include -lConstituentSubtractor
 
+ExecuteVector: ProcessJetsVector.cpp
+	CompileRootMacro ProcessJetsVector.cpp ExecuteVector \
+		-I$(ProjectBase)/CommonCode/include \
+		$(ProjectBase)/CommonCode/library/*.o \
+		`$(FastJet) --cxxflags --libs` \
+		-L$(FJContrib)/lib -I$(FJContrib)/include -lConstituentSubtractor
+
 SubmitBeforeRho:
 	bash GenerateSubmissionOneR.sh "PbPbData PPMC PPData PbPbMCJEC PbPbMCInclusive" "1 2 3 4 5 6 7 8 9"
 	# condor_submit Submit.condor
