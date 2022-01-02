@@ -13,7 +13,7 @@ Execute: PrepareUnfold.cpp
 		-I../../CommonCode/include
 
 ExecutePreset: RunPreset.cpp
-	CompileRootMacro RunPreset.cpp ExecutePreset
+	CompileRootMacro RunPreset.cpp ExecutePreset -I$(ProjectBase)/CommonCode/include/
 
 Debug:
 	GenBins=`DHQuery GlobalSetting.dh Binning GenPT`; \
