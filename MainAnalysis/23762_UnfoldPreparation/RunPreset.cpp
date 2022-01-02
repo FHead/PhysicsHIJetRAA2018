@@ -5,6 +5,7 @@ using namespace std;
 
 #include "DataHelper.h"
 #include "CommandLine.h"
+#include "BinHelper.h"
 
 int main(int argc, char *argv[]);
 map<string, string> GetBinnings();
@@ -15,6 +16,9 @@ int main(int argc, char *argv[])
 
    CommandLine CL(argc, argv);
    
+   string GlobalSettingFile  = CL.Get("GlobalSetting", "GlobalSetting.dh");
+   DataHelper DHFile(GlobalSettingFile);
+
    string DataTag            = CL.Get("DataTag");
    string MCTag              = CL.Get("MCTag");
    string Prefix             = CL.Get("Prefix");
@@ -30,14 +34,11 @@ int main(int argc, char *argv[])
 
    bool DoCopy               = CL.GetBool("DoCopy", false);
 
-   vector<string> JetR       = CL.GetStringVector("JetR", {"1", "2", "3", "4", "5", "6", "7", "8", "9"});
-   vector<string> Centrality = CL.GetStringVector("Centrality", {"0to10", "10to30", "30to50", "50to90"});
+   vector<string> JetR       = CL.GetStringVector("JetR", ParseStringList(DHFile["Global"]["JetR"].GetString()));
+   vector<string> Centrality = CL.GetStringVector("Centrality", ParseStringList(DHFile["Global"]["Centrality"].GetString()));
 
    double MCFraction         = CL.GetDouble("MCFraction", 1.0);
    double DataFraction       = CL.GetDouble("DataFraction", 1.0);
-
-   string GlobalSettingFile  = CL.Get("GlobalSetting", "GlobalSetting.dh");
-   DataHelper DHFile(GlobalSettingFile);
 
    Binnings["GenBins"]       = CL.Get("GenBins", DHFile["Binning"]["GenPT"].GetString());
    Binnings["RecoBins"]      = CL.Get("RecoBins", DHFile["Binning"]["RecoPT"].GetString());
