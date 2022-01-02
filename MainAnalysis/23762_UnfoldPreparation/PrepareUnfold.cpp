@@ -16,6 +16,8 @@ using namespace std;
 #include "BinHelper.h"
 #include "JetCorrector.h"
 
+#define MAX 10240
+
 enum ObservableType {ObservableNone, ObservableJetPT};
 enum ObservableStep {Gen, Reco, Matched};
 
@@ -32,26 +34,28 @@ private:
    int                    Lumi;
    long long              Event;
    double                 EventWeight;
-   vector<float>         *RecoJetPT;
-   vector<float>         *RecoJetEta;
-   vector<float>         *RecoJetPhi;
-   vector<float>         *RecoJetMass;
-   vector<float>         *RecoJetJEC;
-   vector<float>         *RecoJetJEU;
-   vector<float>         *RecoJetWeight;
-   vector<float>         *GenJetPT;
-   vector<float>         *GenJetEta;
-   vector<float>         *GenJetPhi;
-   vector<float>         *GenJetMass;
-   vector<float>         *GenJetWeight;
-   vector<float>         *MatchedJetPT;
-   vector<float>         *MatchedJetEta;
-   vector<float>         *MatchedJetPhi;
-   vector<float>         *MatchedJetMass;
-   vector<float>         *MatchedJetJEC;
-   vector<float>         *MatchedJetJEU;
-   vector<float>         *MatchedJetAngle;
-   vector<float>         *MatchedJetWeight;
+   int                    NRecoJets;
+   float                  RecoJetPT[MAX];
+   float                  RecoJetEta[MAX];
+   float                  RecoJetPhi[MAX];
+   float                  RecoJetMass[MAX];
+   float                  RecoJetJEC[MAX];
+   float                  RecoJetJEU[MAX];
+   float                  RecoJetWeight[MAX];
+   int                    NGenJets;
+   float                  GenJetPT[MAX];
+   float                  GenJetEta[MAX];
+   float                  GenJetPhi[MAX];
+   float                  GenJetMass[MAX];
+   float                  GenJetWeight[MAX];
+   float                  MatchedJetPT[MAX];
+   float                  MatchedJetEta[MAX];
+   float                  MatchedJetPhi[MAX];
+   float                  MatchedJetMass[MAX];
+   float                  MatchedJetJEC[MAX];
+   float                  MatchedJetJEU[MAX];
+   float                  MatchedJetAngle[MAX];
+   float                  MatchedJetWeight[MAX];
    double                 MaxMatchedJetAngle;
    bool                   UseJEU;
    bool                   UseJERSF;
@@ -59,7 +63,7 @@ private:
 public:
    Messenger()              { Initialize(nullptr); }
    Messenger(TTree *Tree)   { Initialize(Tree); }
-   Messenger(TFile &File, string TreeName = "UnfoldingTree")
+   Messenger(TFile &File, string TreeName = "UnfoldingTreeFlat")
    {
       TTree *Tree = (TTree *)File.Get(TreeName.c_str());
       Initialize(Tree);
@@ -71,26 +75,8 @@ public:
       Run = 1;
       Lumi = 1;
       Event = 1;
-      RecoJetPT = nullptr;
-      RecoJetEta = nullptr;
-      RecoJetPhi = nullptr;
-      RecoJetMass = nullptr;
-      RecoJetJEC = nullptr;
-      RecoJetJEU = nullptr;
-      RecoJetWeight = nullptr;
-      GenJetPT = nullptr;
-      GenJetEta = nullptr;
-      GenJetPhi = nullptr;
-      GenJetMass = nullptr;
-      GenJetWeight = nullptr;
-      MatchedJetPT = nullptr;
-      MatchedJetEta = nullptr;
-      MatchedJetPhi = nullptr;
-      MatchedJetMass = nullptr;
-      MatchedJetJEC = nullptr;
-      MatchedJetJEU = nullptr;
-      MatchedJetAngle = nullptr;
-      MatchedJetWeight = nullptr;
+      NRecoJets = 0;
+      NGenJets = 0;
       MaxMatchedJetAngle = -1;
       UseJEU = true;
       UseJERSF = false;
@@ -103,6 +89,7 @@ public:
       Tree->SetBranchAddress("Run", &Run);
       Tree->SetBranchAddress("Event", &Event);
       Tree->SetBranchAddress("Lumi", &Lumi);
+      Tree->SetBranchAddress("NRecoJets", &NRecoJets);
       Tree->SetBranchAddress("RecoJetPT", &RecoJetPT);
       Tree->SetBranchAddress("RecoJetEta", &RecoJetEta);
       Tree->SetBranchAddress("RecoJetPhi", &RecoJetPhi);
@@ -110,6 +97,7 @@ public:
       Tree->SetBranchAddress("RecoJetJEC", &RecoJetJEC);
       Tree->SetBranchAddress("RecoJetJEU", &RecoJetJEU);
       Tree->SetBranchAddress("RecoJetWeight", &RecoJetWeight);
+      Tree->SetBranchAddress("NGenJets", &NGenJets);
       Tree->SetBranchAddress("GenJetPT", &GenJetPT);
       Tree->SetBranchAddress("GenJetEta", &GenJetEta);
       Tree->SetBranchAddress("GenJetPhi", &GenJetPhi);
@@ -146,12 +134,12 @@ public:
 
       if(MaxMatchedJetAngle > 0)
       {
-         for(int iJ = 0; iJ < (int)MatchedJetAngle->size(); iJ++)
+         for(int iJ = 0; iJ < NGenJets; iJ++)
          {
-            if((*MatchedJetAngle)[iJ] < 0 || (*MatchedJetAngle)[iJ] > MaxMatchedJetAngle)
+            if(MatchedJetAngle[iJ] < 0 || MatchedJetAngle[iJ] > MaxMatchedJetAngle)
             {
-               (*MatchedJetPT)[iJ] = 0;
-               (*MatchedJetMass)[iJ] = 0;
+               MatchedJetPT[iJ] = 0;
+               MatchedJetMass[iJ] = 0;
             }
          }
       }
@@ -163,11 +151,11 @@ public:
    double GetItemCount(ObservableStep Step, ObservableType &Type)
    {
       if(Type == ObservableJetPT && Step == Gen)
-         return GenJetPT->size();
+         return NGenJets;
       if(Type == ObservableJetPT && Step == Reco)
-         return RecoJetPT->size();
+         return NRecoJets;
       if(Type == ObservableJetPT && Step == Matched)
-         return MatchedJetPT->size();
+         return NGenJets;
       
       return 0;
    }
@@ -182,26 +170,26 @@ public:
    double GetValueNoScale(ObservableStep Step, ObservableType &Type, int Index, int Item,
       double Shift = 0, double Smear = 0)
    {
-      if(Type == ObservableJetPT && Step == Gen && Item < GenJetPT->size())
-         return (*GenJetPT)[Item];
-      if(Type == ObservableJetPT && Step == Reco && Item < RecoJetPT->size())
+      if(Type == ObservableJetPT && Step == Gen && Item < NGenJets)
+         return GenJetPT[Item];
+      if(Type == ObservableJetPT && Step == Reco && Item < NRecoJets)
       {
-         double Value = (*RecoJetPT)[Item];
+         double Value = RecoJetPT[Item];
          if(UseJEU == true)
-            Value = Value * (1 + Shift * (*RecoJetJEU)[Item] / (*RecoJetJEC)[Item]);
+            Value = Value * (1 + Shift * RecoJetJEU[Item] / RecoJetJEC[Item]);
          else
             Value = Value * (1 + Shift);
          return Value;
       }
-      if(Type == ObservableJetPT && Step == Matched && Item < MatchedJetPT->size())
+      if(Type == ObservableJetPT && Step == Matched && Item < NGenJets)
       {
-         double Value = (*MatchedJetPT)[Item];
+         double Value = MatchedJetPT[Item];
          if(UseJEU == true)
-            Value = Value * (1 + Shift * (*MatchedJetJEU)[Item] / (*MatchedJetJEC)[Item]);
+            Value = Value * (1 + Shift * MatchedJetJEU[Item] / MatchedJetJEC[Item]);
          else
             Value = Value * (1 + Shift);
-         double SmearAmount = GetSmear(Value, (*MatchedJetEta)[Item], Smear);
-         Value = (Value - (*GenJetPT)[Item]) * (SmearAmount + 1) + (*GenJetPT)[Item];
+         double SmearAmount = GetSmear(Value, MatchedJetEta[Item], Smear);
+         Value = (Value - GenJetPT[Item]) * (SmearAmount + 1) + GenJetPT[Item];
          return Value;
       }
 
@@ -270,9 +258,9 @@ public:
    }
    double GetMatchedAngle(ObservableType Type, int Item)
    {
-      if(Item < 0)                          return 99999;
-      if(Item >= MatchedJetAngle->size())   return 99999;
-      return (*MatchedJetAngle)[Item];
+      if(Item < 0)           return 99999;
+      if(Item >= NGenJets)   return 99999;
+      return MatchedJetAngle[Item];
    }
    double GetEventWeight()
    {
@@ -281,11 +269,11 @@ public:
    double GetJetWeight(ObservableStep Step, int Index)
    {
       if(Step == Gen)
-         return (GenJetWeight != nullptr && GenJetWeight->size() > Index) ? (*GenJetWeight)[Index] : 1;
+         return (GenJetWeight != nullptr && NGenJets > Index) ? GenJetWeight[Index] : 1;
       if(Step == Reco)
-         return (RecoJetWeight != nullptr && RecoJetWeight->size() > Index) ? (*RecoJetWeight)[Index] : 1;
+         return (RecoJetWeight != nullptr && NRecoJets > Index) ? RecoJetWeight[Index] : 1;
       if(Step == Matched)
-         return (MatchedJetWeight != nullptr && MatchedJetWeight->size() > Index) ? (*MatchedJetWeight)[Index] : 1;
+         return (MatchedJetWeight != nullptr && NGenJets > Index) ? MatchedJetWeight[Index] : 1;
       return 1;
    }
 };
