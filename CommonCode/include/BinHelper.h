@@ -11,6 +11,7 @@
 
 std::vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 std::vector<double> ParseList(std::string List);
+std::vector<std::string> ParseStringList(std::string List);
 TH1D *ForwardFold(TH1D *HGen, TH2D *HResponse);
 std::vector<int> ListIterations(std::string FileName);
 
@@ -60,6 +61,27 @@ std::vector<double> ParseList(std::string List)
       double Temp = -1;
       str >> Temp;
       if(Temp > 0)
+         Result.push_back(Temp);
+   }
+
+   return Result;
+}
+
+std::vector<std::string> ParseStringList(std::string List)
+{
+   std::vector<std::string> Result;
+
+   for(char &c : List)
+      if(c == ',')
+         c = ' ';
+
+   std::stringstream str(List);
+
+   while(str)
+   {
+      std::string Temp = "";
+      str >> Temp;
+      if(Temp.size() > 0)
          Result.push_back(Temp);
    }
 
