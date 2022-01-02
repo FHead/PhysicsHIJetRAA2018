@@ -15,7 +15,7 @@ Execute: GetMB.cpp
 	CompileRootMacro GetMB.cpp Execute
 
 RunAA: Execute
-	for i in Input/PbPbData_R*Nominal_JSON.txt; do echo $$i; bash CheckJSON.sh $$i; done
+	for i in Input/PbPbData_R*NominalFine_JSON.txt; do echo $$i; bash CheckJSON.sh $$i; done
 
 TestRunFull: Execute
 	DHSet GlobalSettingTest.dh CentralityMin 0to90 float 0.0

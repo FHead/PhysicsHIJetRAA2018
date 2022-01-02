@@ -4,7 +4,7 @@ JSON=$1
 
 # example: Input/PbPbData_R7_Centrality50to90_Nominal_JSON.txt
 
-Tag=`basename $JSON | sed "s/_Nominal_JSON.txt//g"`
+Tag=`basename $JSON | sed "s/_NominalFine_JSON.txt//g"`
 
 CentralityTag=`echo $Tag | egrep Centrality[0-9]*to[0-9]* -o | sed "s/Centrality//g"`
 
