@@ -37,6 +37,7 @@ RunRAAVariationCheck: Execute
 	bash RunFile.sh PPData Nominal PbPbData NominalCleanedStrong
 	bash RunFile.sh PPData Nominal PbPbData NominalBinBiasUp
 	bash RunFile.sh PPData Nominal PbPbData NominalBinBiasDown
+	bash RunFile.sh PPData Nominal PbPbData NoJetID
 
 RunRAARecoCheck: Execute
 	bash RunFile.sh PPData Nominal_Reco PbPbData Nominal_Reco
@@ -48,6 +49,7 @@ RunRAARecoCheck: Execute
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData StoredCentrality_InputRecoGenBin
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECNoResidual_InputRecoGenBin
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECNoPhi_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData NoJetID_InputRecoGenBin
 
 RunRCP: Execute
 	bash RunRCP.sh PPData Nominal PbPbData Nominal
@@ -87,6 +89,8 @@ Deploy:
 	mkdir -p $(DeployBase)/Check/RAA/Cleaning
 	cp Plots/RAA*_PPNominal_AANominalCleaned.pdf $(DeployBase)/Check/RAA/Cleaning/
 	cp Plots/RAA*_PPNominal_AANominalCleanedStrong.pdf $(DeployBase)/Check/RAA/Cleaning/
+	mkdir -p $(DeployBase)/Check/RAA/JetSelection
+	cp Plots/RAA*_PPNominal_AANoJetID.pdf $(DeployBase)/Check/RAA/JetSelection/
 	mkdir -p $(DeployBase)/Check/RAA/BinBias
 	cp Plots/RAA*_PPNominal_AANominalBinBiasUp.pdf $(DeployBase)/Check/RAA/BinBias/
 	cp Plots/RAA*_PPNominal_AANominalBinBiasDown.pdf $(DeployBase)/Check/RAA/BinBias/
@@ -102,6 +106,7 @@ Deploy:
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAStoredCentrality_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECNoPhi_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECNoResidual_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AANoJetID_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	mkdir -p $(DeployBase)/Check/RAA/RecoGenMix
 	cp Plots/RAA*_PPNominal_AANominal_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 
