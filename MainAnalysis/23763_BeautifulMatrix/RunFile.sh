@@ -48,10 +48,10 @@ do
          --Input Input/${PRCN} \
          --Output Plots/QualityPlots_${PRC}${Suffix}.pdf --FinalOutput Plots/${PRC}${Suffix}.pdf \
          --UseActualZMax true \
-         --WorldXMin 40 --WorldXMax 1500 --LogX true \
-         --WorldYMin 40 --WorldYMax 1500 --LogY true \
+         --WorldXMin 80 --WorldXMax 1500 --LogX true \
+         --WorldYMin 80 --WorldYMax 1500 --LogY true \
          --WorldZMin 0.0001 --WorldZMax 0.1 --LogZ true \
-         --GenPrimaryMin 40 --GenPrimaryMax 1500 --RecoPrimaryMin 40 --RecoPrimaryMax 1500 \
+         --GenPrimaryMin 80 --GenPrimaryMax 1500 --RecoPrimaryMin 80 --RecoPrimaryMax 1500 \
          --Primary "Jet p_{T} (GeV)" --Binning "None" --RowNormalize true \
          --XAxis 303 --YAxis 303 \
          --GroupX 1 --GroupY 1 --Row 1 --Column 1
