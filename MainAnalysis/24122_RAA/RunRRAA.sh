@@ -20,20 +20,24 @@ do
       PPCurve0=RAA_R${BaseR}_Centrality0to10
       PPCurve1=RAA_R${BaseR}_Centrality10to30
       PPCurve2=RAA_R${BaseR}_Centrality30to50
-      PPCurve3=RAA_R${BaseR}_Centrality50to90
+      PPCurve3=RAA_R${BaseR}_Centrality50to70
+      PPCurve4=RAA_R${BaseR}_Centrality50to90
       AAFile=Root/RAAR${R}_PP${PPSuffix}_AA${AASuffix}.root
       AACurve0=RAA_R${R}_Centrality0to10
       AACurve1=RAA_R${R}_Centrality10to30
       AACurve2=RAA_R${R}_Centrality30to50
-      AACurve3=RAA_R${R}_Centrality50to90
+      AACurve3=RAA_R${R}_Centrality50to70
+      AACurve4=RAA_R${R}_Centrality50to90
       SysFile0=CombinedSystematics/RRAA_R${R}R${BaseR}_Centrality0to10.root
       SysFile1=CombinedSystematics/RRAA_R${R}R${BaseR}_Centrality10to30.root
       SysFile2=CombinedSystematics/RRAA_R${R}R${BaseR}_Centrality30to50.root
-      SysFile3=CombinedSystematics/RRAA_R${R}R${BaseR}_Centrality50to90.root
+      SysFile3=CombinedSystematics/RRAA_R${R}R${BaseR}_Centrality50to70.root
+      SysFile4=CombinedSystematics/RRAA_R${R}R${BaseR}_Centrality50to90.root
       CLabel0=R${R}R${BaseR}_Centrality0to10
       CLabel1=R${R}R${BaseR}_Centrality10to30
       CLabel2=R${R}R${BaseR}_Centrality30to50
-      CLabel3=R${R}R${BaseR}_Centrality50to90
+      CLabel3=R${R}R${BaseR}_Centrality50to70
+      CLabel4=R${R}R${BaseR}_Centrality50to90
 
       PPLumi=`DHQuery GlobalSetting.dh Lumi ${PPState}_R${R}_CentralityInclusive_BRIL | tr -d '"' | DivideConst 1000000`
       PPLumiUnit="pb^{-1}"
@@ -45,15 +49,15 @@ do
       YLabel="R_{AA} Ratio: (R = $RValue2) / (R = $RValue1)"
 
       ./Execute \
-         --PP ${PPFile},${PPFile},${PPFile},${PPFile} \
-         --PPName $PPCurve0,$PPCurve1,$PPCurve2,$PPCurve3 \
-         --AA ${AAFile},${AAFile},${AAFile},${AAFile} \
-         --AAName $AACurve0,$AACurve1,$AACurve2,$AACurve3 \
-         --Systematics ${SysFile0},${SysFile1},${SysFile2},${SysFile3} \
-         --Labels "0-10%","10-30%","30-50%","50-90%" \
+         --PP ${PPFile},${PPFile},${PPFile},${PPFile},${PPFile} \
+         --PPName $PPCurve0,$PPCurve1,$PPCurve2,$PPCurve3,$PPCurve3 \
+         --AA ${AAFile},${AAFile},${AAFile},${AAFile},${AAFile} \
+         --AAName $AACurve0,$AACurve1,$AACurve2,$AACurve3,$AACurve4 \
+         --Systematics ${SysFile0},${SysFile1},${SysFile2},${SysFile3},${SysFile4} \
+         --Labels "0-10%","10-30%","30-50%","50-70%","50-90%" \
          --FinalOutput Plots/RRAAR${R}R${BaseR}_PP${PPSuffix}_AA${AASuffix}.pdf \
          --RootOutput Root/RRAAR${R}R${BaseR}_PP${PPSuffix}_AA${AASuffix}.root \
-         --CurveLabel $CLabel0,$CLabel1,$CLabel2,$CLabel3 \
+         --CurveLabel $CLabel0,$CLabel1,$CLabel2,$CLabel3,$CLabel4 \
          --WorldXMin 158 --WorldXMax 1500 --WorldYMin 0.0 --WorldYMax 2.0 --LogX true --LogY false \
          --XLabel "Jet p_{T} (GeV)" --YLabel "$YLabel" \
          --XAxisSpacing 505 --YAxisSpacing 505 \
