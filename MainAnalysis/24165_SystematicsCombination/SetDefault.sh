@@ -1,9 +1,12 @@
 #!/bin/bash
 
+JetR=`DHQuery GlobalSetting.dh Global JetR`
+Centrality=`DHQuery GlobalSetting.dh Global Centrality`
+
 DH=Systematics.dh
 
 # pp spectrum ratio
-for R in 1 2 3 4 5 6 7 8
+for R in $JetR
 do
 	DHSet $DH PPDataRatio_R${R}R9_CentralityInclusive JECUp_Correlation          float 0.85
 	DHSet $DH PPDataRatio_R${R}R9_CentralityInclusive JECDown_Correlation        float 0.85
@@ -24,7 +27,7 @@ do
 done
 
 # pp spectrum ratio
-for R in 1 2 3 4 5 6 7
+for R in $JetR
 do
 	DHSet $DH PPDataRatio_R${R}R8_CentralityInclusive JECUp_Correlation          float 0.85
 	DHSet $DH PPDataRatio_R${R}R8_CentralityInclusive JECDown_Correlation        float 0.85
@@ -45,9 +48,9 @@ do
 done
 
 # RAA
-for R in 1 2 3 4 5 6 7 8 9
+for R in $JetR
 do
-   for C in 0to10 10to30 30to50 50to90
+   for C in $Centrality
    do
 	   DHSet $DH RAA_R${R}_Centrality${C} JECUp_Correlation          float 0.50
    	DHSet $DH RAA_R${R}_Centrality${C} JECDown_Correlation        float 0.50
@@ -69,9 +72,9 @@ do
 done
 
 # RCP
-for R in 1 2 3 4 5 6 7 8 9
+for R in $JetR
 do
-   for C in 0to10 10to30 30to50
+   for C in $Centrality
    do
 	   DHSet $DH RCP_R${R}_Centrality${C} JECUp_Correlation          float 0.95
    	DHSet $DH RCP_R${R}_Centrality${C} JECDown_Correlation        float 0.95
@@ -113,7 +116,7 @@ do
 done
 
 # pp spectrum ratio, but based on the smallest radius
-for R in 2 3 4 5 6 7 8 9
+for R in $JetR
 do
 	DHSet $DH PPDataRatio_R${R}R1_CentralityInclusive JECUp_Correlation          float 0.95
 	DHSet $DH PPDataRatio_R${R}R1_CentralityInclusive JECDown_Correlation        float 0.95
@@ -134,9 +137,9 @@ do
 done
 
 # PbPb spectrum ratio, based on the smallest radius
-for R in 2 3 4 5 6 7 8 9
+for R in $JetR
 do
-   for C in 0to10 10to30 30to50 50to90
+   for C in $Centrality
    do
 	   DHSet $DH PbPbDataRatio_R${R}R1_Centrality${C} JECUp_Correlation          float 0.95
    	DHSet $DH PbPbDataRatio_R${R}R1_Centrality${C} JECDown_Correlation        float 0.95
@@ -158,9 +161,9 @@ do
 done
 
 # R-RAA, which is the ratio between the two spectrum ratios
-for R in 2 3 4 5 6 7 8 9
+for R in $JetR
 do
-   for C in 0to10 10to30 30to50 50to90
+   for C in $Centrality
    do
       DHSet $DH RRAA_R${R}R1_Centrality${C} JECUp_Correlation          float 0.25
       DHSet $DH RRAA_R${R}R1_Centrality${C} JECDown_Correlation        float 0.25
@@ -182,7 +185,7 @@ do
 done
 
 # pp spectrum ratio, based on R2
-for R in 1 3 4 5 6 7 8 9
+for R in $JetR
 do
 	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive JECUp_Correlation          float 0.95
 	DHSet $DH PPDataRatio_R${R}R2_CentralityInclusive JECDown_Correlation        float 0.95
@@ -203,9 +206,9 @@ do
 done
 
 # PbPb spectrum ratio, based on R2
-for R in 1 3 4 5 6 7 8 9
+for R in $JetR
 do
-   for C in 0to10 10to30 30to50 50to90
+   for C in $Centrality
    do
 	   DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} JECUp_Correlation          float 0.95
    	DHSet $DH PbPbDataRatio_R${R}R2_Centrality${C} JECDown_Correlation        float 0.95
@@ -227,9 +230,9 @@ do
 done
 
 # R-RAA, based on R2
-for R in 1 3 4 5 6 7 8 9
+for R in $JetR
 do
-   for C in 0to10 10to30 30to50 50to90
+   for C in $Centrality
    do
       DHSet $DH RRAA_R${R}R2_Centrality${C} JECUp_Correlation          float 0.25
       DHSet $DH RRAA_R${R}R2_Centrality${C} JECDown_Correlation        float 0.25

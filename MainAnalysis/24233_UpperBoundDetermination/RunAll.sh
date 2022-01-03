@@ -1,8 +1,11 @@
 #!/bin/bash
 
-for R in 1 2 3 4 5 6 7 8 9
+JetR=`DHQuery GlobalSetting.dh Global JetR`
+Centrality=`DHQuery GlobalSetting.dh Global Centrality`
+
+for R in $JetR
 do
-   for C in 0to10 10to30 30to50 50to90 Inclusive
+   for C in $Centrality Inclusive
    do
       MCPrefix=
       DataPrefix=
