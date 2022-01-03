@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
    string AABase = CL.Get("AABase");
 
    vector<string> RLabel = CL.GetStringVector("R", vector<string>{"1", "2", "3", "4", "5", "6", "7", "8", "9"});
-   vector<string> CLabel = CL.GetStringVector("C", vector<string>{"Inclusive", "0to10", "10to30", "30to50", "50to90"});
-   vector<string> Base   = CL.GetStringVector("B", vector<string>{PPBase, AABase, AABase, AABase, AABase});
+   vector<string> CLabel = CL.GetStringVector("C", vector<string>{"Inclusive", "0to10", "10to30", "30to50", "50to70", "70to90", "50to90"});
+   vector<string> Base   = CL.GetStringVector("B", vector<string>{PPBase, AABase, AABase, AABase, AABase, AABase, AABase});
 
    DataHelper DHFile(DHFileName);
    DataHelper GlobalDHFile(GlobalDHFileName);
