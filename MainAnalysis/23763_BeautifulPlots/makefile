@@ -50,12 +50,14 @@ RunCheck: Execute
 	bash RunFile.sh PbPbData NominalBinBiasDown "" 0 Gen
 	bash RunFile.sh PbPbData NominalCleaned     "" 0 Gen
 	bash RunFile.sh PbPbData NominalCleanedStrong "" 0 Gen
+	bash RunFile.sh PbPbData NoJetID            "" 0 Gen
 	bash RunFile.sh PbPbData JECNoResidual      "" 0 InputReco
 	bash RunFile.sh PbPbData JECNoPhi           "" 0 InputReco
 	bash RunFile.sh PbPbData JECNoResidual      "" 0 InputRecoGenBin
 	bash RunFile.sh PbPbData JECNoPhi           "" 0 InputRecoGenBin
 	bash RunFile.sh PbPbData MCCentrality       "" 0 InputRecoGenBin
 	bash RunFile.sh PbPbData StoredCentrality   "" 0 InputRecoGenBin
+	bash RunFile.sh PbPbData NoJetID            "" 0 InputRecoGenBin
 
 RunJetPTClosure: Execute
 	bash RunFile.sh PbPbMCRho Nominal Toy 0 Gen
