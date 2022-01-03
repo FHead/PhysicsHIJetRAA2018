@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
    bool DoTrigger                = CL.GetBool("DoTrigger", false);
    double TriggerPercentage      = CL.GetDouble("TriggerPercentage", 0.99);
    double TriggerTolerance       = CL.GetDouble("TriggerTolerance", 0.001);
+   string TriggerBase            = CL.Get("TriggerBase", Base);
    bool DoTriggerResolution      = DoTrigger ? CL.GetBool("DoTriggerResolution") : false;
    double TriggerResolutionShift = DoTriggerResolution ? CL.GetDouble("TriggerResolutionShift") : 0;
    string ResolutionFile         = DoTriggerResolution ? CL.Get("ResolutionFile") : "NONE";
@@ -42,13 +43,13 @@ int main(int argc, char *argv[])
    // If we decide to look at trigger, evaluate the turn on point
    if(DoTrigger == true)
    {
-      string Formula = DHFile["TriggerTurnOn"][Base+"_Formula"].GetString();
+      string Formula = DHFile["TriggerTurnOn"][TriggerBase+"_Formula"].GetString();
       TF1 Function("Function", Formula.c_str(), 0, 1500);
-      int N = DHFile["TriggerTurnOn"][Base+"_NParameter"].GetInteger();
+      int N = DHFile["TriggerTurnOn"][TriggerBase+"_NParameter"].GetInteger();
       for(int i = 0; i < N; i++)
       {
-         Function.SetParameter(i, DHFile["TriggerTurnOn"][Base+"_P"+to_string(i)].GetDouble());
-         Function.SetParError(i, DHFile["TriggerTurnOn"][Base+"_E"+to_string(i)].GetDouble());
+         Function.SetParameter(i, DHFile["TriggerTurnOn"][TriggerBase+"_P"+to_string(i)].GetDouble());
+         Function.SetParError(i, DHFile["TriggerTurnOn"][TriggerBase+"_E"+to_string(i)].GetDouble());
       }
 
       double Min = 0;
