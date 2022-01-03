@@ -1,6 +1,22 @@
 #!/bin/bash
 
-for i in Input/*Fine*root
+# PPChoice=20211229_FlatAOD
+# PPChoice=20211229_FlatMiniAOD
+PPChoice=20211230_FlatEOY
+
+for i in Input/$PPChoice/*root Input/$PPChoice/*txt
+do
+   j=`basename $i`
+   cp $i Input/${j/EOY}
+done
+
+for i in Input/PP*Fine*root
+do
+   ./Execute --Input $i --Output Output/`basename ${i/Fine}` --DHFile GlobalSetting.dh \
+      --DoZeroing false --DoEarthquake false --DoBias false
+done
+
+for i in Input/PbPb*Fine*root
 do
    ./Execute --Input $i --Output Output/`basename ${i/Fine}` --DHFile GlobalSetting.dh \
       --DoZeroing false --DoEarthquake false --DoBias false
