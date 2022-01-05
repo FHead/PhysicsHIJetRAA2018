@@ -14,13 +14,17 @@ using namespace std;
 #include "CommandLine.h"
 #include "SetStyle.h"
 #include "RootUtilities.h"
+#include "BinHelper.h"
+#include "DataHelper.h"
 
 int main(int argc, char *argv[]);
-TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string PPName, string AAName);
+TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string PPName, string AAName,
+   string DHFileName = "", string DHState = "");
 TGraphAsymmErrors BuildSystematics(TGraphAsymmErrors &G, string FileName);
 void SetPad(TPad &P);
 void SetAxis(TGaxis &A);
 void SetWorld(TH2D &H);
+int GetBin(double Value, vector<double> &BinBoundary);
 
 int main(int argc, char *argv[])
 {
@@ -37,6 +41,9 @@ int main(int argc, char *argv[])
    vector<string> AACurveName         = CL.GetStringVector("AAName");
    vector<string> SystematicsFileName = CL.GetStringVector("Systematics");
    vector<string> Labels              = CL.GetStringVector("Labels");
+
+   string StatDHFileName             = CL.Get("StatDHFile", "none");
+   string StatDHState                = CL.Get("StatDHState", "none");
 
    int N = PPInputFileName.size();
    Assert((int)AAInputFileName.size() == N,     "Input file count mismatch");
@@ -93,11 +100,12 @@ int main(int argc, char *argv[])
    vector<TGraphAsymmErrors> GRAA(N), GSys(N);
    for(int i = 0; i < N; i++)
    {
-      GRAA[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], PPCurveName[i], AACurveName[i]);
+      GRAA[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], PPCurveName[i], AACurveName[i],
+         StatDHFileName, StatDHState);
       if(SystematicsFileName[i] != "none")
          GSys[i] = BuildSystematics(GRAA[i], SystematicsFileName[i]);
       else
-         GSys[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], "FullSystematics0", "FullSystematics0");
+         GSys[i] = BuildRAA(PPInputFileName[i], AAInputFileName[i], "FullSystematics0", "FullSystematics0", "", "");
 
       OutputFile.cd();
       
@@ -184,8 +192,22 @@ int main(int argc, char *argv[])
    return 0;
 }
 
-TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string PPName, string AAName)
+TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string PPName, string AAName,
+   string DHFileName, string DHState)
 {
+   DataHelper DHFile(DHFileName);
+
+   bool NoReduction = false;
+
+   vector<double> BinBoundary;
+   if(DHFile.Exist(DHState) == true)
+   {
+      NoReduction = false;
+      BinBoundary = ParseList(DHFile[DHState]["PT"].GetString());
+   }
+   else
+      NoReduction = true;
+
    TGraphAsymmErrors G;
 
    TFile FPP(PPFileName.c_str());
@@ -228,21 +250,28 @@ TGraphAsymmErrors BuildRAA(string PPFileName, string AAFileName, string PPName, 
       double XPP, YPP;
       GPP->GetPoint(I, XPP, YPP);
       double EXLPP, EXHPP, EYLPP, EYHPP;
-      EXLPP = GPP->GetErrorXlow(i);
-      EXHPP = GPP->GetErrorXhigh(i);
-      EYLPP = GPP->GetErrorYlow(i) / YPP;
-      EYHPP = GPP->GetErrorYhigh(i) / YPP;
+      EXLPP = GPP->GetErrorXlow(I);
+      EXHPP = GPP->GetErrorXhigh(I);
+      EYLPP = GPP->GetErrorYlow(I) / YPP;
+      EYHPP = GPP->GetErrorYhigh(I) / YPP;
 
       double RAA = YAA / YPP;
 
       if(YAA == 0 || YPP == 0)
          continue;
 
+      double Rho = 0;
+      if(NoReduction == false)
+      {
+         int Bin = GetBin(XAA, BinBoundary);
+         Rho = DHFile[DHState]["Rho"+to_string(Bin)].GetDouble();
+      }
+
       int P = G.GetN();
       G.SetPoint(P, XAA, RAA);
       G.SetPointError(P, EXLAA, EXHAA,
-         RAA * sqrt(EYLAA * EYLAA + EYLPP * EYLPP),
-         RAA * sqrt(EYHAA * EYHAA + EYHPP * EYHPP));
+         RAA * sqrt(EYLAA * EYLAA + EYLPP * EYLPP - 2 * EYLAA * EYLPP * Rho),
+         RAA * sqrt(EYHAA * EYHAA + EYHPP * EYHPP - 2 * EYHAA * EYHPP * Rho));
    }
 
    FAA.Close();
@@ -335,3 +364,8 @@ void SetWorld(TH2D &H)
    H.Draw("axis");
 }
 
+int GetBin(double Value, vector<double> &BinBoundary)
+{
+   vector<double>::iterator iter = upper_bound(BinBoundary.begin(), BinBoundary.end(), Value);
+   return (iter - BinBoundary.begin());
+}
