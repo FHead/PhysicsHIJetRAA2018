@@ -82,3 +82,7 @@ Deploy:
 	cp Plots/PbPbData*NominalBinBiasDown.pdf $(DeployBase)/Check/Spectra/MatrixCheck/
 	cp Plots/PbPbData*NominalCleaned.pdf     $(DeployBase)/Check/Spectra/MatrixCheck/
 
+DeployRoot:
+	mkdir -p $(DeployBase)/Result/Graphs
+	cp Root/*_Nominal.root $(DeployBase)/Result/Graphs/
+
