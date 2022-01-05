@@ -1,6 +1,4 @@
 
-
-
 default: RunRAA RunRRAA RunRCP Deploy
 
 Prepare:
@@ -8,6 +6,7 @@ Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/23763_BeautifulPlots/Root SpectraRoot
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
 	ln -sf $(ProjectBase)/MainAnalysis/24165_SystematicsCombination/Output/ CombinedSystematics
+	ln -sf $(ProjectBase)/MainAnalysis/24263_StatisticalUncertaintyCancellation/StatisticsRho.dh .
 	mkdir -p Plots Root
 
 Clean:
@@ -54,11 +53,15 @@ RunRAARecoCheck: Execute
 RunRCP: Execute
 	bash RunRCP.sh PPData Nominal PbPbData Nominal
 
-RunRRAA: Execute
+RunRRAAOld: Execute
 	bash RunRRAA.sh PPData Nominal PbPbData Nominal
 
+RunRRAA: Execute
+	bash RunSpectraRatio.sh PPData Nominal PbPbData Nominal
+	bash RunRRAAAlternate.sh PPData Nominal PbPbData Nominal
+
 Execute: PlotRAA.cpp
-	CompileRootMacro PlotRAA.cpp Execute
+	CompileRootMacro PlotRAA.cpp Execute -I../../CommonCode/include
 
 Deploy:
 	mkdir -p $(DeployBase)/Result/RAA
@@ -110,4 +113,7 @@ Deploy:
 	mkdir -p $(DeployBase)/Check/RAA/RecoGenMix
 	cp Plots/RAA*_PPNominal_AANominal_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 
+DeployRoot:
+	mkdir -p $(DeployBase)/Result/Graphs/
+	cp Root/*_AANominal.root $(DeployBase)/Result/Graphs/
 
