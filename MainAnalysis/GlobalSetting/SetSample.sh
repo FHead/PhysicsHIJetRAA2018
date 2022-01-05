@@ -16,6 +16,10 @@ do
    DHSet GlobalSetting.dh SampleOverview PbPbData$R string "Jet80+100, MINIAOD, 2021 Dec 05"
    DHSet GlobalSetting.dh Sample PbPbData${R} string ${EOSHI2018}/HIHardProbes/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIHardProbes/DefaultPbPbDataHPForJetRAAHighThresholdJet80And100/211205_074117/
 
+   # PbPb MB Data
+   DHSet GlobalSetting.dh SampleOverview PbPbMBData$R string "MinimumBias2, MINIAOD, 2021 Dec 12"
+   DHSet GlobalSetting.dh Sample PbPbMBData${R} string ${EOSHI2018}/HIMinimumBias2/HIRun2018A-PbPb18_MiniAODv1-v1/MINIAOD/HIMinimumBias2/DefaultPbPbDataForJetRAAGatedMB${R}/
+
    # PbPb MC
    DHSet GlobalSetting.dh SampleOverview PbPbMC$R string "Dijet with rho bug fix, MINIAOD, 2021 Nov 04"
    DHSet GlobalSetting.dh Sample PbPbMC${R} string ${EOSHI2018}/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/HINPbPbSpring21MiniAOD-FixL1CaloGT_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DiJet_pThat-15_TuneCP5_HydjetDrumMB_5p02TeV_Pythia8/DefaultPbPbMCForJetRAAWithRhoGenBugFix/211104_112116//

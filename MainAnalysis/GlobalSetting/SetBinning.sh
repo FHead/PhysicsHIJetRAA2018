@@ -46,8 +46,8 @@ DHSet GlobalSetting.dh "Binning" "RecoPT" string "82,85,88,91,94,97,100,105,110,
 
 
 # Some more phase space cuts
-DHSet GlobalSetting.dh "Binning" "GenMin" float 40
-DHSet GlobalSetting.dh "Binning" "RecoMin" float 40
+DHSet GlobalSetting.dh "Binning" "GenMin" float 80
+DHSet GlobalSetting.dh "Binning" "RecoMin" float 80
 DHSet GlobalSetting.dh "Binning" "JetExclusion" string "-0.5,1.5,0.0,1.0,-2.0,-1.0,-1.8,-0.9"
 
 # Default underflow/overflow.  Not really used
