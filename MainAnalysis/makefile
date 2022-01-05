@@ -55,6 +55,7 @@ RunPart2A:
 	# Make sure to copy over the following from lxplus before continuing #
 	#    1. unfold preparation output files                              #
 	#    2. GlobalSetting.dh                                             #
+	#    3. StatisticsRho.dh                                             #
 	# Also make sure that the ProjectBase is set correctly!              #
 	######################################################################
 	sleep 10
