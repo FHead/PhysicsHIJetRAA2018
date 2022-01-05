@@ -57,7 +57,8 @@ do
       --XLabel "Jet p_{T} (GeV)" --YLabel "$YLabel" \
       --XAxisSpacing 505 --YAxisSpacing 505 \
       --LegendX 0.7 --LegendY 0.45 --LegendSize 0.045 \
-      --PPLumi ${PPLumi} --AALumi ${AALumi} --PPLumiUnit ${PPLumiUnit} --AALumiUnit ${AALumiUnit}
+      --PPLumi ${PPLumi} --AALumi ${AALumi} --PPLumiUnit ${PPLumiUnit} --AALumiUnit ${AALumiUnit} \
+      --StatDHFile none --StatDHState none
 done
 
 
