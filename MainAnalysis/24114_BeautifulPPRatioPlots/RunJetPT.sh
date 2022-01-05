@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DH=StatisticsRho.dh
+
 PP1NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R1_CentralityInclusive_Default | tr -d '"'`Prior
 PP2NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R2_CentralityInclusive_Default | tr -d '"'`Prior
 PP3NP=`DHQuery GlobalSetting.dh PriorToUse PPData_R3_CentralityInclusive_Default | tr -d '"'`Prior
@@ -36,7 +38,9 @@ SysR89=CombinedSystematics/PPDataRatio_R8R9_CentralityInclusive.root
    --Systematics $SysR19,$SysR29,$SysR39,$SysR49,$SysR59,$SysR69,$SysR79,$SysR89 \
    --RLabel 1,2,3,4,5,6,7,8 \
    --Color 0,1,2,3,4,5,6,7 \
-   --XMin 199 --XMax 1200
+   --XMin 199 --XMax 1200 \
+   --StatDHFile $DH \
+   --StatDHState PbPbR1R9,PbPbR2R9,PbPbR3R9,PbPbR4R9,PbPbR5R9,PbPbR6R9,PbPbR7R9,PbPbR8R9
 
 SysR18=CombinedSystematics/PPDataRatio_R1R8_CentralityInclusive.root
 SysR28=CombinedSystematics/PPDataRatio_R2R8_CentralityInclusive.root
@@ -53,7 +57,9 @@ SysR78=CombinedSystematics/PPDataRatio_R7R8_CentralityInclusive.root
    --Systematics $SysR38,$SysR48,$SysR58,$SysR68,$SysR78 \
    --RLabel 3,4,5,6,7 \
    --Color 1,2,5,3,4 \
-   --XMin 199 --XMax 1200
+   --XMin 199 --XMax 1200 \
+   --StatDHFile $DH \
+   --StatDHState PbPbR3R8,PbPbR4R8,PbPbR5R8,PbPbR6R8,PbPbR7R8
 
 ./Execute --Output Plots/Validation.pdf \
    --BaseFileName ${PPR8} \
@@ -63,5 +69,7 @@ SysR78=CombinedSystematics/PPDataRatio_R7R8_CentralityInclusive.root
    --RLabel 2,3,4,6,7 \
    --Color 0,1,2,3,4 \
    --XMin 199 --XMax 1000 \
-   --AddHIN18014 true
+   --AddHIN18014 true \
+   --StatDHFile $DH \
+   --StatDHState PbPbR2R8,PbPbR3R8,PbPbR4R8,PbPbR6R8,PbPbR7R8
 

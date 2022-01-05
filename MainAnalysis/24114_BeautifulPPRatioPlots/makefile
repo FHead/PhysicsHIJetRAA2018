@@ -8,6 +8,7 @@ Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
 	ln -sf $(ProjectBase)/MainAnalysis/24114_PPRatioHEPData/ HEPData
 	ln -sf $(ProjectBase)/MainAnalysis/24165_SystematicsCombination/Output/ CombinedSystematics
+	ln -sf $(ProjectBase)/MainAnalysis/24263_StatisticalUncertaintyCancellation/StatisticsRho.dh .
 	mkdir -p Plots
 
 Clean:
@@ -17,7 +18,7 @@ RunJetPT: Execute
 	bash RunJetPT.sh
 
 Execute: MakePlot.cpp
-	CompileRootMacro MakePlot.cpp Execute
+	CompileRootMacro MakePlot.cpp Execute -I../../CommonCode/include
 
 Deploy:
 	mkdir -p $(DeployBase)/Result/PPRatio/

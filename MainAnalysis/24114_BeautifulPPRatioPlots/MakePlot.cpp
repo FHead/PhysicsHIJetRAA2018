@@ -19,12 +19,14 @@ using namespace std;
 #include "SetStyle.h"
 #include "RootUtilities.h"
 
+#include "BinHelper.h"
+
 int main(int argc, char *argv[]);
-vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2 = nullptr, bool Normalize = true, double ExtraScale = 1);
-TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2);
+TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2, string DHFileName, string DHState);
 TGraphAsymmErrors BuildSystematics(TGraphAsymmErrors &G, string FileName);
 TGraph ToGraph(TH1D *H);
+int GetBin(double Value, vector<double> &BinBoundary);
 
 int main(int argc, char *argv[])
 {
@@ -36,25 +38,29 @@ int main(int argc, char *argv[])
    // Command line inputs
    CommandLine CL(argc, argv);
 
-   string BaseFileName       = CL.Get("BaseFileName");
-   string BaseRLabel         = CL.Get("BaseRLabel");
-   vector<string> FileName   = CL.GetStringVector("FileName", vector<string>{});
-   vector<string> RLabel     = CL.GetStringVector("RLabel", vector<string>{});
-   vector<string> SysName    = CL.GetStringVector("Systematics", vector<string>{});
-   vector<int> Color         = CL.GetIntVector("Color", vector<int>{1, 2, 3, 4, 5, 6, 7});
+   string BaseFileName        = CL.Get("BaseFileName");
+   string BaseRLabel          = CL.Get("BaseRLabel");
+   vector<string> FileName    = CL.GetStringVector("FileName", vector<string>{});
+   vector<string> RLabel      = CL.GetStringVector("RLabel", vector<string>{});
+   vector<string> SysName     = CL.GetStringVector("Systematics", vector<string>{});
+   vector<int> Color          = CL.GetIntVector("Color", vector<int>{1, 2, 3, 4, 5, 6, 7});
 
-   double XMin               = CL.GetDouble("XMin", 100);
-   double XMax               = CL.GetDouble("XMax", 1500);
+   string StatDHFileName      = CL.Get("StatDHFile");
+   vector<string> StatDHState = CL.GetStringVector("StatDHState");
+
+   double XMin                = CL.GetDouble("XMin", 100);
+   double XMax                = CL.GetDouble("XMax", 1500);
    
-   bool AddHIN18014          = CL.GetBool("AddHIN18014", false);
+   bool AddHIN18014           = CL.GetBool("AddHIN18014", false);
 
-   string OutputFileName     = CL.Get("Output", "PPRatio.pdf");
+   string OutputFileName      = CL.Get("Output", "PPRatio.pdf");
 
    int FileCount = FileName.size();
 
    Assert(FileCount > 0, "Please specify at least one curve to plot");
    Assert(FileCount == RLabel.size(), "Please specify the radius labels for the input files");
    Assert(FileCount == SysName.size(), "We need systematics for all the files.  Put \"none\" to bypass for given curve");
+   Assert(FileCount == StatDHState.size(), "Stat reduction rho state count wrong.");
 
    // Get the global setting DH file
    string GlobalSettingFile  = CL.Get("GlobalSetting", "GlobalSetting.dh");
@@ -106,7 +112,7 @@ int main(int argc, char *argv[])
    vector<vector<TGraphAsymmErrors>> GRatio(FileCount);
    for(int i = 0; i < FileCount; i++)
       for(int j = 0; j < GSpectra[i].size(); j++)
-         GRatio[i].push_back(CalculateRatio(GSpectra[i][j], GBase[j]));
+         GRatio[i].push_back(CalculateRatio(GSpectra[i][j], GBase[j], StatDHFileName, StatDHState[i]));
    
    // Build systematics
    vector<vector<TGraphAsymmErrors>> GSys(FileCount);
@@ -279,37 +285,6 @@ int main(int argc, char *argv[])
    return 0;
 }
 
-vector<double> DetectBins(TH1D *HMin, TH1D *HMax)
-{
-   if(HMin == nullptr || HMax == nullptr)
-      return vector<double>{};
-
-   vector<pair<double, double>> Bins;
-
-   for(int i = 1; i <= HMin->GetNbinsX(); i++)
-      Bins.push_back(pair<double, double>(HMin->GetBinContent(i), HMax->GetBinContent(i)));
-
-   sort(Bins.begin(), Bins.end());
-   auto iterator = unique(Bins.begin(), Bins.end());
-   Bins.erase(iterator, Bins.end());
-
-   vector<double> Result;
-   for(auto iterator : Bins)
-   {
-      if(iterator.second == 999)
-         iterator.second = 9999;
-
-      Result.push_back(iterator.first);
-      Result.push_back(iterator.second);
-   }
-
-   sort(Result.begin(), Result.end());
-   auto iterator2 = unique(Result.begin(), Result.end());
-   Result.erase(iterator2, Result.end());
-
-   return Result;
-}
-
 vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<double> Bins2, TH1D *H2, bool Normalize, double ExtraScale)
 {
    // cout << ExtraScale << endl;
@@ -372,12 +347,24 @@ vector<TGraphAsymmErrors> Transcribe(TH1D *H, vector<double> Bins1, vector<doubl
    return Result;
 }
 
-TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
+TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2, string DHFileName, string DHState)
 {
    TGraphAsymmErrors G;
 
    if(G1.GetN() != G2.GetN())
       return G;
+
+   DataHelper DHFile(DHFileName);
+
+   bool NoReduction;
+   vector<double> BinBoundary;
+   if(DHFile.Exist(DHState) == true)
+   {
+      NoReduction = false;
+      BinBoundary = ParseList(DHFile[DHState]["PT"].GetString());
+   }
+   else
+      NoReduction = true;
 
    // cout << G1.GetN() << " " << G2.GetN() << endl;
 
@@ -395,13 +382,20 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2)
       E2YH = G2.GetErrorYhigh(i);
       E2YL = G2.GetErrorYlow(i);
 
+      double Rho = 0;
+      if(NoReduction == false)
+      {
+         int Bin = GetBin(X1, BinBoundary);
+         Rho = DHFile[DHState]["Rho"+to_string(Bin)].GetDouble();
+      }
+
       double REL1 = E1YL / Y1;
       double REL2 = E2YL / Y2;
-      double REL = sqrt(REL1 * REL1 + REL2 * REL2);
+      double REL = sqrt(REL1 * REL1 + REL2 * REL2 - 2 * REL1 * REL2 * Rho);
       double EL = REL * (Y1 / Y2);
       double REH1 = E1YL / Y1;
       double REH2 = E2YL / Y2;
-      double REH = sqrt(REH1 * REH1 + REH2 * REH2);
+      double REH = sqrt(REH1 * REH1 + REH2 * REH2 - 2 * REH1 * REH2 * Rho);
       double EH = REH * (Y1 / Y2);
 
       if(Y2 == 0)
@@ -487,5 +481,11 @@ TGraph ToGraph(TH1D *H)
       Result.SetPoint(i - 1, H->GetBinCenter(i), H->GetBinContent(i));
 
    return Result;
+}
+
+int GetBin(double Value, vector<double> &BinBoundary)
+{
+   vector<double>::iterator iter = upper_bound(BinBoundary.begin(), BinBoundary.end(), Value);
+   return (iter - BinBoundary.begin());
 }
 
