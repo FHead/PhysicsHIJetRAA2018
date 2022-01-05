@@ -9,12 +9,15 @@
 #include "TH1D.h"
 #include "TH2D.h"
 
+#include "DataHelper.h"
+#include "CustomAssert.h"
+
 std::vector<double> DetectBins(TH1D *HMin, TH1D *HMax);
 std::vector<double> ParseList(std::string List);
 std::vector<std::string> ParseStringList(std::string List);
 TH1D *ForwardFold(TH1D *HGen, TH2D *HResponse);
 std::vector<int> ListIterations(std::string FileName);
-vector<string> DetectVariations(DataHelper &DHFile, string State);
+std::vector<std::string> DetectVariations(DataHelper &DHFile, std::string State);
 
 std::vector<double> DetectBins(TH1D *HMin, TH1D *HMax)
 {
@@ -156,7 +159,7 @@ vector<int> ListIterations(string FileName)
    return Result;
 }
 
-std::vector<std::string> DetectVariations(DataHelper &DHFile, std::string std::State)
+std::vector<std::string> DetectVariations(DataHelper &DHFile, std::string State)
 {
    std::vector<std::string> Result;
 
