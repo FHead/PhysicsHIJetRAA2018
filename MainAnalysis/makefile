@@ -129,11 +129,11 @@ RunPart2D:
 	(cd 23772_UnfoldIteration          && make Prepare RunPlot)
 
 RunPart2E:
-	(cd 23763_BeautifulPlots           && make Deploy)
+	(cd 23763_BeautifulPlots           && make Deploy DeployRoot)
 	(cd 23763_BeautifulMatrix          && make Deploy)
 	(cd 24114_BeautifulPPRatioPlots    && make Deploy)
 	(cd 24171_BeautifulSystematicsPlot && make Deploy)
-	(cd 24122_RAA                      && make Deploy)
+	(cd 24122_RAA                      && make Deploy DeployRoot)
 	(cd 24231_ConditionNumber          && make Deploy)
 	(cd 23772_UnfoldIteration          && make Deploy)
 
