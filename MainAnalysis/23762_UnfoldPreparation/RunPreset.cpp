@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
    string Suffix             = CL.Get("Suffix");
 
    bool UseJEU               = CL.GetBool("UseJEU", true);
+   double JEUOffset          = CL.GetDouble("JEUOffset", 0);
    bool UseJERSFFile         = CL.GetBool("UseJERSFFile", false);
    string JERSFFile          = CL.Get("JERSF", "none");
 
@@ -78,6 +79,7 @@ int main(int argc, char *argv[])
             << " --ObservableSmear " << JetSmear
             << " --Flooring " << Flooring
             << " --UseJEU " << UseJEU
+            << " --JEUOffset " << JEUOffset
             << " --UseJERSFFile " << UseJERSFFile << " --JERSF " << JERSFFile
             << " --CheckMatchAngle true --MaxMatchAngle " << DHFile["JetRMatch"][R].GetDouble()
             << ";" << endl;

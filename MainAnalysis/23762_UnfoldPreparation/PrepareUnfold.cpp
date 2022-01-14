@@ -58,6 +58,7 @@ private:
    float                  MatchedJetWeight[MAX];
    double                 MaxMatchedJetAngle;
    bool                   UseJEU;
+   double                 JEUOffset;
    bool                   UseJERSF;
    SingleJetCorrector     JERSF;
 public:
@@ -79,6 +80,7 @@ public:
       NGenJets = 0;
       MaxMatchedJetAngle = -1;
       UseJEU = true;
+      JEUOffset = 0;
       UseJERSF = false;
 
       Tree = InputTree;
@@ -112,9 +114,13 @@ public:
       Tree->SetBranchAddress("MatchedJetAngle", &MatchedJetAngle);
       Tree->SetBranchAddress("MatchedJetWeight", &MatchedJetWeight);
    }
-   void SetUseJEU(bool Value)
+   void SetUseJEU(bool Value = true)
    {
       UseJEU = Value;
+   }
+   void SetJEUOffset(double Value = 0)
+   {
+      JEUOffset = Value;
    }
    void InitializeJERSF(string FileName)
    {
@@ -176,7 +182,17 @@ public:
       {
          double Value = RecoJetPT[Item];
          if(UseJEU == true)
-            Value = Value * (1 + Shift * RecoJetJEU[Item] / RecoJetJEC[Item]);
+         {
+            double JEU = RecoJetJEU[Item];
+            if(JEUOffset != 0)
+            {
+               int Sign = (JEUOffset > 0) ? 1 : -1;
+               JEU = (JEU * JEU + JEUOffset * JEUOffset * Sign);
+               JEU = (JEU > 0) ? JEU : 0;
+               JEU = sqrt(JEU);
+            }
+            Value = Value * (1 + Shift * JEU / RecoJetJEC[Item]);
+         }
          else
             Value = Value * (1 + Shift);
          return Value;
@@ -185,7 +201,17 @@ public:
       {
          double Value = MatchedJetPT[Item];
          if(UseJEU == true)
-            Value = Value * (1 + Shift * MatchedJetJEU[Item] / MatchedJetJEC[Item]);
+         {
+            double JEU = MatchedJetJEU[Item];
+            if(JEUOffset != 0)
+            {
+               int Sign = (JEUOffset > 0) ? 1 : -1;
+               JEU = (JEU * JEU + JEUOffset * JEUOffset * Sign);
+               JEU = (JEU > 0) ? JEU : 0;
+               JEU = sqrt(JEU);
+            }
+            Value = Value * (1 + Shift * JEU / MatchedJetJEC[Item]);
+         }
          else
             Value = Value * (1 + Shift);
          double SmearAmount = GetSmear(Value, MatchedJetEta[Item], Smear);
@@ -327,6 +353,7 @@ int main(int argc, char *argv[])
    else                                BinningRecoBins  = ParseList(BinningRecoBinString);
 
    bool UseJEU                    = CL.GetBool("UseJEU", true);
+   double JEUOffset               = CL.GetDouble("JEUOffset", 0);
    bool UseJERSFFile              = CL.GetBool("UseJERSFFile", false);
    
    bool DoFlooring                = CL.GetBool("Flooring", false);
@@ -407,6 +434,7 @@ int main(int argc, char *argv[])
    if(CheckMatchAngle == true)
       MMC.SetMaxMatchedJetAngle(MaxMatchAngle);
    MMC.SetUseJEU(UseJEU);
+   MMC.SetJEUOffset(JEUOffset);
    if(UseJERSFFile == true)
       MMC.InitializeJERSF(CL.Get("JERSF"));
 

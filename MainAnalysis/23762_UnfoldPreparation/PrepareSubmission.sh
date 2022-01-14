@@ -26,7 +26,7 @@ do
    echo "Output    = Log/PbPbMCNominal${R}.out" >> $Submit
    echo "Error     = Log/PbPbMCNominal${R}.err" >> $Submit
    echo "Log       = Log/PbPbMCNominal${R}.log" >> $Submit
-   echo "Queue" >> $Submit
+   # echo "Queue" >> $Submit
    echo >> $Submit
    
    # PbPb Data
@@ -50,6 +50,22 @@ do
    echo "Output    = Log/PbPbDataJECDown${R}.out" >> $Submit
    echo "Error     = Log/PbPbDataJECDown${R}.err" >> $Submit
    echo "Log       = Log/PbPbDataJECDown${R}.log" >> $Submit
+   echo "Queue" >> $Submit
+   echo >> $Submit
+
+   # PbPb Data, JEC up aggressive
+   echo "Arguments = --Prefix PbPbData --Suffix JECAggressiveUp${Fine} --MCTag Input/PbPbMCRho --DataTag Input/PbPbData --GlobalSetting GlobalSetting.dh --Shift 1.0 --JEUOffset -0.03 --Smear 0 --Flooring false --JetR $R --DoCopy true --UseJEU true --UseJERSFFile true --JERSF ${PbPbJERSF} $Binning --Centrality $Centrality" >> $Submit
+   echo "Output    = Log/PbPbDataJECAggressiveUp${R}.out" >> $Submit
+   echo "Error     = Log/PbPbDataJECAggressiveUp${R}.err" >> $Submit
+   echo "Log       = Log/PbPbDataJECAggressiveUp${R}.log" >> $Submit
+   echo "Queue" >> $Submit
+   echo >> $Submit
+   
+   # PbPb Data, JEC down aggressive
+   echo "Arguments = --Prefix PbPbData --Suffix JECAggressiveDown${Fine} --MCTag Input/PbPbMCRho --DataTag Input/PbPbData --GlobalSetting GlobalSetting.dh --Shift -1.0 --JEUOffset -0.03 --Smear 0 --Flooring false --JetR $R --DoCopy true --UseJEU true --UseJERSFFile true --JERSF ${PbPbJERSF} $Binning --Centrality $Centrality" >> $Submit
+   echo "Output    = Log/PbPbDataJECAggressiveDown${R}.out" >> $Submit
+   echo "Error     = Log/PbPbDataJECAggressiveDown${R}.err" >> $Submit
+   echo "Log       = Log/PbPbDataJECAggressiveDown${R}.log" >> $Submit
    echo "Queue" >> $Submit
    echo >> $Submit
 
@@ -162,7 +178,7 @@ do
    echo "Output    = Log/PPDataNominal${R}.out" >> $Submit
    echo "Error     = Log/PPDataNominal${R}.err" >> $Submit
    echo "Log       = Log/PPDataNominal${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PP Data, JEC Up
@@ -170,7 +186,7 @@ do
    echo "Output    = Log/PPDataJECUp${R}.out" >> $Submit
    echo "Error     = Log/PPDataJECUp${R}.err" >> $Submit
    echo "Log       = Log/PPDataJECUp${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PP Data, JEC Down
@@ -178,7 +194,23 @@ do
    echo "Output    = Log/PPDataJECDown${R}.out" >> $Submit
    echo "Error     = Log/PPDataJECDown${R}.err" >> $Submit
    echo "Log       = Log/PPDataJECDown${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
+   echo >> $Submit
+   
+   # PP Data, JEC Up aggressive
+   echo "Arguments = --Prefix PPData --Suffix JECAggressiveUp${Fine} --MCTag Input/PPMC --DataTag Input/PPData --GlobalSetting GlobalSetting.dh --Shift 1.0 --JEUOffset -0.02 --Smear 0 --Flooring false --JetR $R --Centrality Inclusive --DoCopy true --UseJEU true --UseJERSFFile true --JERSF ${PPJERSF} $Binning --Centrality $Centrality" >> $Submit
+   echo "Output    = Log/PPDataJECAggressiveUp${R}.out" >> $Submit
+   echo "Error     = Log/PPDataJECAggressiveUp${R}.err" >> $Submit
+   echo "Log       = Log/PPDataJECAggressiveUp${R}.log" >> $Submit
+   echo "Queue" >> $Submit
+   echo >> $Submit
+
+   # PP Data, JEC Down aggressive
+   echo "Arguments = --Prefix PPData --Suffix JECAggressiveDown${Fine} --MCTag Input/PPMC --DataTag Input/PPData --GlobalSetting GlobalSetting.dh --Shift -1.0 --JEUOffset -0.02 --Smear 0 --Flooring false --JetR $R --Centrality Inclusive --DoCopy true --UseJEU true --UseJERSFFile true --JERSF ${PPJERSF} $Binning --Centrality $Centrality" >> $Submit
+   echo "Output    = Log/PPDataJECAggressiveDown${R}.out" >> $Submit
+   echo "Error     = Log/PPDataJECAggressiveDown${R}.err" >> $Submit
+   echo "Log       = Log/PPDataJECAggressiveDown${R}.log" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PP Data, JER Up
@@ -186,7 +218,7 @@ do
    echo "Output    = Log/PPDataJERUp${R}.out" >> $Submit
    echo "Error     = Log/PPDataJERUp${R}.err" >> $Submit
    echo "Log       = Log/PPDataJERUp${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PP Data, JER Down
@@ -194,7 +226,7 @@ do
    echo "Output    = Log/PPDataJERDown${R}.out" >> $Submit
    echo "Error     = Log/PPDataJERDown${R}.err" >> $Submit
    echo "Log       = Log/PPDataJERDown${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PP MC EOY
@@ -210,7 +242,7 @@ do
    echo "Output    = Log/PPDataEOYNominal${R}.out" >> $Submit
    echo "Error     = Log/PPDataEOYNominal${R}.err" >> $Submit
    echo "Log       = Log/PPDataEOYNominal${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PP Data EOY, JEC Up
@@ -218,7 +250,7 @@ do
    echo "Output    = Log/PPDataEOYJECUp${R}.out" >> $Submit
    echo "Error     = Log/PPDataEOYJECUp${R}.err" >> $Submit
    echo "Log       = Log/PPDataEOYJECUp${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 
    # PP Data EOY, JEC Down
@@ -226,7 +258,23 @@ do
    echo "Output    = Log/PPDataEOYJECDown${R}.out" >> $Submit
    echo "Error     = Log/PPDataEOYJECDown${R}.err" >> $Submit
    echo "Log       = Log/PPDataEOYJECDown${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
+   echo >> $Submit
+   
+   # PP Data EOY, JEC Up Aggressive
+   echo "Arguments = --Prefix PPDataEOY --Suffix JECAggressiveUp${Fine} --MCTag Input/PPMCEOY --DataTag Input/PPDataEOY --GlobalSetting GlobalSetting.dh --Shift 1.0 --JEUOffset -0.02 --Smear 0 --Flooring false --JetR $R --Centrality Inclusive --DoCopy true --UseJEU true --UseJERSFFile true --JERSF ${PPJERSF} $Binning --Centrality $Centrality" >> $Submit
+   echo "Output    = Log/PPDataEOYJECAggressiveUp${R}.out" >> $Submit
+   echo "Error     = Log/PPDataEOYJECUp${R}.err" >> $Submit
+   echo "Log       = Log/PPDataEOYJECUp${R}.log" >> $Submit
+   echo "Queue" >> $Submit
+   echo >> $Submit
+
+   # PP Data EOY, JEC Down Aggressive
+   echo "Arguments = --Prefix PPDataEOY --Suffix JECAggressiveDown${Fine} --MCTag Input/PPMCEOY --DataTag Input/PPDataEOY --GlobalSetting GlobalSetting.dh --Shift -1.0 --JEUOffset -0.02 --Smear 0 --Flooring false --JetR $R --Centrality Inclusive --DoCopy true --UseJEU true --UseJERSFFile true --JERSF ${PPJERSF} $Binning --Centrality $Centrality" >> $Submit
+   echo "Output    = Log/PPDataEOYJECAggressiveDown${R}.out" >> $Submit
+   echo "Error     = Log/PPDataEOYJECAggressiveDown${R}.err" >> $Submit
+   echo "Log       = Log/PPDataEOYJECAggressiveDown${R}.log" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PP Data EOY, JER Up
@@ -234,7 +282,7 @@ do
    echo "Output    = Log/PPDataEOYJERUp${R}.out" >> $Submit
    echo "Error     = Log/PPDataEOYJERUp${R}.err" >> $Submit
    echo "Log       = Log/PPDataEOYJERUp${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
    
    # PP Data EOY, JER Down
@@ -242,7 +290,7 @@ do
    echo "Output    = Log/PPDataEOYJERDown${R}.out" >> $Submit
    echo "Error     = Log/PPDataEOYJERDown${R}.err" >> $Submit
    echo "Log       = Log/PPDataEOYJERDown${R}.log" >> $Submit
-   # echo "Queue" >> $Submit
+   echo "Queue" >> $Submit
    echo >> $Submit
 done
 
