@@ -6,6 +6,7 @@ Prepare:
 	rm -f Input Output
 	ln -sf $(ProjectBase)/MainAnalysis/23752_CopyJetFromForest/Output Input
 	ln -sf $(EOSHI)/PhysicsWorkspace/HIJetRAA2018/DataPerformance/24264_DijetBalance Output
+	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
 
 TestRun: Execute
 	# ./Execute --Input Input/PbPbData_R4_Centrality50to90.root  --Output Output/PbPbData.root --Fraction 1 --IsMC 0
@@ -16,7 +17,9 @@ TestRun: Execute
 TestRunJER: ExecuteJER
 	# ./ExecuteJER --Data Output/PPData.root --MC Output/PPMC.root --OutputBase PPR4 \
 	# 	--PTMin 150 --DPhiMin 2.8 --AlphaMax 0.30
-	./ExecuteJER --Data Output/PPDataEOYR1.root --MC Output/PPMCEOYR1.root --OutputBase Result/PPEOYR1 \
+	# ./ExecuteJER --Data Output/PPDataEOYR1.root --MC Output/PPMCEOYR1.root --OutputBase Result/PPEOYR1 \
+	# 	--PTMin 150 --DPhiMin 2.8 --AlphaMax 0.30
+	./ExecuteJER --Data Output/PbPbDataR4.root --MC Output/PbPbMCR4.root --OutputBase Result/PbPbR4 \
 		--PTMin 150 --DPhiMin 2.8 --AlphaMax 0.30
 
 ProcessAll: Execute
