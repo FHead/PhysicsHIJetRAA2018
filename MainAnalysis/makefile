@@ -118,10 +118,10 @@ RunPart2C:
 	(cd 23763_Systematics              && make Prepare RunData)
 	(cd 24165_SystematicsCombination   && make Prepare SetDHFile RunAll)
 	(cd 23763_BeautifulPlots           && make Prepare RunJetPT RunJetPTClosure)
+	(cd 24122_RAA                      && make Prepare RunRAA RunRCP RunRRAA)
 	(cd 23763_BeautifulMatrix          && make Prepare RunPP RunAA)
 	(cd 24114_BeautifulPPRatioPlots    && make Prepare RunJetPT)
 	(cd 24171_BeautifulSystematicsPlot && make Prepare RunAll)
-	(cd 24122_RAA                      && make Prepare RunRAA RunRCP RunRRAA)
 
 RunPart2D:
 	(cd 23763_BeautifulPlots           && make Prepare RunCheck RunJetPTReco)
@@ -130,11 +130,11 @@ RunPart2D:
 	(cd 23772_UnfoldIteration          && make Prepare RunPlot)
 
 RunPart2E:
-	(cd 23763_BeautifulPlots           && make Deploy DeployRoot)
-	(cd 23763_BeautifulMatrix          && make Deploy)
-	(cd 24114_BeautifulPPRatioPlots    && make Deploy)
-	(cd 24171_BeautifulSystematicsPlot && make Deploy)
-	(cd 24122_RAA                      && make Deploy DeployRoot)
+	(cd 23763_BeautifulPlots           && make Deploy DeployRoot DeployPaper)
+	(cd 23763_BeautifulMatrix          && make Deploy DeployPaper)
+	(cd 24114_BeautifulPPRatioPlots    && make Deploy DeployPaper)
+	(cd 24171_BeautifulSystematicsPlot && make Deploy DeployPaper)
+	(cd 24122_RAA                      && make Deploy DeployRoot DeployPaper)
 	(cd 24231_ConditionNumber          && make Deploy)
 	(cd 23772_UnfoldIteration          && make Deploy)
 

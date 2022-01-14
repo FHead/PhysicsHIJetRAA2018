@@ -39,6 +39,8 @@ RunCheck: Execute
 	bash RunFile.sh PbPbData JECUp              "" 0 Gen
 	bash RunFile.sh PbPbData JECDown            "" 0 Gen
 	bash RunFile.sh PbPbData JECQuench          "" 0 Gen
+	bash RunFile.sh PbPbData JECAggressiveUp    "" 0 Gen
+	bash RunFile.sh PbPbData JECAggressiveDown  "" 0 Gen
 	bash RunFile.sh PbPbData JECNoResidual      "" 0 Gen
 	bash RunFile.sh PbPbData JECNoPhi           "" 0 Gen
 	bash RunFile.sh PbPbData CentralityUp       "" 0 Gen
@@ -58,6 +60,10 @@ RunCheck: Execute
 	bash RunFile.sh PbPbData MCCentrality       "" 0 InputRecoGenBin
 	bash RunFile.sh PbPbData StoredCentrality   "" 0 InputRecoGenBin
 	bash RunFile.sh PbPbData NoJetID            "" 0 InputRecoGenBin
+	bash RunFile.sh PbPbData JECUp              "" 0 InputRecoGenBin
+	bash RunFile.sh PbPbData JECDown            "" 0 InputRecoGenBin
+	bash RunFile.sh PbPbData JECAggressiveUp    "" 0 InputRecoGenBin
+	bash RunFile.sh PbPbData JECAggressiveDown  "" 0 InputRecoGenBin
 
 RunJetPTClosure: Execute
 	bash RunFile.sh PbPbMCRho Nominal Toy 0 Gen
@@ -81,6 +87,11 @@ Deploy:
 	cp Plots/PbPbData*NominalBinBiasUp.pdf   $(DeployBase)/Check/Spectra/MatrixCheck/
 	cp Plots/PbPbData*NominalBinBiasDown.pdf $(DeployBase)/Check/Spectra/MatrixCheck/
 	cp Plots/PbPbData*NominalCleaned.pdf     $(DeployBase)/Check/Spectra/MatrixCheck/
+
+DeployPaper:
+	mkdir -p "$(DeployBasePaper)/Result/Spectra/"
+	cp Plots/PbPbData*Nominal.pdf "$(DeployBasePaper)/Result/Spectra/"
+	cp Plots/PPData*Nominal.pdf "$(DeployBasePaper)/Result/Spectra/"
 
 DeployRoot:
 	mkdir -p $(DeployBase)/Result/Graphs

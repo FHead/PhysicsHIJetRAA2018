@@ -49,4 +49,9 @@ Deploy:
 	cp Plots/PbPbData*pdf $(DeployBase)/Matrix/
 	cp Plots/PPData*pdf $(DeployBase)/Matrix/
 
+DeployPaper:
+	mkdir -p "$(DeployBasePaper)/Matrix/"
+	cp Plots/PbPbData*pdf "$(DeployBasePaper)/Matrix/"
+	cp Plots/PPData*pdf   "$(DeployBasePaper)/Matrix/"
+
 

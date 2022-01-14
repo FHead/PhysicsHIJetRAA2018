@@ -42,6 +42,8 @@ RunAAStep1: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbMCRho Nominal                       0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECUp                         0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECDown                       0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  JECAggressiveUp               0 DefaultStep1
+	bash RunFile.sh Input    PbPbData  JECAggressiveDown             0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECQuench                     0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JERUp                         0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JERDown                       0 DefaultStep1
@@ -64,6 +66,8 @@ RunAAStep2: Execute ExecutePlot
 	bash RunFile.sh Input    PbPbMCRho Nominal                       0 DefaultStep1
 	bash RunFile.sh Input    PbPbData  JECUp                         0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JECDown                       0 DefaultStep2
+	bash RunFile.sh Input    PbPbData  JECAggressiveUp               0 DefaultStep2
+	bash RunFile.sh Input    PbPbData  JECAggressiveDown             0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JECQuench                     0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JERUp                         0 DefaultStep2
 	bash RunFile.sh Input    PbPbData  JERDown                       0 DefaultStep2
@@ -86,6 +90,8 @@ RunPPStep1: Execute ExecutePlot
 	bash RunFile.sh Input    PPData    JECDown                       1 DefaultStep1
 	bash RunFile.sh Input    PPData    JERUp                         1 DefaultStep1
 	bash RunFile.sh Input    PPData    JERDown                       1 DefaultStep1
+	bash RunFile.sh Input    PPData    JECAggressiveUp               1 DefaultStep1
+	bash RunFile.sh Input    PPData    JECAggressiveDown             1 DefaultStep1
 	
 RunPPStep2: Execute ExecutePlot
 	bash RunFile.sh Input    PPMC      Nominal                       1 DefaultStep1
@@ -93,6 +99,8 @@ RunPPStep2: Execute ExecutePlot
 	bash RunFile.sh Input    PPData    JECDown                       1 DefaultStep2
 	bash RunFile.sh Input    PPData    JERUp                         1 DefaultStep2
 	bash RunFile.sh Input    PPData    JERDown                       1 DefaultStep2
+	bash RunFile.sh Input    PPData    JECAggressiveUp               1 DefaultStep2
+	bash RunFile.sh Input    PPData    JECAggressiveDown             1 DefaultStep2
 
 RunSetDHFileStep1TUnfold:
 	bash SetPriorToUse.sh DefaultStep1 DefaultStep1 TUnfold
