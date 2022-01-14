@@ -6,11 +6,12 @@ Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/24236_RebinUnfoldInput//Output BinMapping
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/Systematics.dh
-	mkdir -p Output Plot
+	mkdir -p Output Plot Config
 
 Clean:
 	rm -f Output/*root
 	rm -f Plot/*pdf
+	rm -f Config/*config
 
 RunData: Execute ExecutePlot ExecuteIteration
 	bash RunFile.sh PbPbData 0

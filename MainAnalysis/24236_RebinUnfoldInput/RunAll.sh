@@ -10,6 +10,8 @@ do
    cp $i Input/${j/EOY}
 done
 
+exit
+
 for i in Input/PP*Fine*root
 do
    ./Execute --Input $i --Output Output/`basename ${i/Fine}` --DHFile GlobalSetting.dh \

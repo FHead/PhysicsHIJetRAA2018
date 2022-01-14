@@ -24,6 +24,8 @@ RunRAAVariationCheck: Execute
 	bash RunFile.sh PPData Nominal PbPbData NoJER
 	bash RunFile.sh PPData Nominal PbPbData JECUp
 	bash RunFile.sh PPData Nominal PbPbData JECDown
+	bash RunFile.sh PPData Nominal PbPbData JECAggressiveUp
+	bash RunFile.sh PPData Nominal PbPbData JECAggressiveDown
 	bash RunFile.sh PPData Nominal PbPbData JECQuench
 	bash RunFile.sh PPData Nominal PbPbData JECNoResidual
 	bash RunFile.sh PPData Nominal PbPbData JECNoPhi
@@ -49,6 +51,10 @@ RunRAARecoCheck: Execute
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECNoResidual_InputRecoGenBin
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECNoPhi_InputRecoGenBin
 	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData NoJetID_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECUp_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECDown_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECAggressiveUp_InputRecoGenBin
+	bash RunFile.sh PPData Nominal_InputRecoGenBin PbPbData JECAggressiveDown_InputRecoGenBin
 
 RunRCP: Execute
 	bash RunRCP.sh PPData Nominal PbPbData Nominal
@@ -81,13 +87,15 @@ Deploy:
 	cp Plots/RAA*_PPNominal_AAJECDown.pdf $(DeployBase)/Check/RAA/JECVariation/
 	cp Plots/RAA*_PPNominal_AAJECQuench.pdf $(DeployBase)/Check/RAA/JECVariation/
 	mkdir -p $(DeployBase)/Check/RAA/JECExtremeCheck
+	cp Plots/RAA*_PPNominal_AAJECAggressiveUp.pdf $(DeployBase)/Check/RAA/JECExtremeCheck/
+	cp Plots/RAA*_PPNominal_AAJECAggressiveDown.pdf $(DeployBase)/Check/RAA/JECExtremeCheck/
 	cp Plots/RAA*_PPNominal_AAJECNoPhi.pdf $(DeployBase)/Check/RAA/JECExtremeCheck/
 	cp Plots/RAA*_PPNominal_AAJECNoResidual.pdf $(DeployBase)/Check/RAA/JECExtremeCheck/
 	mkdir -p $(DeployBase)/Check/RAA/CentralityVariation
 	cp Plots/RAA*_PPNominal_AACentralityUp.pdf $(DeployBase)/Check/RAA/CentralityVariation/
 	cp Plots/RAA*_PPNominal_AACentralityDown.pdf $(DeployBase)/Check/RAA/CentralityVariation/
-	cp Plots/RAA*_PPNominal_AAStoredCentrality.pdf $(DeployBase)/Check/RAA/CentralityFromMC/
 	mkdir -p $(DeployBase)/Check/RAA/CentralityFromMC
+	cp Plots/RAA*_PPNominal_AAStoredCentrality.pdf $(DeployBase)/Check/RAA/CentralityFromMC/
 	cp Plots/RAA*_PPNominal_AAMCCentrality.pdf $(DeployBase)/Check/RAA/CentralityFromMC/
 	mkdir -p $(DeployBase)/Check/RAA/Cleaning
 	cp Plots/RAA*_PPNominal_AANominalCleaned.pdf $(DeployBase)/Check/RAA/Cleaning/
@@ -110,10 +118,22 @@ Deploy:
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECNoPhi_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECNoResidual_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	cp Plots/RAA*_PPNominal_InputRecoGenBin_AANoJetID_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECUp_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECDown_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECAggressiveUp_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
+	cp Plots/RAA*_PPNominal_InputRecoGenBin_AAJECAggressiveDown_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 	mkdir -p $(DeployBase)/Check/RAA/RecoGenMix
 	cp Plots/RAA*_PPNominal_AANominal_InputRecoGenBin.pdf $(DeployBase)/Check/RAA/RecoLevel/
 
 DeployRoot:
 	mkdir -p $(DeployBase)/Result/Graphs/
 	cp Root/*_AANominal.root $(DeployBase)/Result/Graphs/
+
+DeployPaper:
+	mkdir -p "$(DeployBasePaper)/Result/RAA"
+	cp Plots/RAA*_PPNominal_AANominal.pdf "$(DeployBasePaper)/Result/RAA/"
+	mkdir -p "$(DeployBasePaper)/Result/RCP"
+	cp Plots/RCP*_AANominal.pdf "$(DeployBasePaper)/Result/RCP/"
+	mkdir -p "$(DeployBasePaper)/Result/RRAA"
+	cp Plots/RRAA*_PPNominal_AANominal.pdf "$(DeployBasePaper)/Result/RRAA/"
 

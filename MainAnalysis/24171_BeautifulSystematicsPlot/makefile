@@ -49,4 +49,18 @@ Deploy:
 	mkdir -p $(DeployBase)/Systematics/RRAA
 	cp FinalPlots/RRAA_*pdf $(DeployBase)/Systematics/RRAA
 
+DeployPaper:
+	mkdir -p "$(DeployBasePaper)/Systematics/Spectra"
+	cp FinalPlots/PbPbData_*pdf "$(DeployBasePaper)/Systematics/Spectra"
+	cp FinalPlots/PPData_*pdf "$(DeployBasePaper)/Systematics/Spectra"
+	mkdir -p "$(DeployBasePaper)/Systematics/PPRatio"
+	cp FinalPlots/PPDataRatio_*pdf "$(DeployBasePaper)/Systematics/PPRatio"
+	mkdir -p "$(DeployBasePaper)/Systematics/RAA"
+	cp FinalPlots/RAA_*pdf "$(DeployBasePaper)/Systematics/RAA"
+	mkdir -p "$(DeployBasePaper)/Systematics/RCP"
+	cp FinalPlots/RCP_*pdf "$(DeployBasePaper)/Systematics/RCP"
+	mkdir -p "$(DeployBasePaper)/Systematics/RRAA"
+	cp FinalPlots/RRAA_*pdf "$(DeployBasePaper)/Systematics/RRAA"
+
+
 

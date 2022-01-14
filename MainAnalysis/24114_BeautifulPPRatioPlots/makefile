@@ -24,4 +24,8 @@ Deploy:
 	mkdir -p $(DeployBase)/Result/PPRatio/
 	cp Plots/* $(DeployBase)/Result/PPRatio/
 
+DeployPaper:
+	mkdir -p "$(DeployBasePaper)/Result/PPRatio/"
+	cp Plots/* "$(DeployBasePaper)/Result/PPRatio/"
+
 
