@@ -1,6 +1,6 @@
 
 
-default: TestRunJER
+default: RunSummary
 
 Prepare:
 	rm -f Input Output
@@ -27,3 +27,28 @@ Execute: LeadingDijet.cpp
 
 ExecuteJER: CheckJER.cpp
 	CompileRootMacro CheckJER.cpp ExecuteJER
+
+ExecuteSummary: JERSummary.cpp
+	CompileRootMacro JERSummary.cpp ExecuteSummary
+
+RunSummary: ExecuteSummary
+	./ExecuteSummary \
+		--Input Result/PPEOYR1.root,Result/PPEOYR2.root,Result/PPEOYR3.root,Result/PPEOYR4.root,Result/PPEOYR5.root,Result/PPEOYR6.root,Result/PPEOYR7.root,Result/PPEOYR8.root,Result/PPEOYR9.root \
+		--R 0.15,0.20,0.30,0.40,0.50,0.60,0.80,1.00,1.20 \
+		--Output PPEOY.pdf
+	./ExecuteSummary \
+		--Input Result/PPULR1.root,Result/PPULR2.root,Result/PPULR3.root,Result/PPULR4.root,Result/PPULR5.root,Result/PPULR6.root,Result/PPULR7.root,Result/PPULR8.root,Result/PPULR9.root \
+		--R 0.15,0.20,0.30,0.40,0.50,0.60,0.80,1.00,1.20 \
+		--Output PPUL.pdf
+	./ExecuteSummary \
+		--Input Result/PbPbR1.root,Result/PbPbR2.root,Result/PbPbR3.root,Result/PbPbR4.root,Result/PbPbR5.root,Result/PbPbR6.root,Result/PbPbR7.root,Result/PbPbR8.root,Result/PbPbR9.root \
+		--R 0.15,0.20,0.30,0.40,0.50,0.60,0.80,1.00,1.20 \
+		--Output PbPb.pdf --Max 1.50
+	./ExecuteSummary \
+		--Input Result/PbPb2R1.root,Result/PbPb2R2.root,Result/PbPb2R3.root,Result/PbPb2R4.root,Result/PbPb2R5.root,Result/PbPb2R6.root,Result/PbPb2R7.root,Result/PbPb2R8.root,Result/PbPb2R9.root \
+		--R 0.15,0.20,0.30,0.40,0.50,0.60,0.80,1.00,1.20 \
+		--Output PbPb2.pdf --Max 2.00
+
+
+
+
