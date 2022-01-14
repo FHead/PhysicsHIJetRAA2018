@@ -3,9 +3,9 @@
 File=Submit.condor
 rm -f ${File}
 
-ToRun="PbPbMBData"
-# ToRunR="1 2 3 5 6 7 8 9"
-ToRunR="4"
+ToRun="PPData PPDataEOY"
+ToRunR="1 2 3 5 6 7 8 9"
+# ToRunR="4"
 Group=40
 
 echo "Setting up submission to run on the following list"
@@ -33,6 +33,8 @@ do
       Centrality="Inclusive"
    elif [[ "$Type" == "PPData" ]]; then
       Centrality="Inclusive"
+   elif [[ "$Type" == "PPDataEOY" ]]; then
+      Centrality="Inclusive"
    fi
 
    for R in $ToRunR
@@ -54,6 +56,8 @@ do
             ExtraArguments="PbPbMBData_Part$Count 0 0 HLT_HIPuAK4CaloJet40Eta5p1 HLT_HIPuAK4CaloJet100Eta5p1 $R"
          elif [[ "$Type" == "PPData" ]]; then
             ExtraArguments="PPData_Part$Count 1 0 HLT_HIAK4PFJet60 HLT_HIAK4PFJet80 $R"
+         elif [[ "$Type" == "PPDataEOY" ]]; then
+            ExtraArguments="PPDataEOY_Part$Count 2 0 HLT_HIAK4PFJet60 HLT_HIAK4PFJet80 $R"
          fi
 
          echo "Arguments = $j  $ExtraArguments" >> ${File}
