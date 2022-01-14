@@ -74,17 +74,17 @@ JECTag="Autumn18_HI_RAAV2_MC"
 PhiTag="Phi_24252"
 
 if [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "0" ]]; then
-   JECTag="Autumn18_HI_RAAV2_MC"
+   JECTag="Autumn18_HI_RAAV3_MC"
 elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "0" ]]; then
-   JECTag="Autumn18_HI_RAAV2_DATA"
+   JECTag="Autumn18_HI_RAAV3_DATA"
 elif [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "1" ]]; then
-   JECTag="Spring18_ppRef5TeV_RAAV2_MC"
+   JECTag="Spring18_ppRef5TeV_RAAV3_MC"
 elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "1" ]]; then
-   JECTag="Spring18_ppRef5TeV_RAAV2_DATA"
+   JECTag="Spring18_ppRef5TeV_RAAV3_DATA"
 elif [[ "$IsMC" == "1" ]] && [[ "$IsPP" == "2" ]]; then
-   JECTag="Summer20UL17_ppRef5TeV_RAAV1_MC"
+   JECTag="Summer20UL17_ppRef5TeV_RAAV2_MC"
 elif [[ "$IsMC" == "0" ]] && [[ "$IsPP" == "2" ]]; then
-   JECTag="Summer20UL17_ppRef5TeV_RAAV1_DATA"
+   JECTag="Summer20UL17_ppRef5TeV_RAAV2_DATA"
 fi
 
 JEC="$JECBase/$JECTag/${JECTag}_L2Relative_AK${RTag}PF.txt"
