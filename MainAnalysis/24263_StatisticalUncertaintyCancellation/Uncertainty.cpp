@@ -22,6 +22,7 @@ using namespace std;
 
 #include "BinHelper.h"
 #include "Messenger.h"
+#include "JetCorrector.h"
 
 int main(int argc, char *argv[]);
 int GetBin(double Value, vector<double> &BinBoundary);
@@ -48,7 +49,15 @@ int main(int argc, char *argv[])
    double EtaMax                 = CL.GetDouble("EtaMax");
    string OutputFileName         = CL.Get("Output");
    int NSample                   = CL.GetInt("NSample", 100000);
+   bool UseGen                   = CL.GetBool("UseGen", true);
    
+   bool DoJEC                    = CL.GetBool("DoJEC", !UseGen);
+   vector<string> JEC1FileNames  = ((DoJEC == true) ? CL.GetStringVector("JEC1") : vector<string>{});
+   vector<string> JEC2FileNames  = ((DoJEC == true) ? CL.GetStringVector("JEC2") : vector<string>{});
+
+   JetCorrector JEC1(JEC1FileNames);
+   JetCorrector JEC2(JEC2FileNames);
+
    string OutputDHFileName       = CL.Get("DHOutput");
    string OutputDHState          = CL.Get("DHState");
 
@@ -106,15 +115,31 @@ int main(int argc, char *argv[])
 
          double Weight = 1;
 
-         for(int iJ1 = 0; iJ1 < MJet1.GenCount; iJ1++)
+         int NJet1 = (UseGen == true) ? MJet1.GenCount : MJet1.JetCount;
+         for(int iJ1 = 0; iJ1 < NJet1; iJ1++)
          {
-            if(MJet1.GenPT[iJ1] < PTMin)
+            double PT  = (UseGen == true) ? MJet1.GenPT[iJ1]  : MJet1.JetRawPT[iJ1];
+            double Eta = (UseGen == true) ? MJet1.GenEta[iJ1] : MJet1.JetEta[iJ1];
+            double Phi = (UseGen == true) ? MJet1.GenPhi[iJ1] : MJet1.JetPhi[iJ1];
+            double M   = (UseGen == true) ? MJet1.GenM[iJ1]   : MJet1.JetM[iJ1];
+
+            if(DoJEC == true)
+            {
+               JEC1.SetJetPT(PT);
+               JEC1.SetJetEta(Eta);
+               JEC1.SetJetPhi(Phi);
+               JEC1.SetJetArea(1);
+               JEC1.SetRho(0);
+               PT = JEC1.GetCorrectedPT();
+            }
+
+            if(PT < PTMin)
                continue;
-            if(MJet1.GenEta[iJ1] < EtaMin || MJet1.GenEta[iJ1] > EtaMax)
+            if(Eta < EtaMin || Eta > EtaMax)
                continue;
 
             FourVector J;
-            J.SetPtEtaPhiMass(MJet1.GenPT[iJ1], MJet1.GenEta[iJ1], MJet1.GenPhi[iJ1], MJet1.GenM[iJ1]);
+            J.SetPtEtaPhiMass(PT, Eta, Phi, M);
             Jet1.push_back(J);
          }
 
@@ -122,15 +147,31 @@ int main(int argc, char *argv[])
             Jet2 = Jet1;
          else
          {
-            for(int iJ2 = 0; iJ2 < MJet2.GenCount; iJ2++)
+            int NJet2 = (UseGen == true) ? MJet2.GenCount : MJet2.JetCount;
+            for(int iJ2 = 0; iJ2 < NJet2; iJ2++)
             {
-               if(MJet2.GenPT[iJ2] < PTMin)
+               double PT  = (UseGen == true) ? MJet2.GenPT[iJ2]  : MJet2.JetRawPT[iJ2];
+               double Eta = (UseGen == true) ? MJet2.GenEta[iJ2] : MJet2.JetEta[iJ2];
+               double Phi = (UseGen == true) ? MJet2.GenPhi[iJ2] : MJet2.JetPhi[iJ2];
+               double M   = (UseGen == true) ? MJet2.GenM[iJ2]   : MJet2.JetM[iJ2];
+               
+               if(DoJEC == true)
+               {
+                  JEC2.SetJetPT(PT);
+                  JEC2.SetJetEta(Eta);
+                  JEC2.SetJetPhi(Phi);
+                  JEC2.SetJetArea(1);
+                  JEC2.SetRho(0);
+                  PT = JEC2.GetCorrectedPT();
+               }
+               
+               if(PT < PTMin)
                   continue;
-               if(MJet2.GenEta[iJ2] < EtaMin || MJet2.GenEta[iJ2] > EtaMax)
+               if(Eta < EtaMin || Eta > EtaMax)
                   continue;
 
                FourVector J;
-               J.SetPtEtaPhiMass(MJet2.GenPT[iJ2], MJet2.GenEta[iJ2], MJet2.GenPhi[iJ2], MJet2.GenM[iJ2]);
+               J.SetPtEtaPhiMass(PT, Eta, Phi, M);
                Jet2.push_back(J);
             }
          }

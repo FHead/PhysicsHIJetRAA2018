@@ -2,10 +2,12 @@
 
 JetR=`DHQuery GlobalSetting.dh Global JetR`
 
-PbPbBase=`DHQuery GlobalSetting.dh Sample PbPbMC1`
-PPBase=`DHQuery GlobalSetting.dh Sample PPMC1`
+PbPbMCBase=`DHQuery GlobalSetting.dh Sample PbPbMC1`
+PPMCBase=`DHQuery GlobalSetting.dh Sample PPMC1`
+PbPbDataBase=`DHQuery GlobalSetting.dh Sample PbPbData1`
+PPDataBase=`DHQuery GlobalSetting.dh Sample PPData1`
 
-NFile=25
+NFile=500
 NSample=250000
 
 for R1 in $JetR
@@ -18,16 +20,46 @@ do
 
       Match=`DHQuery GlobalSetting.dh JetRMatch $((R1 < R2 ? R1 : R2))`
       
-      # Run PbPb
-      ./Execute --Input `find $PbPbBase | grep root | head -n $NFile | tr '\n' ','` \
-         --Tree1 akCs${R1}PFJetAnalyzer/t \
-         --Tree2 akCs${R2}PFJetAnalyzer/t \
+      # Run PbPb Gen
+      # ./Execute --Input `find $PbPbMCBase | grep root | head -n $NFile | tr '\n' ','` \
+      #    --Tree1 akCs${R1}PFJetAnalyzer/t \
+      #    --Tree2 akCs${R2}PFJetAnalyzer/t \
+      #    --DHFile GlobalSetting.dh \
+      #    --MatchAngle $Match \
+      #    --EtaMin -2 --EtaMax 2 \
+      #    --Output pdf/Rho_PbPbR${R1}R${R2}.pdf \
+      #    --NSample $NSample --UseGen true \
+      #    --DHOutput StatisticsRho.dh --DHState PbPbR${R1}R${R2}
+      
+      # Run PbPb Reco
+      # JECBase=$ProjectBase/CommonCode/jec/Autumn18_HI_RAAV2_MC/Autumn18_HI_RAAV2_MC
+      # ./Execute --Input `find $PbPbMCBase | grep root | head -n $NFile | tr '\n' ','` \
+      #    --Tree1 akCs${R1}PFJetAnalyzer/t \
+      #    --Tree2 akCs${R2}PFJetAnalyzer/t \
+      #    --DHFile GlobalSetting.dh \
+      #    --MatchAngle $Match \
+      #    --EtaMin -2 --EtaMax 2 \
+      #    --Output pdf/Rho_RecoPbPbR${R1}R${R2}.pdf \
+      #    --NSample $NSample --UseGen false \
+      #    --DoJEC true \
+      #    --JEC1 ${JECBase}_L2Relative_AK${R1}PF.txt \
+      #    --JEC2 ${JECBase}_L2Relative_AK${R2}PF.txt \
+      #    --DHOutput StatisticsRho.dh --DHState RecoPbPbR${R1}R${R2}
+
+      # Run PbPb Data
+      JECBase=$ProjectBase/CommonCode/jec/Autumn18_HI_RAAV2_DATA/Autumn18_HI_RAAV2_DATA
+      ./Execute --Input `find $PbPbDataBase | grep root | head -n $NFile | tr '\n' ','` \
+         --Tree1 "akCs${R1}PFJetAnalyzer/t" \
+         --Tree2 "akCs${R2}PFJetAnalyzer/t" \
          --DHFile GlobalSetting.dh \
          --MatchAngle $Match \
          --EtaMin -2 --EtaMax 2 \
-         --Output pdf/Rho_PbPbR${R1}R${R2}.pdf \
-         --NSample $NSample \
-         --DHOutput Rho.dh --DHState PbPbR${R1}R${R2}
+         --Output pdf/Rho_DataPbPbR${R1}R${R2}.pdf \
+         --NSample $NSample --UseGen false \
+         --DoJEC true \
+         --JEC1 ${JECBase}_L2Relative_AK${R1}PF.txt \
+         --JEC2 ${JECBase}_L2Relative_AK${R2}PF.txt \
+         --DHOutput StatisticsRho.dh --DHState DataPbPbR${R1}R${R2}
 
       # Run pp
       # ./Execute --Input `find $PPBase | grep root | head -n $NFile | tr '\n' ','` \
