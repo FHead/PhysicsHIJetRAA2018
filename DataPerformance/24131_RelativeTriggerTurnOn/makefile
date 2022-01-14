@@ -46,4 +46,8 @@ ExecuteSummary: PlotPercentage.cpp
 Harvest: ExecuteSummary ExecuteFit
 	-bash RunFit.sh
 	./ExecuteSummary --DHFile GlobalSettingTemp.dh
-	# MAKE SURE THAT YOU COPY GlobalSettingTemp.dh into GlobalSetting.dh
+	##########################################################################
+	#                                                                        #
+	#   MAKE SURE THAT YOU COPY GlobalSettingTemp.dh into GlobalSetting.dh   #
+	#                                                                        #
+	##########################################################################

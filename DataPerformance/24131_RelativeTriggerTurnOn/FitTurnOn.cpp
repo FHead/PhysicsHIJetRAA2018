@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
    TF1 F("F", Function.c_str(), 0, 500);
    F.SetParameters(0.5, 80, 20);
 
-   G.Fit(&F, "w");
-   G.Fit(&F);
+   G.Fit(&F, "w", "", 80, 500);
+   G.Fit(&F, "", "", 80, 500);
 
    HAll->SetLineColor(Colors[0]);
    HPass->SetLineColor(Colors[1]);
@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
    double CutLocation = 0;
 
    DHFile[State][KeyPrefix+"_FunctionChoice"] = FunctionChoice;
+   DHFile[State][KeyPrefix+"_NParameter"] = 3;
    DHFile[State][KeyPrefix+"_Formula"] = Function;
    DHFile[State][KeyPrefix+"_P0"] = F.GetParameter(0);
    DHFile[State][KeyPrefix+"_P1"] = F.GetParameter(1);
@@ -85,6 +86,7 @@ int main(int argc, char *argv[])
    if(FunctionChoice == 1)
    {
       DHFile[State][KeyPrefix+"_X90"]   = TMath::ErfInverse(1 + (0.90 - 1) / P0) * P2 + P1;
+      DHFile[State][KeyPrefix+"_X95"]   = TMath::ErfInverse(1 + (0.95 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X98"]   = TMath::ErfInverse(1 + (0.98 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X99"]   = TMath::ErfInverse(1 + (0.99 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X99.9"] = TMath::ErfInverse(1 + (0.999 - 1) / P0) * P2 + P1;
@@ -93,6 +95,7 @@ int main(int argc, char *argv[])
    else
    {
       DHFile[State][KeyPrefix+"_X90"]   = atanh(1 + (0.90 - 1) / P0) * P2 + P1;
+      DHFile[State][KeyPrefix+"_X95"]   = atanh(1 + (0.95 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X98"]   = atanh(1 + (0.98 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X99"]   = atanh(1 + (0.99 - 1) / P0) * P2 + P1;
       DHFile[State][KeyPrefix+"_X99.9"] = atanh(1 + (0.999 - 1) / P0) * P2 + P1;
