@@ -10,13 +10,13 @@ Execute: RunCentrality.cpp
 	CompileRootMacro RunCentrality.cpp Execute
 
 TestRun: Execute
-	./Execute --Input `ls Input/PbPbData_R4_*root | tr '\n' ','` --Output R4.pdf \
+	./Execute --Input `ls Input/PbPbData_R4_*root | grep -v 70 | tr '\n' ','` --Output R4.pdf \
 		--DHFile GlobalSetting.dh
-	./Execute --Input `ls Input/PbPbDataStoredCentrality_R4_*root | tr '\n' ','` --Output R4Stored.pdf \
+	./Execute --Input `ls Input/PbPbDataStoredCentrality_R4_*root | grep -v 70 | tr '\n' ','` --Output R4Stored.pdf \
 		--DHFile GlobalSetting.dh
-	./Execute --Input `ls Input/PbPbDataCentralityDown_R4_*root | tr '\n' ','` --Output R4Up.pdf \
+	./Execute --Input `ls Input/PbPbDataCentralityDown_R4_*root | grep -v 70 | tr '\n' ','` --Output R4Up.pdf \
 		--DHFile GlobalSetting.dh
-	./Execute --Input `ls Input/PbPbDataCentralityUp_R4_*root | tr '\n' ','` --Output R4Down.pdf \
+	./Execute --Input `ls Input/PbPbDataCentralityUp_R4_*root | grep -v 70 | tr '\n' ','` --Output R4Down.pdf \
 		--DHFile GlobalSetting.dh
 
 

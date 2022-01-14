@@ -1,11 +1,17 @@
 #!/bin/bash
 
-for i in 3 4 # 1 2 3 4 5 6 7 8 9
+for i in 1 2 3 4 5 6 7 8 9
 do
-   for j in PPDataEOY # PPDataUL PbPbData
+   for j in PbPbData2 # PPDataUL # PPDataEOY PPDataUL PbPbData PbPbData2
    do
-	./ExecuteJER --Data Output/${j}R${i}.root --MC Output/${j/Data/MC}R${i}.root \
-      --OutputBase Result/${j/Data}R${i} \
-		--PTMin 150 --DPhiMin 2.8 --AlphaMax 0.30
+      Cut=150
+      if [[ "$j" == "PbPbData"* ]]; then
+         Cut=`DHQuery GlobalSetting.dh TriggerTurnOn R${i}_Centrality50to90_Cut`
+      fi
+
+   	./ExecuteJER --Data Output/${j}R${i}.root --MC Output/${j/Data/MC}R${i}.root \
+         --OutputBase Result/${j/Data}R${i} \
+		   --PTMin $Cut --DPhiMin 2.7 --AlphaMax 0.30
    done
 done
+

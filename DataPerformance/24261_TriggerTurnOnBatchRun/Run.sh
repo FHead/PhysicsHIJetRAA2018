@@ -33,7 +33,7 @@ if [[ "$Tag" == "PbPbData"* ]]; then
    Centrality=`DHQuery $CodeBase/GlobalSetting.dh Global Centrality`
 elif [[ "$Tag" == "PbPbMBData"* ]]; then
    Centrality=Inclusive
-elif [[ "$Tag" == "PbPbData"* ]]; then
+elif [[ "$Tag" == "PPData"* ]]; then
    Centrality=Inclusive
 fi
 

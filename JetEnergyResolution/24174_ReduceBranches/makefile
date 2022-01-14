@@ -7,8 +7,11 @@ Prepare:
 	ln -sf  /eos/user/c/chenyi/BatchOutput/PhysicsWorkspace/HIJetRAA2018/JetEnergyResolution/24174_ReduceBranches Output
 
 TestRun: Execute
-	./Execute --Input Input/MeowTestRunMC_R4_CentralityInclusive.root \
-		--Output Meow.root --JetR 0.4 --Match 0.2
+	./Execute --Input Input/PbPbMCRho_R4_Centrality0to10.root \
+		--Output Meow.root --JetR 0.4 --Match 0.2 --Fraction 0.01
+
+RunAA: Execute
+	bash RunAA.sh
 
 RunPP: Execute
 	./Execute --Input Input/PPMC_R1_CentralityInclusive.root \
