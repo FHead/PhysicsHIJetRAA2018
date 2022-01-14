@@ -41,11 +41,21 @@ int main(int argc, char *argv[])
       CentralityWeights[i+4] = InverseTAA;
    }
 
-   TH1D HCentralityRaw("HCentralityRaw", "Reco Jet PT > 250 GeV;Centrality;", 200, 0, 1);
-   TH1D HCentralityTAA("HCentralityTAA", "Reco Jet PT > 250 GeV;Centrality;", 200, 0, 1);
+   TH1D HCentralityRaw150("HCentralityRaw150", "Reco Jet PT > 150 GeV;Centrality;", 20, 0, 1);
+   TH1D HCentralityTAA150("HCentralityTAA150", "Reco Jet PT > 150 GeV;Centrality;", 20, 0, 1);
+   TH1D HCentralityRaw250("HCentralityRaw250", "Reco Jet PT > 250 GeV;Centrality;", 20, 0, 1);
+   TH1D HCentralityTAA250("HCentralityTAA250", "Reco Jet PT > 250 GeV;Centrality;", 20, 0, 1);
+   TH1D HCentralityRaw350("HCentralityRaw350", "Reco Jet PT > 350 GeV;Centrality;", 20, 0, 1);
+   TH1D HCentralityTAA350("HCentralityTAA350", "Reco Jet PT > 350 GeV;Centrality;", 20, 0, 1);
+   TH1D HCentralityRaw450("HCentralityRaw450", "Reco Jet PT > 450 GeV;Centrality;", 20, 0, 1);
+   TH1D HCentralityTAA450("HCentralityTAA450", "Reco Jet PT > 450 GeV;Centrality;", 20, 0, 1);
 
-   HCentralityRaw.SetStats(0);
-   HCentralityTAA.SetStats(0);
+   HCentralityRaw250.SetStats(0);
+   HCentralityTAA250.SetStats(0);
+   HCentralityRaw350.SetStats(0);
+   HCentralityTAA350.SetStats(0);
+   HCentralityRaw450.SetStats(0);
+   HCentralityTAA450.SetStats(0);
 
    for(string InputFileName : InputFileNames)
    {
@@ -55,10 +65,10 @@ int main(int argc, char *argv[])
 
       double Centrality;
       int NRecoJets;
-      double RecoJetPT[MAX];
-      double RecoJetEta[MAX];
-      double RecoJetPhi[MAX];
-      double RecoJetWeight[MAX];
+      float RecoJetPT[MAX];
+      float RecoJetEta[MAX];
+      float RecoJetPhi[MAX];
+      float RecoJetWeight[MAX];
       
       Tree->SetBranchAddress("Centrality", &Centrality);
       Tree->SetBranchAddress("NRecoJets", &NRecoJets);
@@ -78,21 +88,40 @@ int main(int argc, char *argv[])
 
          for(int iJ = 0; iJ < NRecoJets; iJ++)
          {
-            if(RecoJetPT[iJ] < 250)
-               continue;
-
-            HCentralityRaw.Fill(Centrality + 0.0025, RecoJetWeight[iJ]);
-            HCentralityTAA.Fill(Centrality + 0.0025, RecoJetWeight[iJ] * CentralityWeights[CBin]);
+            if(RecoJetPT[iJ] > 150)
+            {
+               HCentralityRaw150.Fill(Centrality + 0.00001, RecoJetWeight[iJ]);
+               HCentralityTAA150.Fill(Centrality + 0.00001, RecoJetWeight[iJ] * CentralityWeights[CBin]);
+            }
+            if(RecoJetPT[iJ] > 250)
+            {
+               HCentralityRaw250.Fill(Centrality + 0.00001, RecoJetWeight[iJ]);
+               HCentralityTAA250.Fill(Centrality + 0.00001, RecoJetWeight[iJ] * CentralityWeights[CBin]);
+            }
+            if(RecoJetPT[iJ] > 350)
+            {
+               HCentralityRaw350.Fill(Centrality + 0.00001, RecoJetWeight[iJ]);
+               HCentralityTAA350.Fill(Centrality + 0.00001, RecoJetWeight[iJ] * CentralityWeights[CBin]);
+            }
+            if(RecoJetPT[iJ] > 450)
+            {
+               HCentralityRaw450.Fill(Centrality + 0.00001, RecoJetWeight[iJ]);
+               HCentralityTAA450.Fill(Centrality + 0.00001, RecoJetWeight[iJ] * CentralityWeights[CBin]);
+            }
          }
       }
 
       InputFile.Close();
    }
 
-   PdfFile.AddPlot(HCentralityRaw);
-   PdfFile.AddPlot(HCentralityRaw, "hist");
-   PdfFile.AddPlot(HCentralityTAA);
-   PdfFile.AddPlot(HCentralityTAA, "hist");
+   PdfFile.AddPlot(HCentralityRaw150);
+   PdfFile.AddPlot(HCentralityTAA150);
+   PdfFile.AddPlot(HCentralityRaw250);
+   PdfFile.AddPlot(HCentralityTAA250);
+   PdfFile.AddPlot(HCentralityRaw350);
+   PdfFile.AddPlot(HCentralityTAA350);
+   PdfFile.AddPlot(HCentralityRaw450);
+   PdfFile.AddPlot(HCentralityTAA450);
 
    PdfFile.AddTimeStampPage();
    PdfFile.Close();
