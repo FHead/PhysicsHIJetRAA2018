@@ -22,16 +22,22 @@ Execute: ProcessJets.cpp
 ExecuteJEC: DeriveResidual.cpp
 	CompileRootMacro DeriveResidual.cpp ExecuteJEC
 
+ExecuteText: CreateTextFile.cpp
+	CompileRootMacro CreateTextFile.cpp ExecuteText
+
 ExecutePlot: CheckJets.cpp
 	CompileRootMacro CheckJets.cpp ExecutePlot -I$(ProjectBase)/CommonCode/include
 
-Production: Execute
+RunProduction: Execute
 	bash ProcessAll.sh
 
-Derivation: ExecuteJEC
+RunDerivation: ExecuteJEC
 	bash RunAll.sh
 
-Closure: ExecutePlot
+RunText: ExecuteText
+	bash TextAll.sh
+
+RunClosure: ExecutePlot
 	bash PlotAll.sh
 
 

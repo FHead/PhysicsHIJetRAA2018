@@ -17,6 +17,7 @@ using namespace std;
 #include "CustomAssert.h"
 #include "SetStyle.h"
 #include "ProgressBar.h"
+#include "DataHelper.h"
 
 struct Jet {double PT; double Eta; double Phi; double Rho; double R;};
 
@@ -36,6 +37,8 @@ int main(int argc, char *argv[])
 
    vector<string> FileNames    = CL.GetStringVector("Input", vector<string>{});
    string OutputFileName       = CL.Get("Output", "Result.pdf");
+   string DHFileName           = CL.Get("DHFile", "Correction.dh");
+   string DHState              = CL.Get("DHState", "DefaultState");
    vector<double> EtaBinning   = CL.GetDoubleVector("Eta", vector<double>{-2.0, -1.0, 0.0, 1.0, 2.0});
    vector<double> JetExclusion = CL.GetDoubleVector("Exclusion", vector<double>{});
    double MinPT                = CL.GetDouble("MinPT", 50);
@@ -68,6 +71,14 @@ int main(int argc, char *argv[])
    EtaBinning.erase(unique(EtaBinning.begin(), EtaBinning.end()), EtaBinning.end());
 
    int NEta = EtaBinning.size() - 1;
+
+   // Data helper and basic information
+   DataHelper DHFile(DHFileName);
+   DHFile[DHState]["NEta"] = NEta;
+   DHFile[DHState]["NPT"]  = NPT;
+   DHFile[DHState]["NRho"] = NRho;
+   DHFile[DHState]["NPhi"] = NPhi;
+   DHFile[DHState]["Formula"] = "1/(" + GetFormula(NMax) + ")";
 
    // Exclusion min-max switch if needed
    for(int i = 0; i + 2 < (int)JetExclusion.size(); i = i + 2)
@@ -274,10 +285,22 @@ int main(int argc, char *argv[])
                   << " " << PTMin << " " << PTMax
                   << " " << RhoMin << " " << RhoMax
                   << " " << Cs[iPT].size() + 2 << " " << -M_PI << " " << M_PI;
-               for(int i = 0; i < (int)Cs.size(); i++)
+               for(int i = 0; i < (int)Cs[iPT].size(); i++)
                   out << " " << Cs[iPT][i];
                out << endl;
             }
+
+            string KeyBase = "Eta" + to_string(iEta) + "_PT" + to_string(iPT) + "_Rho" + to_string(iRho);
+
+            DHFile[DHState][KeyBase+"_EtaMin"]     = EtaMin;
+            DHFile[DHState][KeyBase+"_EtaMax"]     = EtaMax;
+            DHFile[DHState][KeyBase+"_PTMin"]      = PTMin;
+            DHFile[DHState][KeyBase+"_PTMax"]      = PTMax;
+            DHFile[DHState][KeyBase+"_RhoMin"]     = RhoMin;
+            DHFile[DHState][KeyBase+"_RhoMax"]     = RhoMax;
+            DHFile[DHState][KeyBase+"_NParameter"] = (int)Cs[iPT].size();
+            for(int i = 0; i < (int)Cs[iPT].size(); i++)
+               DHFile[DHState][KeyBase+"_P"+to_string(i)] = Cs[iPT][i];
          }
       }
 
@@ -353,6 +376,8 @@ int main(int argc, char *argv[])
          for(TH1D *X : V)
             if(X != nullptr)
                delete X;
+
+   DHFile.SaveToFile();
 
    return 0;
 }

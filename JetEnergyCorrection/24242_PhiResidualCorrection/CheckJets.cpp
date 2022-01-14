@@ -24,6 +24,12 @@ bool IsExcluded(double Eta, double Phi, vector<double> &Exclusion);
 void PlotPT(PdfFileHelper &PdfFile, vector<Jet> &Jets,
    double EtaMin, double EtaMax, double PTMin, double PTMax,
    string Title);
+void PlotPTEta(PdfFileHelper &PdfFile, vector<Jet> &Jets,
+   double EtaMin, double EtaMax, double PTMin, double PTMax,
+   string Title);
+void PlotEtaPhi(PdfFileHelper &PdfFile, vector<Jet> &Jets,
+   double EtaMin, double EtaMax, double PTMin, double PTMax,
+   string Title);
 
 int main(int argc, char *argv[])
 {
@@ -40,46 +46,6 @@ int main(int argc, char *argv[])
 
    JetCorrector JEC(JECFile);
    
-   /*
-   double JetPTBins[101];
-   double JetPTMin = 10;
-   double JetPTMax = 1000;
-   int JetPTBin = 50;
-   for(int i = 0; i <= JetPTBin; i++)
-      JetPTBins[i] = exp(log(JetPTMin) + (log(JetPTMax) - log(JetPTMin)) / JetPTBin * i);
-   
-   double JetPTBins2[101];
-   JetPTMin = 200, JetPTMax = 1000;
-   for(int i = 0; i <= JetPTBin; i++)
-      JetPTBins2[i] = exp(log(JetPTMin) + (log(JetPTMax) - log(JetPTMin)) / JetPTBin * i);
-
-   TProfile2D P1("P1", ";JetPT;JetEta", JetPTBin, JetPTBins, 25, -2, 2);
-   TProfile2D P2("P2", "Jet PT > 100;JetPhi;JetEta", 50, -M_PI, M_PI, 25, -2, 2);
-   TProfile2D P3("P3", "Jet eta = [0.5, 1.0];JetPT;JetPhi", JetPTBin, JetPTBins, 50, -M_PI, M_PI);
-   TProfile2D P4("P4", "Jet eta = [-2.0, -1.5];JetPT;JetPhi", JetPTBin, JetPTBins, 50, -M_PI, M_PI);
-   TProfile2D P5("P5", ";JetPT;JetEta", JetPTBin, JetPTBins2, 25, -2, 2);
-   TProfile2D P6("P6", "Jet PT > 200;JetPhi;JetEta", 50, -M_PI, M_PI, 25, -2, 2);
-   TProfile2D P24("P24", "Jet PT > 50;JetPhi;JetEta", 50, -M_PI, M_PI, 25, -2, 2);
-
-   string Option = "";
-   TProfile P7("P7",   "Jet eta = [-2.0, -1.5];JetPT;<R>", JetPTBin, JetPTBins,  Option.c_str());
-   TProfile P8("P8",   "Jet eta = [-1.5, -1.0];JetPT;<R>", JetPTBin, JetPTBins,  Option.c_str());
-   TProfile P9("P9",   "Jet eta = [-1.0, -0.5];JetPT;<R>", JetPTBin, JetPTBins,  Option.c_str());
-   TProfile P10("P10", "Jet eta = [-0.5, 0.0];JetPT;<R>",  JetPTBin, JetPTBins,  Option.c_str());
-   TProfile P11("P11", "Jet eta = [0.0, 0.5];JetPT;<R>",   JetPTBin, JetPTBins,  Option.c_str());
-   TProfile P12("P12", "Jet eta = [0.5, 1.0];JetPT;<R>",   JetPTBin, JetPTBins,  Option.c_str());
-   TProfile P14("P14", "Jet eta = [1.0, 1.5];JetPT;<R>",   JetPTBin, JetPTBins,  Option.c_str());
-   TProfile P15("P15", "Jet eta = [1.5, 2.0];JetPT;<R>",   JetPTBin, JetPTBins,  Option.c_str());
-   TProfile P16("P16", "Jet eta = [-2.0, -1.5];JetPT;<R>", JetPTBin, JetPTBins2, Option.c_str());
-   TProfile P17("P17", "Jet eta = [-1.5, -1.0];JetPT;<R>", JetPTBin, JetPTBins2, Option.c_str());
-   TProfile P18("P18", "Jet eta = [-1.0, -0.5];JetPT;<R>", JetPTBin, JetPTBins2, Option.c_str());
-   TProfile P19("P19", "Jet eta = [-0.5, 0.0];JetPT;<R>",  JetPTBin, JetPTBins2, Option.c_str());
-   TProfile P20("P20", "Jet eta = [0.0, 0.5];JetPT;<R>",   JetPTBin, JetPTBins2, Option.c_str());
-   TProfile P21("P21", "Jet eta = [0.5, 1.0];JetPT;<R>",   JetPTBin, JetPTBins2, Option.c_str());
-   TProfile P22("P22", "Jet eta = [1.0, 1.5];JetPT;<R>",   JetPTBin, JetPTBins2, Option.c_str());
-   TProfile P23("P23", "Jet eta = [1.5, 2.0];JetPT;<R>",   JetPTBin, JetPTBins2, Option.c_str());
-   */
-
    vector<Jet> Jets;
 
    for(string FileName : InputFileNames)
@@ -112,13 +78,16 @@ int main(int argc, char *argv[])
 
          Tree->GetEntry(iE);
 
+         if(M.R <= 0)
+            continue;
+
          if(OnTheFlyJEC == true)
          {
             JEC.SetJetPT(M.PT * M.R);
             JEC.SetJetEta(M.Eta);
             JEC.SetJetPhi(M.Phi);
             JEC.SetRho(M.Rho);
-            M.R = JEC.GetCorrectedPT() * M.R;
+            M.R = JEC.GetCorrection() * M.R;
          }
 
          Jets.push_back(M);
@@ -135,21 +104,27 @@ int main(int argc, char *argv[])
    PdfFile.AddTextPage("Meow");
 
    PlotPT(PdfFile, Jets, -2.0, -1.5, 10, 1000, "Jet eta = [-2.0, -1.5];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [-1.5, -1.0];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [-1.0, -0.5];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [-0.5, 0.0];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [0.0, 0.5];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [0.5, 1.0];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [1.0, 1.5];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [1.5, 2.0];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [-2.0, -1.5];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [-1.5, -1.0];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [-1.0, -0.5];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [-0.5, 0.0];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [0.0, 0.5];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [0.5, 1.0];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [1.0, 1.5];JetPT;<R>");
-   // PlotPT(PdfFile, Jets, 1.0, 3.0, 10, 1000, "Jet eta = [1.5, 2.0];JetPT;<R>");
+   PlotPT(PdfFile, Jets, -1.5, -1.0, 10, 1000, "Jet eta = [-1.5, -1.0];JetPT;<R>");
+   PlotPT(PdfFile, Jets, -1.0, -0.5, 10, 1000, "Jet eta = [-1.0, -0.5];JetPT;<R>");
+   PlotPT(PdfFile, Jets, -0.5, -0.0, 10, 1000, "Jet eta = [-0.5, 0.0];JetPT;<R>");
+   PlotPT(PdfFile, Jets, +0.0, +0.5, 10, 1000, "Jet eta = [0.0, 0.5];JetPT;<R>");
+   PlotPT(PdfFile, Jets, +0.5, +1.0, 10, 1000, "Jet eta = [0.5, 1.0];JetPT;<R>");
+   PlotPT(PdfFile, Jets, +1.0, +1.5, 10, 1000, "Jet eta = [1.0, 1.5];JetPT;<R>");
+   PlotPT(PdfFile, Jets, +1.5, +2.0, 10, 1000, "Jet eta = [1.5, 2.0];JetPT;<R>");
+   PlotPT(PdfFile, Jets, -2.0, -1.5, 200, 1000, "Jet eta = [-2.0, -1.5];JetPT;<R>");
+   PlotPT(PdfFile, Jets, -1.5, -1.0, 200, 1000, "Jet eta = [-1.5, -1.0];JetPT;<R>");
+   PlotPT(PdfFile, Jets, -1.0, -0.5, 200, 1000, "Jet eta = [-1.0, -0.5];JetPT;<R>");
+   PlotPT(PdfFile, Jets, -0.5, -0.0, 200, 1000, "Jet eta = [-0.5, 0.0];JetPT;<R>");
+   PlotPT(PdfFile, Jets, +0.0, +0.5, 200, 1000, "Jet eta = [0.0, 0.5];JetPT;<R>");
+   PlotPT(PdfFile, Jets, +0.5, +1.0, 200, 1000, "Jet eta = [0.5, 1.0];JetPT;<R>");
+   PlotPT(PdfFile, Jets, +1.0, +1.5, 200, 1000, "Jet eta = [1.0, 1.5];JetPT;<R>");
+   PlotPT(PdfFile, Jets, +1.5, +2.0, 200, 1000, "Jet eta = [1.5, 2.0];JetPT;<R>");
+   
+   PlotPTEta(PdfFile, Jets, -2.0, +2.0, 10, 1000, ";JetPT;JetEta;<R>");
+   PlotPTEta(PdfFile, Jets, -2.0, +2.0, 150, 1000, ";JetPT;JetEta;<R>");
+   PlotEtaPhi(PdfFile, Jets, -2.0, +2.0, 10, 50, "Jet PT = [10, 50];JetEta;JetPhi;<R>");
+   PlotEtaPhi(PdfFile, Jets, -2.0, +2.0, 50, 100, "Jet PT = [50, 100];JetEta;JetPhi;<R>");
+   PlotEtaPhi(PdfFile, Jets, -2.0, +2.0, 100, 500, "Jet PT = [100, 500];JetEta;JetPhi;<R>");
 
    PdfFile.AddTimeStampPage();
    PdfFile.Close();
@@ -171,74 +146,141 @@ void PlotPT(PdfFileHelper &PdfFile, vector<Jet> &Jets,
    TH1D H(Form("HPT%d", Index), Title.c_str(), NBin, PTBin);
    H.SetStats(0);
 
+   vector<vector<double>> BinJets(NBin);
+
+   for(Jet &J : Jets)
+   {
+      if(J.Eta > EtaMax || J.Eta <= EtaMin)
+         continue;
+      for(int i = 0; i < NBin; i++)
+         if(J.PT > PTBin[i] && J.PT <= PTBin[i+1])
+            BinJets[i].push_back(J.R);
+   }
+      
    for(int i = 0; i < NBin; i++)
    {
-      vector<double> BinJets;
-
-      for(Jet &J : Jets)
-      {
-         if(J.PT > PTBin[i+1] || J.PT <= PTBin[i])
-            continue;
-         if(J.Eta > EtaMax || J.Eta <= EtaMin)
-            continue;
-
-         BinJets.push_back(J.R);
-      }
-
-      sort(BinJets.begin(), BinJets.end());
-      if(BinJets.size() > 10)
-         H.SetBinContent(i + 1, BinJets[BinJets.size()/2]);
+      sort(BinJets[i].begin(), BinJets[i].end());
+      if(BinJets[i].size() > 10)
+         H.SetBinContent(i + 1, BinJets[i][BinJets[i].size()/2]);
    }
 
-   PdfFile.AddPlot(H);
+   TCanvas Canvas;
+   
+   H.SetMinimum(0.75);
+   H.SetMaximum(1.25);
+   H.Draw();
+
+   Canvas.SetGridx();
+   Canvas.SetGridy();
+   Canvas.SetLogx();
+
+   PdfFile.AddCanvas(Canvas);
 }
 
-void PlotProfile1D(PdfFileHelper &PdfFile, TProfile &P)
+void PlotPTEta(PdfFileHelper &PdfFile, vector<Jet> &Jets,
+   double EtaMin, double EtaMax, double PTMin, double PTMax,
+   string Title)
 {
-   TGraph G;
-   G.SetPoint(0, 0, 1);
-   G.SetPoint(1, 10000, 1);
-   G.SetPoint(2, 10000, 1.02);
-   G.SetPoint(3, 0, 1.02);
-   G.SetPoint(4, 0, 0.98);
-   G.SetPoint(5, 10000, 0.98);
+   int NBin = 100;
+   double PTBin[101] = {0};
+   for(int i = 0; i <= NBin; i++)
+      PTBin[i] = exp((log(PTMax) - log(PTMin)) / NBin * i + log(PTMin));
 
-   P.SetMinimum(0.75);
-   P.SetMaximum(1.25);
-   P.SetStats(0);
+   static int Index = 0;
+   Index = Index + 1;
+   TH2D H(Form("HPTEta%d", Index), Title.c_str(), NBin, PTBin, NBin, EtaMin, EtaMax);
+   H.SetStats(0);
+
+   vector<vector<vector<double>>> BinJets(NBin);
+   for(vector<vector<double>> &V : BinJets)
+      V.resize(NBin);
+
+   for(Jet &J : Jets)
+   {
+      if(J.Eta >= EtaMax || J.Eta <= EtaMin)
+         continue;
+      for(int i = 0; i < NBin; i++)
+      {
+         if(J.PT > PTBin[i] && J.PT <= PTBin[i+1])
+         {
+            int iEta = (J.Eta - EtaMin) / (EtaMax - EtaMin) * NBin;
+            BinJets[i][iEta].push_back(J.R);
+         }
+      }
+   }
+      
+   for(int i = 0; i < NBin; i++)
+   {
+      for(int j = 0; j < NBin; j++)
+      {
+         sort(BinJets[i][j].begin(), BinJets[i][j].end());
+         if(BinJets[i][j].size() > 10)
+            H.SetBinContent(i + 1, j + 1, BinJets[i][j][BinJets[i][j].size()/2]);
+      }
+   }
 
    TCanvas Canvas;
+   
+   H.SetMinimum(0.75);
+   H.SetMaximum(1.25);
+   H.Draw("colz");
+
+   Canvas.SetGridx();
+   Canvas.SetGridy();
    Canvas.SetLogx();
+
+   PdfFile.AddCanvas(Canvas);
+}
+
+void PlotEtaPhi(PdfFileHelper &PdfFile, vector<Jet> &Jets,
+   double EtaMin, double EtaMax, double PTMin, double PTMax,
+   string Title)
+{
+   int NBin = 100;
+
+   static int Index = 0;
+   Index = Index + 1;
+   TH2D H(Form("HEtaPhi%d", Index), Title.c_str(), NBin, EtaMin, EtaMax, NBin, -M_PI, M_PI);
+   H.SetStats(0);
+
+   vector<vector<vector<double>>> BinJets(NBin);
+   for(vector<vector<double>> &V : BinJets)
+      V.resize(NBin);
+
+   for(Jet &J : Jets)
+   {
+      if(J.Eta >= EtaMax || J.Eta <= EtaMin)
+         continue;
+      if(J.PT >= PTMax || J.PT <= PTMin)
+         continue;
+   
+      int iEta = (J.Eta - EtaMin) / (EtaMax - EtaMin) * NBin;
+      int iPhi = (J.Phi + M_PI) / (2 * M_PI) * NBin;
+
+      if(iEta == NBin)   iEta = NBin - 1;
+      if(iPhi == NBin)   iPhi = NBin - 1;
+      BinJets[iEta][iPhi].push_back(J.R);
+   }
+      
+   for(int i = 0; i < NBin; i++)
+   {
+      for(int j = 0; j < NBin; j++)
+      {
+         sort(BinJets[i][j].begin(), BinJets[i][j].end());
+         if(BinJets[i][j].size() > 10)
+            H.SetBinContent(i + 1, j + 1, BinJets[i][j][BinJets[i][j].size()/2]);
+      }
+   }
+
+   TCanvas Canvas;
+   
+   H.SetMinimum(0.75);
+   H.SetMaximum(1.25);
+   H.Draw("colz");
+
    Canvas.SetGridx();
    Canvas.SetGridy();
 
-   P.Draw("");
-   G.Draw("l");
-
    PdfFile.AddCanvas(Canvas);
-
-   TGraphAsymmErrors GError;
-   for(int i = 1; i <= P.GetNbinsX(); i++)
-   {
-      double XLow = P.GetXaxis()->GetBinLowEdge(i);
-      double XHigh = P.GetXaxis()->GetBinLowEdge(i);
-      double X = (XHigh + XLow) / 2;
-      double Y = P.GetBinError(i);
-
-      if(Y > 0)
-      {
-         int I = GError.GetN();
-         GError.SetPoint(I, X, Y);
-         GError.SetPointError(I, X - XLow, XHigh - X, 0, 0);
-      }
-   }
-
-   PdfFile.AddPlot(GError, "ap", true, false, true, true);
 }
-
-
-
-
-
-
 
