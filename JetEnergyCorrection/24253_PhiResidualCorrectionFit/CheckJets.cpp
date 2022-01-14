@@ -14,6 +14,7 @@ using namespace std;
 #include "ProgressBar.h"
 #include "PlotHelper4.h"
 #include "SetStyle.h"
+#include "RootUtilities.h"
 
 #include "JetCorrector.h"
 
@@ -33,6 +34,8 @@ void PlotEtaPhi(PdfFileHelper &PdfFile, vector<Jet> &Jets,
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    SetThesisStyle();
 
    CommandLine CL(argc, argv);
@@ -83,11 +86,15 @@ int main(int argc, char *argv[])
 
          if(OnTheFlyJEC == true)
          {
+            // cout << M.PT * M.R << " " << M.Eta << " " << M.Phi << " " << M.Rho;
+            
             JEC.SetJetPT(M.PT * M.R);
             JEC.SetJetEta(M.Eta);
             JEC.SetJetPhi(M.Phi);
             JEC.SetRho(M.Rho);
             M.R = JEC.GetCorrection() * M.R;
+
+            // cout << " " << JEC.GetCorrection() << endl;
          }
 
          Jets.push_back(M);
@@ -120,9 +127,9 @@ int main(int argc, char *argv[])
    PlotPT(PdfFile, Jets, +1.0, +1.5, 200, 1000, "Jet eta = [1.0, 1.5];JetPT;<R>");
    PlotPT(PdfFile, Jets, +1.5, +2.0, 200, 1000, "Jet eta = [1.5, 2.0];JetPT;<R>");
    
-   PlotPTEta(PdfFile, Jets, -2.0, +2.0, 10, 1000, ";JetPT;JetEta;<R>");
+   PlotPTEta(PdfFile, Jets, -2.0, +2.0, 15, 1000, ";JetPT;JetEta;<R>");
    PlotPTEta(PdfFile, Jets, -2.0, +2.0, 150, 1000, ";JetPT;JetEta;<R>");
-   PlotEtaPhi(PdfFile, Jets, -2.0, +2.0, 10, 50, "Jet PT = [10, 50];JetEta;JetPhi;<R>");
+   PlotEtaPhi(PdfFile, Jets, -2.0, +2.0, 30, 50, "Jet PT = [30, 50];JetEta;JetPhi;<R>");
    PlotEtaPhi(PdfFile, Jets, -2.0, +2.0, 50, 100, "Jet PT = [50, 100];JetEta;JetPhi;<R>");
    PlotEtaPhi(PdfFile, Jets, -2.0, +2.0, 100, 500, "Jet PT = [100, 500];JetEta;JetPhi;<R>");
 

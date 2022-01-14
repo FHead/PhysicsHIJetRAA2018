@@ -18,6 +18,7 @@ using namespace std;
 #include "SetStyle.h"
 #include "ProgressBar.h"
 #include "DataHelper.h"
+#include "RootUtilities.h"
 
 struct Jet {double PT; double Eta; double Phi; double Rho; double R;};
 
@@ -31,6 +32,8 @@ string GetFormula(int NMax);
 
 int main(int argc, char *argv[])
 {
+   SilenceRoot();
+
    SetThesisStyle();
 
    CommandLine CL(argc, argv);
@@ -430,14 +433,14 @@ int FindBin(double Value, vector<double> &Bins)
 vector<pair<double, double>> CalculateCn(TH1D *P, int NMax)
 {
    if(P == nullptr)
-      return vector<pair<double, double>>{(1,0)};
+      return vector<pair<double, double>>{pair<double, double>(1,0)};
 
    vector<pair<double, double>> Result;
 
    string Formula = GetFormula(NMax);
 
    TF1 F("F", Formula.c_str(), -M_PI, M_PI);
-   P->Fit(&F);
+   P->Fit(&F, "Q");
 
    for(int i = 0; i < NMax * 2 + 1; i++)
       Result.push_back(pair<double, double>(F.GetParameter(i), F.GetParError(i)));
@@ -447,7 +450,7 @@ vector<pair<double, double>> CalculateCn(TH1D *P, int NMax)
 
 vector<double> SplitEvenly(vector<Jet> &Jets, bool UsePT, int NBin)
 {
-   Assert(Jets.size() > NBin * 2, Form("Not enough data to split into bins, jets size = %d", Jets.size()));
+   Assert(Jets.size() > NBin * 2, Form("Not enough data to split into bins, jets size = %d", (int)Jets.size()));
 
    vector<double> V;
    for(Jet J : Jets)
