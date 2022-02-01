@@ -26,9 +26,12 @@ ToRunR="$2"
 # PbPbDataCentralityDown   = centrality variation
 # PbPbDataStoredCentrality = nominal data with stored centrality
 
-# ToRunList="PbPbDataStoredCentrality PbPbDataNoResidual PbPbDataNoPhiResidual PbPbDataCentralityUp PbPbDataCentralityDown"
+# ToRunList="PbPbData PbPbDataStoredCentrality PbPbDataNoResidual PbPbDataNoPhiResidual PbPbDataCentralityUp PbPbDataCentralityDown"
+# ToRunList="PbPbData PPData PPDataEOY"
+ToRunList="PPDataEOY"
+# ToRunList="PbPbDataStoredCentrality PbPbDataNoResidual PbPbDataNoPhiResidual PbPbDataCentralityUp PbPbDataCentralityDown PbPbDataNoJetID"
 # ToRunList="PbPbMCRho PbPbMCRhoCentralityUp PbPbMCRhoCentralityDown PbPbMCRhoNoPhiResidual"
-ToRunList="PbPbMC"
+# ToRunList="PbPbMC"
 # ToRunList="PPData"
 # ToRunList="PPMCEOY"
 # ToRunList="PbPbDataNoResidual PbPbDataNoPhiResidual PbPbDataNoJetID"
@@ -49,6 +52,8 @@ echo "" >> ${File}
 
 mkdir -p Log/
 rm -f Log/*
+
+ToSubmitCount=0
 
 for i in ${ToRunList}
 do
@@ -72,7 +77,7 @@ do
          Count=`echo $Count | AddConst 1`
 
          # Arguments = InputFile Tag Trigger IsMC IsPP Recluster RTag MinPT SkipReco
-         #    DoPhiResidual DoDataResidual DoExclusion Centrality CentralityTable
+         #    DoPhiResidual DoDataResidual DoExclusion Centrality CentralityTable DoJetID
          # ExtraArguments start from the Trigger
          ExtraArguments="None 1 1 1 $RTag 40 0 0 0 0 default default 1"
          if [[ "$i" == "PPMC" ]]; then
@@ -82,8 +87,8 @@ do
          elif [[ "$i" == "PPMCEOY" ]]; then
             ExtraArguments="None 1 1 1 $RTag 40 0 0 0 0 default default 1"   # NonUL
          elif [[ "$i" == "PPDataEOY" ]]; then
-            # ExtraArguments="HLT_HIAK4PFJet80 0 1 1 $RTag 40 0 1 0 default default 1"   # recluster
-            ExtraArguments="HLT_HIAK4PFJet80 0 1 0 $RTag 40 0 1 0 default default 1"   # don't recluster
+            # ExtraArguments="HLT_HIAK4PFJet80 0 1 1 $RTag 40 0 0 1 0 default default 1"   # recluster
+            ExtraArguments="HLT_HIAK4PFJet80 0 1 0 $RTag 40 0 0 1 0 default default 1"   # don't recluster
          elif [[ "$i" == "PbPbMC" ]]; then
             ExtraArguments="None 1 0 0 $RTag 60 0 1 0 1 default MC 1"
          elif [[ "$i" == "PbPbMCInclusive" ]]; then
@@ -120,6 +125,8 @@ do
          echo "Log       = Log/${i}${RTag}Part${Count}.log" >> ${File}
          echo "Queue" >> ${File}
          echo "" >> ${File}
+
+         ((ToSubmitCount=ToSubmitCount+1))
       done
 
       echo "" >> ${File}
@@ -127,4 +134,5 @@ do
    done
 done
 
+echo "Number of jobs to submit: $ToSubmitCount"
 
