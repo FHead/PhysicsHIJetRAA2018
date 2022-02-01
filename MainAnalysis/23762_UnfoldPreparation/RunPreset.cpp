@@ -33,6 +33,9 @@ int main(int argc, char *argv[])
    string JetSmear           = CL.Get("Smear", "0.025");
    string Flooring           = CL.Get("Flooring", "false");
 
+   double EtaMin             = CL.GetDouble("EtaMin", -2.0);
+   double EtaMax             = CL.GetDouble("EtaMax", +2.0);
+
    bool DoCopy               = CL.GetBool("DoCopy", false);
 
    vector<string> JetR       = CL.GetStringVector("JetR", ParseStringList(DHFile["Global"]["JetR"].GetString()));
@@ -69,6 +72,7 @@ int main(int argc, char *argv[])
             << " --Output Output/" << Prefix << "_" << RC << "_" << Suffix << ".root"
             << " --JSONOutput Output/" << Prefix << "_" << RC << "_" << Suffix << "_JSON.txt"
             << " --ExportJSON true"
+            << " --EtaMin " << EtaMin << " --EtaMax " << EtaMax
             << " --Observable JetPT --ObservableIndex -1 --Binning None --BinningIndex -1"
             << " --ObservableGenBins " << Binnings["GenBins"]
             << " --ObservableRecoBins " << Binnings["RecoBins"]

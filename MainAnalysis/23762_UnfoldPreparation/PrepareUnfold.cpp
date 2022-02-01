@@ -61,6 +61,7 @@ private:
    double                 JEUOffset;
    bool                   UseJERSF;
    SingleJetCorrector     JERSF;
+   double                 EtaMin, EtaMax;
 public:
    Messenger()              { Initialize(nullptr); }
    Messenger(TTree *Tree)   { Initialize(Tree); }
@@ -82,6 +83,8 @@ public:
       UseJEU = true;
       JEUOffset = 0;
       UseJERSF = false;
+      EtaMin = -1000;
+      EtaMax = 1000;
 
       Tree = InputTree;
       if(Tree == nullptr)
@@ -128,6 +131,8 @@ public:
       JERSF.Initialize(FileName);
    }
    void SetMaxMatchedJetAngle(double Value = -1) { MaxMatchedJetAngle = Value; }
+   void SetEtaMin(double Value = -1000)          { EtaMin = Value; }
+   void SetEtaMax(double Value = 1000)           { EtaMax = Value; }
    void GetEntry(int Entry)
    {
       if(Tree == nullptr)
@@ -148,6 +153,19 @@ public:
                MatchedJetMass[iJ] = 0;
             }
          }
+      }
+
+      for(int iJ = 0; iJ < NGenJets; iJ++)
+      {
+         if(GenJetEta[iJ] < EtaMin)       GenJetPT[iJ] = 0;
+         if(GenJetEta[iJ] > EtaMax)       GenJetPT[iJ] = 0;
+         if(MatchedJetEta[iJ] < EtaMin)   MatchedJetPT[iJ] = 0;
+         if(MatchedJetEta[iJ] > EtaMax)   MatchedJetPT[iJ] = 0;
+      }
+      for(int iJ = 0; iJ < NRecoJets; iJ++)
+      {
+         if(RecoJetEta[iJ] < EtaMin)       RecoJetPT[iJ] = 0;
+         if(RecoJetEta[iJ] > EtaMax)       RecoJetPT[iJ] = 0;
       }
    }
    int GetEntries()           { if(Tree != nullptr) return Tree->GetEntries(); return 0;}
@@ -177,7 +195,9 @@ public:
       double Shift = 0, double Smear = 0)
    {
       if(Type == ObservableJetPT && Step == Gen && Item < NGenJets)
+      {
          return GenJetPT[Item];
+      }
       if(Type == ObservableJetPT && Step == Reco && Item < NRecoJets)
       {
          double Value = RecoJetPT[Item];
@@ -215,7 +235,8 @@ public:
          else
             Value = Value * (1 + Shift);
          double SmearAmount = GetSmear(Value, MatchedJetEta[Item], Smear);
-         Value = (Value - GenJetPT[Item]) * (SmearAmount + 1) + GenJetPT[Item];
+         if(Value > 0)   // if Value <= 0 it means bad matching and so we shouldn't unsmear it
+            Value = (Value - GenJetPT[Item]) * (SmearAmount + 1) + GenJetPT[Item];
          return Value;
       }
 
@@ -333,6 +354,9 @@ int main(int argc, char *argv[])
    bool CheckMatchAngle           = CL.GetBool("CheckMatchAngle", true);
    double MaxMatchAngle           = CL.GetDouble("MaxMatchAngle", 0.2);
 
+   double EtaMin                  = CL.GetDouble("EtaMin", -2.0);
+   double EtaMax                  = CL.GetDouble("EtaMax", +2.0);
+
    double PrimaryGenMin           = CL.GetDouble("ObservableGenMin", -99999);
    double PrimaryGenMax           = CL.GetDouble("ObservableGenMax", +99999);
    double PrimaryRecoMin          = CL.GetDouble("ObservableRecoMin", -99999);
@@ -438,6 +462,9 @@ int main(int argc, char *argv[])
    if(UseJERSFFile == true)
       MMC.InitializeJERSF(CL.Get("JERSF"));
 
+   MMC.SetEtaMin(EtaMin);
+   MMC.SetEtaMax(EtaMax);
+
    int EntryCount = MMC.GetEntries() * MCFraction;
    ProgressBar BarMC(cout, EntryCount);
    BarMC.SetStyle(2);
@@ -528,6 +555,9 @@ int main(int argc, char *argv[])
    EntryCount = MData.GetEntries() * DataFraction;
    ProgressBar BarData(cout, EntryCount);
    BarData.SetStyle(2);
+
+   MData.SetEtaMin(EtaMin);
+   MData.SetEtaMax(EtaMax);
    
    for(int iE = 0; iE < EntryCount; iE++)
    {
