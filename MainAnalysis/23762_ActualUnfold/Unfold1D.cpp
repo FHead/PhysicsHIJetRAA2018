@@ -17,7 +17,7 @@ using namespace std;
 #include "RooUnfoldInvert.h"
 #include "RooUnfoldBayes.h"
 #include "RooUnfoldSvd.h"
-#include "TUnfold.h"
+// #include "TUnfold.h"
 #include "TUnfoldDensity.h"
 
 #include "RootUtilities.h"
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
    string ResponseTruth    = CL.Get("ResponseTruth",     "HMCGen");
    string ResponseMeasured = CL.Get("ResponseMeasured",  "HMCReco");
    string Output           = CL.Get("Output",            "Unfolded.root");
-   string PriorChoice      = CL.Get("Prior",             "MC");
+   string PriorChoice      = CL.Get("Prior",             "Original");
    bool DoBayes            = CL.GetBool("DoBayes",       true);
    bool DoSVD              = CL.GetBool("DoSVD",         true);
    bool DoInvert           = CL.GetBool("DoInvert",      true);
@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
    if(DoBayes == true)
    {
       // vector<int> Iterations{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 80, 90, 100, 125, 150, 200, 250};
-      vector<int> Iterations{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 80, 90, 100, 125, 150, 200, 250};
+      vector<int> Iterations{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 35, 40, 45, 50, 55, 60, 65, 70, 80, 90, 100, 125, 150, 200, 250};
       for(int I : Iterations)
       {
          RooUnfoldBayes BayesUnfold(Response, HInput, I);
@@ -329,9 +329,15 @@ int main(int argc, char *argv[])
    {
       TUnfoldDensity Unfold((TH2 *)HRawResponse,
          TUnfold::kHistMapOutputVert,
-         TUnfold::kRegModeDerivative,   // Size, Curvature, Derivative
+         TUnfold::kRegModeCurvature,    // Size, Curvature, Derivative
          TUnfold::kEConstraintNone,     // None, Area
          TUnfoldDensity::kDensityModeBinWidth);
+      // TUnfoldDensity Unfold((TH2 *)HRawResponse,
+      //    TUnfold::kHistMapOutputVert,
+      //    TUnfold::kRegModeCurvature,    // Size, Curvature, Derivative
+      //    TUnfold::kEConstraintNone,     // None, Area
+      //    TUnfoldDensity::kDensityModeBinWidth,
+      //    nullptr, nullptr, nullptr, "*[uUoO]");
       // TUnfold Unfold((TH2 *)HResponse,
       //    TUnfold::kHistMapOutputVert,
       //    TUnfold::kRegModeCurvature,
@@ -339,9 +345,11 @@ int main(int argc, char *argv[])
       Unfold.SetInput(HInput);
       Unfold.SetBias(HPrior);
 
-      TSpline *LogTauX, *LogTauY;
+      TSpline *LogTauX = nullptr, *LogTauY = nullptr, *LogTauCurvature = nullptr, *RhoLogTau = nullptr;
       TGraph *LCurve;
-      int IBest = Unfold.ScanLcurve(100, 0, 0, &LCurve, &LogTauX, &LogTauY);
+      int IBest = Unfold.ScanLcurve(1000, 1e-10, 1e0, &LCurve, &LogTauX, &LogTauY, &LogTauCurvature);
+      // int IBest = Unfold.ScanTau(1000, 0, 0, &RhoLogTau, TUnfoldDensity::kEScanTauRhoMax,
+      //    nullptr, nullptr, &LCurve, &LogTauX, &LogTauY);
 
       TH1 *H = Unfold.GetOutput("HUnfoldedTUnfold");
       TH2 *HError = Unfold.GetEmatrixInput("HUnfoldedTUnfold");
@@ -358,17 +366,36 @@ int main(int argc, char *argv[])
       LCurve->SetName("GTUnfoldLCurve");
       Graphs.push_back(LCurve);
 
-      LogTauX->SetName("STUnfoldTauX");
-      LogTauY->SetName("STUnfoldTauY");
-      Splines.push_back(LogTauX);
-      Splines.push_back(LogTauY);
+      if(LogTauX != nullptr)
+      {
+         LogTauX->SetName("STUnfoldTauX");
+         Splines.push_back(LogTauX);
+      }
+      if(LogTauY != nullptr)
+      {
+         LogTauY->SetName("STUnfoldTauY");
+         Splines.push_back(LogTauY);
+      }
+      if(LogTauCurvature != nullptr)
+      {
+         LogTauCurvature->SetName("STUnfoldTauCurvature");
+         Splines.push_back(LogTauCurvature);
+      }
+      if(RhoLogTau != nullptr)
+      {
+         RhoLogTau->SetName("STUnfoldTauCurvature");
+         Splines.push_back(RhoLogTau);
+      }
 
       double X, Y, T;
       LogTauX->GetKnot(IBest, T, X);
       LogTauY->GetKnot(IBest, T, Y);
-      // TGraph GXY("GTUnfoldXYTemp");
-      // GXY.SetPoint(0, X, Y);
-      // Graphs.push_back((TGraph *)GXY.Clone("GTUnfoldXY"));
+      TGraph *GXY = new TGraph;
+      GXY->SetName("GTUnfoldXY");
+      GXY->SetPoint(0, X, Y);
+      Graphs.push_back(GXY);
+
+      // cout << X << " " << Y << " " << T << endl;
          
       TH1D *HFold = ForwardFold(H, HResponse);
       HFold->SetName("HRefoldedTUnfold");
