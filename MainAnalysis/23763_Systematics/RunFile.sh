@@ -65,7 +65,7 @@ do
       echo "$PRC JECUp_VariantFile      string  Input/${PRC}_JECUp_${NP}.root" >> $Config
       echo "$PRC JECUp_VariantHistogram string  ${HNominal}" >> $Config
       echo "$PRC JECUp_Label            string  JECUp" >> $Config
-      echo "$PRC JECUp_Include          int     0" >> $Config
+      echo "$PRC JECUp_Include          int     1" >> $Config
       echo "$PRC JECUp_Bridging         int     0" >> $Config
       echo "$PRC JECUp_ExtraScaling     float   1" >> $Config
 
@@ -74,7 +74,7 @@ do
       echo "$PRC JECDown_VariantFile      string  Input/${PRC}_JECDown_${NP}.root" >> $Config
       echo "$PRC JECDown_VariantHistogram string  ${HNominal}" >> $Config
       echo "$PRC JECDown_Label            string  JECDown" >> $Config
-      echo "$PRC JECDown_Include          int     0" >> $Config
+      echo "$PRC JECDown_Include          int     1" >> $Config
       echo "$PRC JECDown_Bridging         int     0" >> $Config
       echo "$PRC JECDown_ExtraScaling     float   1" >> $Config
 
@@ -82,8 +82,8 @@ do
       echo "$PRC JECAggressiveUp_BaseHistogram    string  ${HNominal}" >> $Config
       echo "$PRC JECAggressiveUp_VariantFile      string  Input/${PRC}_JECAggressiveUp_${NP}.root" >> $Config
       echo "$PRC JECAggressiveUp_VariantHistogram string  ${HNominal}" >> $Config
-      echo "$PRC JECAggressiveUp_Include          int     1" >> $Config
       echo "$PRC JECAggressiveUp_Label            string  JECAggressiveUp" >> $Config
+      echo "$PRC JECAggressiveUp_Include          int     0" >> $Config
       echo "$PRC JECAggressiveUp_Bridging         int     0" >> $Config
       echo "$PRC JECAggressiveUp_ExtraScaling     float   1" >> $Config
 
@@ -91,8 +91,8 @@ do
       echo "$PRC JECAggressiveDown_BaseHistogram    string  ${HNominal}" >> $Config
       echo "$PRC JECAggressiveDown_VariantFile      string  Input/${PRC}_JECAggressiveDown_${NP}.root" >> $Config
       echo "$PRC JECAggressiveDown_VariantHistogram string  ${HNominal}" >> $Config
-      echo "$PRC JECAggressiveDown_Include          int     1" >> $Config
       echo "$PRC JECAggressiveDown_Label            string  JECAggressiveDown" >> $Config
+      echo "$PRC JECAggressiveDown_Include          int     0" >> $Config
       echo "$PRC JECAggressiveDown_Bridging         int     0" >> $Config
       echo "$PRC JECAggressiveDown_ExtraScaling     float   1" >> $Config
       
@@ -235,6 +235,7 @@ do
          echo "$PRC Global_TAA float $TAARelativeError" >> $Config
          echo "$PRC Global_NMB float 0.0126" >> $Config
          echo "$PRC Global_PbPbSelection float 0.01" >> $Config
+         echo "$PRC Global_PUBug float 0.04" >> $Config
       else
          echo "$PRC Global_Luminosity float 0.019" >> $Config
          echo "$PRC Global_PPSelection float 0.01" >> $Config
