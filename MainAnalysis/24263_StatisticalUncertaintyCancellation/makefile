@@ -1,5 +1,5 @@
 
-default: TestRun
+default: TestRunSummary
 
 Prepare:
 	ln -sf $(ProjectBase)/MainAnalysis/GlobalSetting/GlobalSetting.dh .
@@ -24,5 +24,10 @@ Execute: Uncertainty.cpp
 RunAll: Execute
 	bash RunAll.sh
 
+ExecuteSummary: SummaryPlots.cpp
+	CompileRootMacro SummaryPlots.cpp ExecuteSummary
+
+TestRunSummary: ExecuteSummary
+	./ExecuteSummary
 
 
