@@ -8,7 +8,7 @@ for R in $JetR
 do
    for C in $Centrality
    do
-      DHSet GlobalSetting.dh PUBugCorrection PbPbData_R${R}_Centrality${C}   float 1.04
+      DHSet GlobalSetting.dh PUBugCorrection PbPbData_R${R}_Centrality${C}   float 1.00
    done
 done
 
