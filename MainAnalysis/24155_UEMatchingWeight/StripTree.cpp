@@ -154,7 +154,7 @@ void ReadData(string FileName, vector<Jet> &Data, double JetMinPT, bool UseMatch
          double UE = RecoJetUE[iJ];
          double Weight = EventWeight;
          Weight = Weight * RecoJetWeight[iJ];
-         Weight = Weight * RecoJetPhiWeight[iJ];
+         // Weight = Weight * RecoJetPhiWeight[iJ];   // this is a bug!  the weight includes already phi
 
          Data.push_back(Jet{UE, Weight});
       }

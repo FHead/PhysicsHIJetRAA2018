@@ -7,7 +7,7 @@ JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
 # JetR="8 9"
-# Centrality="0to10"
+# Centrality="50to70 70to90"
 
 OrderDHFile=Order.dh
 

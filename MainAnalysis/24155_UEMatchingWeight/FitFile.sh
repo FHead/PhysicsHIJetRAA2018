@@ -6,6 +6,8 @@ mkdir -p root
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
+# Centrality="50to70 70to90"
+
 OrderDHFile=Order.dh
 
 # default for everyone

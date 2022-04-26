@@ -6,6 +6,10 @@ mkdir -p root
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
+# Centrality="50to70 70to90"
+
+JetR='3 4 5 6 7 8 9'
+
 for R in $JetR
 do
    for C in $Centrality
@@ -17,6 +21,9 @@ do
          if [[ $C == "0to10" ]]; then
             TriggerPTMin=`DHQuery GlobalSetting.dh TriggerTurnOn R${R}_Centrality${C}_X95`
          fi
+      fi
+      if [[ $C == "50to70" ]] || [[ $C == "70to90" ]]; then
+         TriggerPTMin=`DHQuery GlobalSetting.dh TriggerTurnOn R${R}_Centrality50to90_Cut`
       fi
       DHSet GlobalSettingTemp.dh RhoWeight R${R}_Centrality${C}_StartingPT float $TriggerPTMin
 
