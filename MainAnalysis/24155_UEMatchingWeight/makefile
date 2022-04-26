@@ -1,5 +1,6 @@
 
-default: FitAll #TestRunMatch TestRunFit
+# default: FitAll #TestRunMatch TestRunFit
+default: RunVisualize
 
 Prepare:
 	rm -f GlobalSetting.dh Input
@@ -37,4 +38,10 @@ TestRunFit: ExecuteFit
 FitAll: ExecuteMatch ExecuteFit
 	bash BinFile.sh
 	bash FitFile.sh
+
+ExecuteVisualize: VisualizeDifference.cpp
+	CompileRootMacro VisualizeDifference.cpp ExecuteVisualize
+
+RunVisualize: ExecuteVisualize
+	./ExecuteVisualize --DHFile GlobalSetting.dh --DHFileNew GlobalSettingTemp.dh --Output RhoWeightComparison.pdf
 
