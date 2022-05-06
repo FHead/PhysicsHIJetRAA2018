@@ -34,6 +34,7 @@ TGraphAsymmErrors CalculateRatio(TGraphAsymmErrors &G1, TGraphAsymmErrors &G2);
 double CalculateIntegral(TGraphAsymmErrors &G, double MinX = -9999);
 string GuessState(string FileName);
 double GetTotalGlobalUncertainty(string DHFileName, string FileName);
+bool CheckInclude(string DHFileName, string FileName, string KeyBase);
 
 int main(int argc, char *argv[])
 {
@@ -117,8 +118,11 @@ int main(int argc, char *argv[])
          H1[HName] = (TH1D *)H1[Variations[i]]->Clone(HName.c_str());
          H1[HName]->Reset();
       }
-
+      
       Assert(H1[Variations[i]+"Ratio"] != nullptr, ("Error getting systematic ratio for " + Variations[i]).c_str());
+      
+      if(CheckInclude(GlobalDHFileName, InputFileName, Variations[i]) == false)
+         continue;
 
       for(int j = 1; j <= H1[HName]->GetNbinsX(); j++)
       {
@@ -629,3 +633,22 @@ double GetTotalGlobalUncertainty(string DHFileName, string FileName)
    return sqrt(Variance);
 }
 
+bool CheckInclude(string DHFileName, string FileName, string KeyBase)
+{
+   string State = GuessState(FileName);
+
+   DataHelper DHFile(DHFileName);
+
+   vector<string> ToCheck{KeyBase, "H" + KeyBase, KeyBase.substr(1)};
+
+   bool Included = false;
+   for(string Check : ToCheck)
+   {
+      if(DHFile[State].Exist(Check + "_Include") == false)
+         continue;
+      if(DHFile[State][Check+"_Include"].GetInteger() > 0)
+         Included = true;
+   }
+
+   return Included;
+}
