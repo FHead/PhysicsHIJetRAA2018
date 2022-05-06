@@ -3,11 +3,11 @@
 JetR=`DHQuery GlobalSetting.dh Global JetR | tr -d '"'`
 Centrality=`DHQuery GlobalSetting.dh Global Centrality | tr -d '"'`
 
-PPVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior,HEarthquake,HBinBiasUp,HBinBiasDown"
-PPSystematicGroups="1,1,2,2,3,3,4,4,4"
+PPVariations="HJECUp,HJECDown,HJECAggressiveUp,HJECAggressiveDown,HJERUp,HJERDown,HIteration,HPrior,HEarthquake,HBinBiasUp,HBinBiasDown"
+PPSystematicGroups="1,1,1,1,2,2,3,3,4,4,4"
 PPLabels="JES,JER,Unfolding,Matrix"
-AAVariations="HJECUp,HJECDown,HJERUp,HJERDown,HIteration,HPrior,HCentralityUp,HCentralityDown,HJECQuench,HEarthquake,HBinBiasUp,HBinBiasDown"
-AASystematicGroups="1,1,2,2,3,3,5,5,4,6,6,6"
+AAVariations="HJECUp,HJECDown,HJECAggressiveUp,HJECAggressiveDown,HJERUp,HJERDown,HIteration,HPrior,HCentralityUp,HCentralityDown,HJECQuench,HEarthquake,HBinBiasUp,HBinBiasDown"
+AASystematicGroups="1,1,1,1,2,2,3,3,5,5,4,6,6,6"
 AALabels="JES,JER,Unfolding,Quench,Centrality,Matrix"
 
 # Run pp spectrum
@@ -48,7 +48,7 @@ do
       ./Execute --Input Systematics/PbPbData_R${R}_Centrality${C}.root \
          --Output Plots/PbPbData_R${R}_Centrality${C}.pdf \
          --FinalOutput FinalPlots/PbPbData_R${R}_Centrality${C}.pdf \
-         --Global GlobalSystematics.dh \
+         --Global Systematics.dh \
          --GenPrimaryMin 0 --GenPrimaryMax 1600 \
          --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
          --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
@@ -72,7 +72,7 @@ do
    ./Execute --Input CombinedSystematics/PPDataRatio_R${R}R9_CentralityInclusive.root \
       --Output Plots/PPDataRatio_R${R}R9_CentralityInclusive.pdf \
       --FinalOutput FinalPlots/PPDataRatio_R${R}R9_CentralityInclusive.pdf \
-      --Global GlobalSystematics.dh \
+      --Global Systematics.dh \
       --GenPrimaryMin 0 --GenPrimaryMax 1600 \
       --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
       --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
@@ -100,7 +100,7 @@ do
       ./Execute --Input CombinedSystematics/RAA_R${R}_Centrality${C}.root \
          --Output Plots/RAA_R${R}_Centrality${C}.pdf \
          --FinalOutput FinalPlots/RAA_R${R}_Centrality${C}.pdf \
-         --Global GlobalSystematics.dh \
+         --Global Systematics.dh \
          --GenPrimaryMin 0 --GenPrimaryMax 1600 \
          --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
          --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
@@ -129,7 +129,7 @@ do
       ./Execute --Input CombinedSystematics/RCP_R${R}_Centrality${C}.root \
          --Output Plots/RCP_R${R}_Centrality${C}.pdf \
          --FinalOutput FinalPlots/RCP_R${R}_Centrality${C}.pdf \
-         --Global GlobalSystematics.dh \
+         --Global Systematics.dh \
          --GenPrimaryMin 0 --GenPrimaryMax 1600 \
          --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
          --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
@@ -158,7 +158,7 @@ do
       ./Execute --Input CombinedSystematics/RRAA_R${R}R1_Centrality${C}.root \
          --Output Plots/RRAA_R${R}R1_Centrality${C}.pdf \
          --FinalOutput FinalPlots/RRAA_R${R}R1_Centrality${C}.pdf \
-         --Global GlobalSystematics.dh \
+         --Global Systematics.dh \
          --GenPrimaryMin 0 --GenPrimaryMax 1600 \
          --WorldXMin $LowerBound --WorldXMax 1500 --WorldYMin 0 --WorldYMax 1.0 --LogY false --LogX true \
          --XLabel "Jet p_{T}" --YLabel "Uncertainty" --Binning "none" \
