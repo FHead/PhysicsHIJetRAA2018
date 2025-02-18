@@ -6,7 +6,7 @@
 
 #include "fastjet/PseudoJet.hh"
 
-#include "Code/TauHelperFunctions3.h"
+#include "include/TauHelperFunctions3.h"
 
 class RhoCalculator;
 class RhoModulationCalculator;

@@ -4,7 +4,18 @@ FJContrib = /cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/fastjet-contrib/1.044-
 
 default: all
 
-all: library/Messenger.o library/RhoCalculator.o library/JetProducer.o
+all: library/Messenger.o library/TauHelperFunctions3.o library/DrawRandom.o library/DrawRandom2.o
+
+# all: library/Messenger.o library/RhoCalculator.o library/JetProducer.o library/TauHelperFunction3.o library/DrawRandom.o library/DrawRandom2.o
+
+library/TauHelperFunctions3.o: source/TauHelperFunctions3.cpp include/TauHelperFunctions3.h
+	g++ source/TauHelperFunctions3.cpp -I. -c -o library/TauHelperFunctions3.o `root-config --cflags` -std=c++17
+
+library/DrawRandom.o: source/DrawRandom.cpp include/DrawRandom.h
+	g++ source/DrawRandom.cpp -I. -c -o library/DrawRandom.o `root-config --cflags` -std=c++17
+
+library/DrawRandom2.o: source/DrawRandom2.cpp include/DrawRandom2.h
+	g++ source/DrawRandom2.cpp -I. -c -o library/DrawRandom2.o `root-config --cflags` -std=c++17
 
 library/Messenger.o: source/Messenger.cpp include/Messenger.h
 	g++ source/Messenger.cpp -I. -c -o library/Messenger.o `root-config --cflags` -std=c++17

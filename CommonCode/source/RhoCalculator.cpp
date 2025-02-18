@@ -12,8 +12,8 @@
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/JetDefinition.hh"
 
-#include "Code/TauHelperFunctions3.h"
-#include "Code/DrawRandom.h"
+#include "include/TauHelperFunctions3.h"
+#include "include/DrawRandom.h"
 
 #include "include/RhoCalculator.h"
 
